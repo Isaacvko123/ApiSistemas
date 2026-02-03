@@ -30,6 +30,12 @@ jobs:
       JWT_REFRESH_SECRET: test-refresh-secret-1234567890
       JWT_ACCESS_TTL: 15m
       JWT_REFRESH_TTL_DAYS: 30
+      BOOTSTRAP_ADMIN_ENABLED: false
+      CREDENTIALS_ENC_KEY: dJw4Wq6oV7B4p8uW7nT0h8kU9sQ1bN3p5Jm2fG6hY1k=
+      CREDENTIALS_ENC_KEY_V1: dJw4Wq6oV7B4p8uW7nT0h8kU9sQ1bN3p5Jm2fG6hY1k=
+      ROTATE_CREDENTIALS_ENABLED: false
+      UPLOAD_DIR: uploads
+      UPLOAD_MAX_SIZE_MB: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

@@ -7,12 +7,12 @@
     "source": "body",
     "reason": "Faltan campos obligatorios o el tipo/longitud es incorrecto.",
     "solution": "Envia los campos obligatorios con los tipos correctos.",
-    "requiredFields": ["ssid", "usuario", "passwordEnc"],
+    "requiredFields": ["ssid", "usuario", "password"],
     "optionalFields": ["notas", "vigente", "empleadoId", "localidadId"],
     "constraints": {
       "ssid": "string 1-200",
       "usuario": "string 1-200",
-      "passwordEnc": "string > 0",
+      "password": "string > 0",
       "notas": "string <= 2000",
       "vigente": "boolean",
       "empleadoId": "number int > 0",
@@ -21,7 +21,7 @@
     "example": {
       "ssid": "CORP-WIFI",
       "usuario": "corp-user",
-      "passwordEnc": "base64",
+      "password": "SecretoWifi123",
       "localidadId": 1
     }
   },
@@ -57,7 +57,7 @@
     "updatableFields": [
       "ssid",
       "usuario",
-      "passwordEnc",
+      "password",
       "notas",
       "vigente",
       "empleadoId",

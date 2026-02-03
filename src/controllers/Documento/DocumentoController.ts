@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
+import { Prisma, AuditAction } from "@prisma/client";
 import { prisma } from "../../db/prisma";
 import { env } from "../../config/env";
 import {
@@ -9,6 +9,8 @@ import {
   toDocumentoPublic,
   toDocumentoUpdateData,
 } from "../../models/Documento/DocumentoModel";
+import { auditEntity } from "../../seguridad/audit-helpers";
+import { buildDocumentoRuta } from "../../middlewares/upload";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -96,6 +98,64 @@ export class DocumentoController {
     try {
       const data = toDocumentoCreateData(parsed.data);
       const doc = await prisma.documento.create({ data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_CREATE,
+        targetType: "Documento",
+        targetId: String(doc.id),
+      });
+      return res.status(201).json(toDocumentoPublic(doc));
+    } catch (error) {
+      return handlePrismaError(res, error);
+    }
+  }
+
+  static async subir(req: Request, res: Response) {
+    const file = req.file as Express.Multer.File | undefined;
+    if (!file) {
+      return respondError(res, "payload_invalido", { reason: "archivo requerido" });
+    }
+
+    const equipoId = typeof req.body.equipoId === "string" ? Number(req.body.equipoId) : undefined;
+    const resguardoId =
+      typeof req.body.resguardoId === "string" ? Number(req.body.resguardoId) : undefined;
+    const resguardoEquipoId =
+      typeof req.body.resguardoEquipoId === "string"
+        ? Number(req.body.resguardoEquipoId)
+        : undefined;
+    const tipo = typeof req.body.tipo === "string" ? req.body.tipo : undefined;
+
+    const actorId = res.locals.user?.sub ? Number(res.locals.user.sub) : null;
+
+    const parsed = documentoCreateSchema.safeParse({
+      tipo,
+      ruta: buildDocumentoRuta(file.filename),
+      nombreArchivo: file.originalname,
+      mime: file.mimetype,
+      sizeBytes: file.size,
+      equipoId: Number.isFinite(equipoId) ? (equipoId as number) : undefined,
+      resguardoId: Number.isFinite(resguardoId) ? (resguardoId as number) : undefined,
+      resguardoEquipoId: Number.isFinite(resguardoEquipoId)
+        ? (resguardoEquipoId as number)
+        : undefined,
+      subidoPorId: Number.isFinite(actorId as number) ? (actorId as number) : undefined,
+    });
+
+    if (!parsed.success) {
+      return respondError(res, "payload_invalido", parsed.error.flatten());
+    }
+
+    try {
+      const data = toDocumentoCreateData(parsed.data);
+      const doc = await prisma.documento.create({ data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_CREATE,
+        targetType: "Documento",
+        targetId: String(doc.id),
+      });
       return res.status(201).json(toDocumentoPublic(doc));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -118,6 +178,14 @@ export class DocumentoController {
     try {
       const data = toDocumentoUpdateData(parsed.data);
       const doc = await prisma.documento.update({ where: { id }, data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_UPDATE,
+        targetType: "Documento",
+        targetId: String(id),
+        metadata: { fields: Object.keys(parsed.data) },
+      });
       return res.status(200).json(toDocumentoPublic(doc));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -130,6 +198,13 @@ export class DocumentoController {
 
     try {
       const doc = await prisma.documento.delete({ where: { id } });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_DELETE,
+        targetType: "Documento",
+        targetId: String(id),
+      });
       return res.status(200).json(toDocumentoPublic(doc));
     } catch (error) {
       return handlePrismaError(res, error);

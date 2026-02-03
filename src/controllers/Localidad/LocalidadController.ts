@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
+import { Prisma, AuditAction } from "@prisma/client";
 import { prisma } from "../../db/prisma";
 import { env } from "../../config/env";
 import {
@@ -7,6 +7,7 @@ import {
   localidadUpdateSchema,
   toLocalidadPublic,
 } from "../../models/Localidad/LocalidadModel";
+import { auditEntity } from "../../seguridad/audit-helpers";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -87,6 +88,13 @@ export class LocalidadController {
 
     try {
       const localidad = await prisma.localidad.create({ data: parsed.data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_CREATE,
+        targetType: "Localidad",
+        targetId: String(localidad.id),
+      });
       return res.status(201).json(toLocalidadPublic(localidad));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -108,6 +116,14 @@ export class LocalidadController {
 
     try {
       const localidad = await prisma.localidad.update({ where: { id }, data: parsed.data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_UPDATE,
+        targetType: "Localidad",
+        targetId: String(id),
+        metadata: { fields: Object.keys(parsed.data) },
+      });
       return res.status(200).json(toLocalidadPublic(localidad));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -120,6 +136,13 @@ export class LocalidadController {
 
     try {
       const localidad = await prisma.localidad.delete({ where: { id } });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_DELETE,
+        targetType: "Localidad",
+        targetId: String(id),
+      });
       return res.status(200).json(toLocalidadPublic(localidad));
     } catch (error) {
       return handlePrismaError(res, error);

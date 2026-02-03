@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
+import { Prisma, AuditAction } from "@prisma/client";
 import { prisma } from "../../db/prisma";
 import { env } from "../../config/env";
 import {
@@ -9,6 +9,7 @@ import {
   toResguardoEquipoPublic,
   toResguardoEquipoUpdateData,
 } from "../../models/ResguardoEquipo/ResguardoEquipoModel";
+import { auditEntity } from "../../seguridad/audit-helpers";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -94,6 +95,13 @@ export class ResguardoEquipoController {
     try {
       const data = toResguardoEquipoCreateData(parsed.data);
       const row = await prisma.resguardoEquipo.create({ data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_CREATE,
+        targetType: "ResguardoEquipo",
+        targetId: String(row.id),
+      });
       return res.status(201).json(toResguardoEquipoPublic(row));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -116,6 +124,14 @@ export class ResguardoEquipoController {
     try {
       const data = toResguardoEquipoUpdateData(parsed.data);
       const row = await prisma.resguardoEquipo.update({ where: { id }, data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_UPDATE,
+        targetType: "ResguardoEquipo",
+        targetId: String(id),
+        metadata: { fields: Object.keys(parsed.data) },
+      });
       return res.status(200).json(toResguardoEquipoPublic(row));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -128,6 +144,13 @@ export class ResguardoEquipoController {
 
     try {
       const row = await prisma.resguardoEquipo.delete({ where: { id } });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_DELETE,
+        targetType: "ResguardoEquipo",
+        targetId: String(id),
+      });
       return res.status(200).json(toResguardoEquipoPublic(row));
     } catch (error) {
       return handlePrismaError(res, error);

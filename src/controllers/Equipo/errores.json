@@ -1,0 +1,113 @@
+{
+  "payload_invalido": {
+    "status": 400,
+    "code": "EQU-001",
+    "title": "Payload invalido",
+    "summary": "El body no cumple con el esquema requerido.",
+    "source": "body",
+    "reason": "Faltan campos obligatorios o el tipo/longitud es incorrecto.",
+    "solution": "Envia los campos obligatorios con los tipos correctos.",
+    "requiredFields": ["tipo"],
+    "optionalFields": [
+      "codigoInventario",
+      "serie",
+      "marca",
+      "modelo",
+      "descripcion",
+      "estado",
+      "fechaCompra",
+      "costo",
+      "localidadId"
+    ],
+    "constraints": {
+      "tipo": "LAPTOP | DESKTOP | TABLET | CELULAR | MONITOR | IMPRESORA | ROUTER | SWITCH | OTRO",
+      "estado": "DISPONIBLE | ASIGNADO | MANTENIMIENTO | BAJA",
+      "codigoInventario": "string 1-100",
+      "serie": "string 1-100",
+      "marca": "string <= 100",
+      "modelo": "string <= 100",
+      "descripcion": "string <= 2000",
+      "fechaCompra": "date",
+      "costo": "number >= 0",
+      "localidadId": "number int > 0"
+    },
+    "example": {
+      "tipo": "LAPTOP",
+      "codigoInventario": "INV-100",
+      "serie": "ABC123",
+      "marca": "Dell",
+      "modelo": "XPS",
+      "estado": "DISPONIBLE"
+    }
+  },
+  "id_invalido": {
+    "status": 400,
+    "code": "EQU-002",
+    "title": "ID invalido",
+    "summary": "El parametro de ruta no es valido.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no es numerico.",
+    "solution": "Envia un id numerico en la ruta.",
+    "expected": "number"
+  },
+  "equipo_no_encontrado": {
+    "status": 404,
+    "code": "EQU-003",
+    "title": "Equipo no encontrado",
+    "summary": "No existe un equipo con ese id.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no existe en base de datos.",
+    "solution": "Verifica el id antes de consultar."
+  },
+  "duplicado": {
+    "status": 409,
+    "code": "EQU-004",
+    "title": "Registro duplicado",
+    "summary": "Ya existe un equipo con el mismo codigo o serie.",
+    "source": "body",
+    "reason": "Violacion de indice unico.",
+    "solution": "Usa un codigo/serie diferente.",
+    "uniqueFields": ["codigoInventario", "serie"]
+  },
+  "sin_cambios": {
+    "status": 400,
+    "code": "EQU-005",
+    "title": "Sin cambios",
+    "summary": "No se enviaron campos para actualizar.",
+    "source": "body",
+    "reason": "El body esta vacio o solo contiene campos invalidos.",
+    "solution": "Envia al menos un campo valido.",
+    "updatableFields": [
+      "codigoInventario",
+      "serie",
+      "tipo",
+      "marca",
+      "modelo",
+      "descripcion",
+      "estado",
+      "fechaCompra",
+      "costo",
+      "localidadId"
+    ]
+  },
+  "relacion_invalida": {
+    "status": 409,
+    "code": "EQU-006",
+    "title": "Relacion invalida",
+    "summary": "La localidad indicada no existe.",
+    "source": "server",
+    "reason": "Restriccion de llave foranea.",
+    "solution": "Verifica los ids relacionados antes de guardar."
+  },
+  "error_interno": {
+    "status": 500,
+    "code": "EQU-500",
+    "title": "Error interno",
+    "summary": "Ocurrio un error inesperado en el servidor.",
+    "source": "server",
+    "reason": "Excepcion no controlada.",
+    "solution": "Intenta mas tarde o revisa los logs del servidor."
+  }
+}

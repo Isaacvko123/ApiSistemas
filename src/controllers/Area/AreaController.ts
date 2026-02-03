@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
+import { Prisma, AuditAction } from "@prisma/client";
 import { prisma } from "../../db/prisma";
 import { env } from "../../config/env";
 import {
@@ -7,6 +7,7 @@ import {
   areaUpdateSchema,
   toAreaPublic,
 } from "../../models/Area/AreaModel";
+import { auditEntity } from "../../seguridad/audit-helpers";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -83,6 +84,13 @@ export class AreaController {
 
     try {
       const area = await prisma.area.create({ data: parsed.data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_CREATE,
+        targetType: "Area",
+        targetId: String(area.id),
+      });
       return res.status(201).json(toAreaPublic(area));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -104,6 +112,14 @@ export class AreaController {
 
     try {
       const area = await prisma.area.update({ where: { id }, data: parsed.data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_UPDATE,
+        targetType: "Area",
+        targetId: String(id),
+        metadata: { fields: Object.keys(parsed.data) },
+      });
       return res.status(200).json(toAreaPublic(area));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -116,6 +132,13 @@ export class AreaController {
 
     try {
       const area = await prisma.area.delete({ where: { id } });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_DELETE,
+        targetType: "Area",
+        targetId: String(id),
+      });
       return res.status(200).json(toAreaPublic(area));
     } catch (error) {
       return handlePrismaError(res, error);

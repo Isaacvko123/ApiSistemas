@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
+import { Prisma, AuditAction } from "@prisma/client";
 import { prisma } from "../../db/prisma";
 import { env } from "../../config/env";
 import {
@@ -9,6 +9,7 @@ import {
   toWifiCredencialPublic,
   toWifiCredencialUpdateData,
 } from "../../models/WifiCredencial/WifiCredencialModel";
+import { auditEntity } from "../../seguridad/audit-helpers";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -82,7 +83,37 @@ export class WifiCredencialController {
       const row = await prisma.wifiCredencial.findUnique({ where: { id } });
       if (!row) return respondError(res, "credencial_no_encontrada");
 
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "WifiCredencial",
+        targetId: String(id),
+      });
+
       return res.status(200).json(toWifiCredencialPublic(row));
+    } catch (error) {
+      return handlePrismaError(res, error);
+    }
+  }
+
+  static async obtenerSecreto(req: Request, res: Response) {
+    const id = parseId(req.params.id);
+    if (!id) return respondError(res, "id_invalido");
+
+    try {
+      const row = await prisma.wifiCredencial.findUnique({ where: { id } });
+      if (!row) return respondError(res, "credencial_no_encontrada");
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ_SECRET,
+        targetType: "WifiCredencial",
+        targetId: String(id),
+      });
+
+      return res.status(200).json(toWifiCredencialPublic(row, true));
     } catch (error) {
       return handlePrismaError(res, error);
     }
@@ -97,6 +128,15 @@ export class WifiCredencialController {
     try {
       const data = toWifiCredencialCreateData(parsed.data);
       const row = await prisma.wifiCredencial.create({ data });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_CREATE,
+        targetType: "WifiCredencial",
+        targetId: String(row.id),
+      });
+
       return res.status(201).json(toWifiCredencialPublic(row));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -119,6 +159,16 @@ export class WifiCredencialController {
     try {
       const data = toWifiCredencialUpdateData(parsed.data);
       const row = await prisma.wifiCredencial.update({ where: { id }, data });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_UPDATE,
+        targetType: "WifiCredencial",
+        targetId: String(id),
+        metadata: { fields: Object.keys(parsed.data) },
+      });
+
       return res.status(200).json(toWifiCredencialPublic(row));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -134,6 +184,15 @@ export class WifiCredencialController {
         where: { id },
         data: { vigente: false },
       });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_DELETE,
+        targetType: "WifiCredencial",
+        targetId: String(id),
+      });
+
       return res.status(200).json(toWifiCredencialPublic(row));
     } catch (error) {
       return handlePrismaError(res, error);

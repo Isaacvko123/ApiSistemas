@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
+import { Prisma, AuditAction } from "@prisma/client";
 import { prisma } from "../../db/prisma";
 import { env } from "../../config/env";
 import {
@@ -9,6 +9,7 @@ import {
   toEmpleadoPublic,
   toEmpleadoUpdateData,
 } from "../../models/Empleado/EmpleadoModel";
+import { auditEntity } from "../../seguridad/audit-helpers";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -100,6 +101,13 @@ export class EmpleadoController {
     try {
       const data = toEmpleadoCreateData(parsed.data);
       const empleado = await prisma.empleado.create({ data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_CREATE,
+        targetType: "Empleado",
+        targetId: String(empleado.id),
+      });
       return res.status(201).json(toEmpleadoPublic(empleado));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -122,6 +130,14 @@ export class EmpleadoController {
     try {
       const data = toEmpleadoUpdateData(parsed.data);
       const empleado = await prisma.empleado.update({ where: { id }, data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_UPDATE,
+        targetType: "Empleado",
+        targetId: String(id),
+        metadata: { fields: Object.keys(parsed.data) },
+      });
       return res.status(200).json(toEmpleadoPublic(empleado));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -136,6 +152,13 @@ export class EmpleadoController {
       const empleado = await prisma.empleado.update({
         where: { id },
         data: { activo: false },
+      });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_DELETE,
+        targetType: "Empleado",
+        targetId: String(id),
       });
       return res.status(200).json(toEmpleadoPublic(empleado));
     } catch (error) {

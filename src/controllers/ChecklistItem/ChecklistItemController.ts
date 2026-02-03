@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
+import { Prisma, AuditAction } from "@prisma/client";
 import { prisma } from "../../db/prisma";
 import { env } from "../../config/env";
 import {
@@ -9,6 +9,7 @@ import {
   toChecklistItemPublic,
   toChecklistItemUpdateData,
 } from "../../models/ChecklistItem/ChecklistItemModel";
+import { auditEntity } from "../../seguridad/audit-helpers";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -89,6 +90,13 @@ export class ChecklistItemController {
     try {
       const data = toChecklistItemCreateData(parsed.data);
       const item = await prisma.checklistItem.create({ data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_CREATE,
+        targetType: "ChecklistItem",
+        targetId: String(item.id),
+      });
       return res.status(201).json(toChecklistItemPublic(item));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -111,6 +119,14 @@ export class ChecklistItemController {
     try {
       const data = toChecklistItemUpdateData(parsed.data);
       const item = await prisma.checklistItem.update({ where: { id }, data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_UPDATE,
+        targetType: "ChecklistItem",
+        targetId: String(id),
+        metadata: { fields: Object.keys(parsed.data) },
+      });
       return res.status(200).json(toChecklistItemPublic(item));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -123,6 +139,13 @@ export class ChecklistItemController {
 
     try {
       const item = await prisma.checklistItem.delete({ where: { id } });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_DELETE,
+        targetType: "ChecklistItem",
+        targetId: String(id),
+      });
       return res.status(200).json(toChecklistItemPublic(item));
     } catch (error) {
       return handlePrismaError(res, error);

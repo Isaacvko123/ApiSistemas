@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
+import { Prisma, AuditAction } from "@prisma/client";
 import { prisma } from "../../db/prisma";
 import { env } from "../../config/env";
 import {
@@ -9,6 +9,7 @@ import {
   toChecklistPublic,
   toChecklistUpdateData,
 } from "../../models/Checklist/ChecklistModel";
+import { auditEntity } from "../../seguridad/audit-helpers";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -91,6 +92,13 @@ export class ChecklistController {
     try {
       const data = toChecklistCreateData(parsed.data);
       const checklist = await prisma.checklist.create({ data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_CREATE,
+        targetType: "Checklist",
+        targetId: String(checklist.id),
+      });
       return res.status(201).json(toChecklistPublic(checklist));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -113,6 +121,14 @@ export class ChecklistController {
     try {
       const data = toChecklistUpdateData(parsed.data);
       const checklist = await prisma.checklist.update({ where: { id }, data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_UPDATE,
+        targetType: "Checklist",
+        targetId: String(id),
+        metadata: { fields: Object.keys(parsed.data) },
+      });
       return res.status(200).json(toChecklistPublic(checklist));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -125,6 +141,13 @@ export class ChecklistController {
 
     try {
       const checklist = await prisma.checklist.delete({ where: { id } });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_DELETE,
+        targetType: "Checklist",
+        targetId: String(id),
+      });
       return res.status(200).json(toChecklistPublic(checklist));
     } catch (error) {
       return handlePrismaError(res, error);

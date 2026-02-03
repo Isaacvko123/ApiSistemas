@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
+import { Prisma, AuditAction } from "@prisma/client";
 import { prisma } from "../../db/prisma";
 import { env } from "../../config/env";
 import {
@@ -9,6 +9,7 @@ import {
   toResguardoPublic,
   toResguardoUpdateData,
 } from "../../models/Resguardo/ResguardoModel";
+import { auditEntity } from "../../seguridad/audit-helpers";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -107,6 +108,14 @@ export class ResguardoController {
           : data,
       });
 
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_CREATE,
+        targetType: "Resguardo",
+        targetId: String(resguardo.id),
+      });
+
       return res.status(201).json(toResguardoPublic(resguardo));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -129,6 +138,14 @@ export class ResguardoController {
     try {
       const data = toResguardoUpdateData(parsed.data);
       const resguardo = await prisma.resguardo.update({ where: { id }, data });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_UPDATE,
+        targetType: "Resguardo",
+        targetId: String(id),
+        metadata: { fields: Object.keys(parsed.data) },
+      });
       return res.status(200).json(toResguardoPublic(resguardo));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -143,6 +160,13 @@ export class ResguardoController {
       const resguardo = await prisma.resguardo.update({
         where: { id },
         data: { estado: "CANCELADO" },
+      });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_DELETE,
+        targetType: "Resguardo",
+        targetId: String(id),
       });
       return res.status(200).json(toResguardoPublic(resguardo));
     } catch (error) {

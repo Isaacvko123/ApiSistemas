@@ -12,6 +12,18 @@ import { ensureBootstrapAdmin } from "../seguridad/bootstrap";
 import AdminRutas from "../routes/Admin/AdminRuta";
 import { startRotateCredentialsCron } from "../seguridad/rotate-credentials-cron";
 import CredencialWebRutas from "../routes/Credenciales/CredencialWebRuta";
+import AreaRutas from "../routes/Area/AreaRuta";
+import PuestoRutas from "../routes/Puesto/PuestoRuta";
+import LocalidadRutas from "../routes/Localidad/LocalidadRuta";
+import EmpleadoRutas from "../routes/Empleado/EmpleadoRuta";
+import ResguardoRutas from "../routes/Resguardo/ResguardoRuta";
+import ResguardoEquipoRutas from "../routes/ResguardoEquipo/ResguardoEquipoRuta";
+import DocumentoRutas from "../routes/Documento/DocumentoRuta";
+import ChecklistRutas from "../routes/Checklist/ChecklistRuta";
+import ChecklistItemRutas from "../routes/ChecklistItem/ChecklistItemRuta";
+import WifiCredencialRutas from "../routes/WifiCredencial/WifiCredencialRuta";
+import AuditLogRutas from "../routes/AuditLog/AuditLogRuta";
+import EquipoRutas from "../routes/Equipo/EquipoRuta";
 type RateEntry = {
   count: number;
   resetAt: number;
@@ -102,6 +114,18 @@ export function createApp(): Express {
   app.use("/auth", AuthRutas);
   app.use("/admin", AdminRutas);
   app.use("/credenciales", CredencialWebRutas);
+  app.use("/areas", AreaRutas);
+  app.use("/puestos", PuestoRutas);
+  app.use("/localidades", LocalidadRutas);
+  app.use("/empleados", EmpleadoRutas);
+  app.use("/resguardos", ResguardoRutas);
+  app.use("/resguardo-equipos", ResguardoEquipoRutas);
+  app.use("/equipos", EquipoRutas);
+  app.use("/documentos", DocumentoRutas);
+  app.use("/checklists", ChecklistRutas);
+  app.use("/checklist-items", ChecklistItemRutas);
+  app.use("/wifi-credenciales", WifiCredencialRutas);
+  app.use("/audit-logs", AuditLogRutas);
   return app;
 }
 

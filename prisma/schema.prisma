@@ -60,6 +60,11 @@ enum AuditAction {
   CREDENCIAL_DELETE
   CREDENCIAL_READ
   CREDENCIAL_READ_SECRET
+  ENTITY_CREATE
+  ENTITY_UPDATE
+  ENTITY_DELETE
+  ENTITY_READ
+  ENTITY_READ_SECRET
 }
 
 model Area {
@@ -394,6 +399,9 @@ model WifiCredencial {
   ssid        String
   usuario     String
   passwordEnc String
+  passwordIv  String
+  passwordTag String?
+  passwordKeyVersion Int @default(1)
   notas       String?
   vigente     Boolean @default(true)
 

@@ -28,6 +28,9 @@ const EnvSchema = z.object({
   ROTATE_CREDENTIALS_CRON: z.string().default("0 3 * * *"),
   ROTATE_CREDENTIALS_TZ: z.string().optional(),
 
+  UPLOAD_DIR: z.string().default("uploads"),
+  UPLOAD_MAX_SIZE_MB: z.coerce.number().int().positive().default(10),
+
   BOOTSTRAP_ADMIN_ENABLED: z.coerce.boolean().default(true),
   BOOTSTRAP_ADMIN_NAME: z.string().min(1).optional(),
   BOOTSTRAP_ADMIN_EMAIL: z.string().email().optional(),
@@ -91,6 +94,9 @@ export const env = {
   rotateCredentialsEnabled: parsed.data.ROTATE_CREDENTIALS_ENABLED,
   rotateCredentialsCron: parsed.data.ROTATE_CREDENTIALS_CRON,
   rotateCredentialsTz: parsed.data.ROTATE_CREDENTIALS_TZ,
+
+  uploadDir: parsed.data.UPLOAD_DIR,
+  uploadMaxSizeMb: parsed.data.UPLOAD_MAX_SIZE_MB,
 
   bootstrapAdminEnabled: parsed.data.BOOTSTRAP_ADMIN_ENABLED,
   bootstrapAdminName: parsed.data.BOOTSTRAP_ADMIN_NAME,
