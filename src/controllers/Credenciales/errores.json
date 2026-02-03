@@ -1,0 +1,100 @@
+{
+  "payload_invalido": {
+    "status": 400,
+    "code": "CRW-001",
+    "title": "Payload invalido",
+    "summary": "El body no cumple con el esquema requerido.",
+    "source": "body",
+    "reason": "Faltan campos obligatorios o el tipo/longitud es incorrecto.",
+    "solution": "Envia los campos obligatorios con los tipos correctos.",
+    "requiredFields": ["nombre", "url", "usuario", "password"],
+    "optionalFields": ["notas", "activo", "empleadoId", "areaId", "puestoId"],
+    "constraints": {
+      "nombre": "string 2-200",
+      "url": "url valida",
+      "usuario": "string 1-200",
+      "password": "string > 0",
+      "notas": "string <= 2000",
+      "activo": "boolean",
+      "empleadoId": "number int > 0",
+      "areaId": "number int > 0",
+      "puestoId": "number int > 0"
+    },
+    "example": {
+      "nombre": "Microsoft 365",
+      "url": "https://portal.office.com",
+      "usuario": "usuario@empresa.com",
+      "password": "MiPasswordSegura123",
+      "areaId": 1
+    }
+  },
+  "id_invalido": {
+    "status": 400,
+    "code": "CRW-002",
+    "title": "ID invalido",
+    "summary": "El parametro de ruta no es valido.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no es numerico.",
+    "solution": "Envia un id numerico en la ruta.",
+    "expected": "number"
+  },
+  "credencial_no_encontrada": {
+    "status": 404,
+    "code": "CRW-003",
+    "title": "Credencial no encontrada",
+    "summary": "No existe una credencial con ese id.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no existe en base de datos.",
+    "solution": "Verifica el id antes de consultar."
+  },
+  "duplicado": {
+    "status": 409,
+    "code": "CRW-004",
+    "title": "Registro duplicado",
+    "summary": "Ya existe un registro con el mismo valor unico.",
+    "source": "body",
+    "reason": "Violacion de indice unico.",
+    "solution": "Usa valores diferentes en campos unicos.",
+    "uniqueFields": ["nombre", "url", "usuario"]
+  },
+  "sin_cambios": {
+    "status": 400,
+    "code": "CRW-005",
+    "title": "Sin cambios",
+    "summary": "No se enviaron campos para actualizar.",
+    "source": "body",
+    "reason": "El body esta vacio o solo contiene campos invalidos.",
+    "solution": "Envia al menos un campo valido.",
+    "updatableFields": [
+      "nombre",
+      "url",
+      "usuario",
+      "password",
+      "notas",
+      "activo",
+      "empleadoId",
+      "areaId",
+      "puestoId"
+    ]
+  },
+  "relacion_invalida": {
+    "status": 409,
+    "code": "CRW-006",
+    "title": "Relacion invalida",
+    "summary": "El empleado/area/puesto indicado no existe.",
+    "source": "server",
+    "reason": "Restriccion de llave foranea.",
+    "solution": "Verifica los ids relacionados antes de guardar."
+  },
+  "error_interno": {
+    "status": 500,
+    "code": "CRW-500",
+    "title": "Error interno",
+    "summary": "Ocurrio un error inesperado en el servidor.",
+    "source": "server",
+    "reason": "Excepcion no controlada.",
+    "solution": "Intenta mas tarde o revisa los logs del servidor."
+  }
+}

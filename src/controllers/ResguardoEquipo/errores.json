@@ -1,0 +1,93 @@
+{
+  "payload_invalido": {
+    "status": 400,
+    "code": "REQ-001",
+    "title": "Payload invalido",
+    "summary": "El body no cumple con el esquema requerido.",
+    "source": "body",
+    "reason": "Faltan campos obligatorios o el tipo/longitud es incorrecto.",
+    "solution": "Envia los campos obligatorios con los tipos correctos.",
+    "requiredFields": ["resguardoId", "equipoId", "fechaEntrega"],
+    "optionalFields": ["fechaDevolucion", "observaciones", "entregadoPorId", "recibidoPorId"],
+    "constraints": {
+      "resguardoId": "number int > 0",
+      "equipoId": "number int > 0",
+      "fechaEntrega": "date",
+      "fechaDevolucion": "date",
+      "observaciones": "string <= 2000",
+      "entregadoPorId": "number int > 0",
+      "recibidoPorId": "number int > 0"
+    },
+    "example": {
+      "resguardoId": 5,
+      "equipoId": 12,
+      "fechaEntrega": "2026-02-01",
+      "observaciones": "Equipo en buen estado"
+    }
+  },
+  "id_invalido": {
+    "status": 400,
+    "code": "REQ-002",
+    "title": "ID invalido",
+    "summary": "El parametro de ruta no es valido.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no es numerico.",
+    "solution": "Envia un id numerico en la ruta.",
+    "expected": "number"
+  },
+  "resguardo_equipo_no_encontrado": {
+    "status": 404,
+    "code": "REQ-003",
+    "title": "Resguardo-equipo no encontrado",
+    "summary": "No existe un registro con ese id.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no existe en base de datos.",
+    "solution": "Verifica el id antes de consultar."
+  },
+  "duplicado": {
+    "status": 409,
+    "code": "REQ-004",
+    "title": "Registro duplicado",
+    "summary": "Ya existe el equipo asociado al resguardo.",
+    "source": "body",
+    "reason": "Violacion de indice unico.",
+    "solution": "Usa un equipo distinto o un resguardo diferente.",
+    "uniqueFields": ["resguardoId", "equipoId"]
+  },
+  "sin_cambios": {
+    "status": 400,
+    "code": "REQ-005",
+    "title": "Sin cambios",
+    "summary": "No se enviaron campos para actualizar.",
+    "source": "body",
+    "reason": "El body esta vacio o solo contiene campos invalidos.",
+    "solution": "Envia al menos un campo valido.",
+    "updatableFields": [
+      "fechaEntrega",
+      "fechaDevolucion",
+      "observaciones",
+      "entregadoPorId",
+      "recibidoPorId"
+    ]
+  },
+  "relacion_invalida": {
+    "status": 409,
+    "code": "REQ-006",
+    "title": "Relacion invalida",
+    "summary": "El resguardo, equipo o usuario indicado no existe.",
+    "source": "server",
+    "reason": "Restriccion de llave foranea.",
+    "solution": "Verifica los ids relacionados antes de guardar."
+  },
+  "error_interno": {
+    "status": 500,
+    "code": "REQ-500",
+    "title": "Error interno",
+    "summary": "Ocurrio un error inesperado en el servidor.",
+    "source": "server",
+    "reason": "Excepcion no controlada.",
+    "solution": "Intenta mas tarde o revisa los logs del servidor."
+  }
+}

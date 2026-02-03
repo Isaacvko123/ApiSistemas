@@ -1,0 +1,93 @@
+{
+  "payload_invalido": {
+    "status": 400,
+    "code": "DOC-001",
+    "title": "Payload invalido",
+    "summary": "El body no cumple con el esquema requerido.",
+    "source": "body",
+    "reason": "Faltan campos obligatorios o el tipo/longitud es incorrecto.",
+    "solution": "Envia los campos obligatorios con los tipos correctos.",
+    "requiredFields": ["tipo", "ruta"],
+    "requiredOneOf": ["equipoId", "resguardoId", "resguardoEquipoId"],
+    "optionalFields": ["nombreArchivo", "mime", "sizeBytes", "checksum", "subidoPorId"],
+    "constraints": {
+      "tipo": "RESGUARDO | FOTO | FACTURA | GARANTIA | OTRO",
+      "ruta": "string > 0",
+      "nombreArchivo": "string <= 255",
+      "mime": "string <= 150",
+      "sizeBytes": "number int > 0",
+      "checksum": "string <= 200",
+      "equipoId": "number int > 0",
+      "resguardoId": "number int > 0",
+      "resguardoEquipoId": "number int > 0",
+      "subidoPorId": "number int > 0"
+    },
+    "example": {
+      "tipo": "RESGUARDO",
+      "ruta": "/uploads/resguardos/folio-1.pdf",
+      "resguardoId": 10,
+      "nombreArchivo": "resguardo.pdf",
+      "mime": "application/pdf"
+    }
+  },
+  "id_invalido": {
+    "status": 400,
+    "code": "DOC-002",
+    "title": "ID invalido",
+    "summary": "El parametro de ruta no es valido.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no es numerico.",
+    "solution": "Envia un id numerico en la ruta.",
+    "expected": "number"
+  },
+  "documento_no_encontrado": {
+    "status": 404,
+    "code": "DOC-003",
+    "title": "Documento no encontrado",
+    "summary": "No existe un documento con ese id.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no existe en base de datos.",
+    "solution": "Verifica el id antes de consultar."
+  },
+  "sin_cambios": {
+    "status": 400,
+    "code": "DOC-004",
+    "title": "Sin cambios",
+    "summary": "No se enviaron campos para actualizar.",
+    "source": "body",
+    "reason": "El body esta vacio o solo contiene campos invalidos.",
+    "solution": "Envia al menos un campo valido.",
+    "updatableFields": [
+      "tipo",
+      "ruta",
+      "nombreArchivo",
+      "mime",
+      "sizeBytes",
+      "checksum",
+      "equipoId",
+      "resguardoId",
+      "resguardoEquipoId",
+      "subidoPorId"
+    ]
+  },
+  "relacion_invalida": {
+    "status": 409,
+    "code": "DOC-005",
+    "title": "Relacion invalida",
+    "summary": "El equipo/resguardo indicado no existe.",
+    "source": "server",
+    "reason": "Restriccion de llave foranea.",
+    "solution": "Verifica los ids relacionados antes de guardar."
+  },
+  "error_interno": {
+    "status": 500,
+    "code": "DOC-500",
+    "title": "Error interno",
+    "summary": "Ocurrio un error inesperado en el servidor.",
+    "source": "server",
+    "reason": "Excepcion no controlada.",
+    "solution": "Intenta mas tarde o revisa los logs del servidor."
+  }
+}

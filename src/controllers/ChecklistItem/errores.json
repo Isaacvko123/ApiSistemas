@@ -1,0 +1,76 @@
+{
+  "payload_invalido": {
+    "status": 400,
+    "code": "CHI-001",
+    "title": "Payload invalido",
+    "summary": "El body no cumple con el esquema requerido.",
+    "source": "body",
+    "reason": "Faltan campos obligatorios o el tipo/longitud es incorrecto.",
+    "solution": "Envia los campos obligatorios con los tipos correctos.",
+    "requiredFields": ["checklistId", "descripcion"],
+    "optionalFields": ["tipoEquipo", "cantidad", "obligatorio"],
+    "constraints": {
+      "checklistId": "number int > 0",
+      "descripcion": "string 2-300",
+      "tipoEquipo": "LAPTOP | DESKTOP | TABLET | CELULAR | MONITOR | IMPRESORA | ROUTER | SWITCH | OTRO",
+      "cantidad": "number int > 0",
+      "obligatorio": "boolean"
+    },
+    "example": {
+      "checklistId": 3,
+      "descripcion": "Laptop asignada",
+      "tipoEquipo": "LAPTOP",
+      "cantidad": 1,
+      "obligatorio": true
+    }
+  },
+  "id_invalido": {
+    "status": 400,
+    "code": "CHI-002",
+    "title": "ID invalido",
+    "summary": "El parametro de ruta no es valido.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no es numerico.",
+    "solution": "Envia un id numerico en la ruta.",
+    "expected": "number"
+  },
+  "item_no_encontrado": {
+    "status": 404,
+    "code": "CHI-003",
+    "title": "Item no encontrado",
+    "summary": "No existe un item con ese id.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no existe en base de datos.",
+    "solution": "Verifica el id antes de consultar."
+  },
+  "sin_cambios": {
+    "status": 400,
+    "code": "CHI-004",
+    "title": "Sin cambios",
+    "summary": "No se enviaron campos para actualizar.",
+    "source": "body",
+    "reason": "El body esta vacio o solo contiene campos invalidos.",
+    "solution": "Envia al menos un campo valido.",
+    "updatableFields": ["descripcion", "tipoEquipo", "cantidad", "obligatorio", "checklistId"]
+  },
+  "relacion_invalida": {
+    "status": 409,
+    "code": "CHI-005",
+    "title": "Relacion invalida",
+    "summary": "El checklist indicado no existe.",
+    "source": "server",
+    "reason": "Restriccion de llave foranea.",
+    "solution": "Verifica el id del checklist antes de guardar."
+  },
+  "error_interno": {
+    "status": 500,
+    "code": "CHI-500",
+    "title": "Error interno",
+    "summary": "Ocurrio un error inesperado en el servidor.",
+    "source": "server",
+    "reason": "Excepcion no controlada.",
+    "solution": "Intenta mas tarde o revisa los logs del servidor."
+  }
+}

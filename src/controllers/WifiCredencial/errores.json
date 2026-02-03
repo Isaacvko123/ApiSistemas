@@ -1,0 +1,85 @@
+{
+  "payload_invalido": {
+    "status": 400,
+    "code": "WIF-001",
+    "title": "Payload invalido",
+    "summary": "El body no cumple con el esquema requerido.",
+    "source": "body",
+    "reason": "Faltan campos obligatorios o el tipo/longitud es incorrecto.",
+    "solution": "Envia los campos obligatorios con los tipos correctos.",
+    "requiredFields": ["ssid", "usuario", "passwordEnc"],
+    "optionalFields": ["notas", "vigente", "empleadoId", "localidadId"],
+    "constraints": {
+      "ssid": "string 1-200",
+      "usuario": "string 1-200",
+      "passwordEnc": "string > 0",
+      "notas": "string <= 2000",
+      "vigente": "boolean",
+      "empleadoId": "number int > 0",
+      "localidadId": "number int > 0"
+    },
+    "example": {
+      "ssid": "CORP-WIFI",
+      "usuario": "corp-user",
+      "passwordEnc": "base64",
+      "localidadId": 1
+    }
+  },
+  "id_invalido": {
+    "status": 400,
+    "code": "WIF-002",
+    "title": "ID invalido",
+    "summary": "El parametro de ruta no es valido.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no es numerico.",
+    "solution": "Envia un id numerico en la ruta.",
+    "expected": "number"
+  },
+  "credencial_no_encontrada": {
+    "status": 404,
+    "code": "WIF-003",
+    "title": "Credencial no encontrada",
+    "summary": "No existe una credencial con ese id.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no existe en base de datos.",
+    "solution": "Verifica el id antes de consultar."
+  },
+  "sin_cambios": {
+    "status": 400,
+    "code": "WIF-004",
+    "title": "Sin cambios",
+    "summary": "No se enviaron campos para actualizar.",
+    "source": "body",
+    "reason": "El body esta vacio o solo contiene campos invalidos.",
+    "solution": "Envia al menos un campo valido.",
+    "updatableFields": [
+      "ssid",
+      "usuario",
+      "passwordEnc",
+      "notas",
+      "vigente",
+      "empleadoId",
+      "localidadId"
+    ]
+  },
+  "relacion_invalida": {
+    "status": 409,
+    "code": "WIF-005",
+    "title": "Relacion invalida",
+    "summary": "El empleado o localidad indicado no existe.",
+    "source": "server",
+    "reason": "Restriccion de llave foranea.",
+    "solution": "Verifica los ids relacionados antes de guardar."
+  },
+  "error_interno": {
+    "status": 500,
+    "code": "WIF-500",
+    "title": "Error interno",
+    "summary": "Ocurrio un error inesperado en el servidor.",
+    "source": "server",
+    "reason": "Excepcion no controlada.",
+    "solution": "Intenta mas tarde o revisa los logs del servidor."
+  }
+}

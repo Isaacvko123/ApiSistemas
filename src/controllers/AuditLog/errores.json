@@ -1,0 +1,42 @@
+{
+  "filtro_invalido": {
+    "status": 400,
+    "code": "AUD-001",
+    "title": "Filtro invalido",
+    "summary": "Los parametros de consulta no son validos.",
+    "source": "query",
+    "reason": "Formato o tipo incorrecto.",
+    "solution": "Revisa los parametros action, actorId, targetType, targetId, dateFrom, dateTo.",
+    "allowed": ["action", "actorId", "targetType", "targetId", "dateFrom", "dateTo"]
+  },
+  "id_invalido": {
+    "status": 400,
+    "code": "AUD-002",
+    "title": "ID invalido",
+    "summary": "El parametro de ruta no es valido.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no es numerico.",
+    "solution": "Envia un id numerico en la ruta.",
+    "expected": "number"
+  },
+  "audit_no_encontrado": {
+    "status": 404,
+    "code": "AUD-003",
+    "title": "Registro no encontrado",
+    "summary": "No existe un log con ese id.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no existe en base de datos.",
+    "solution": "Verifica el id antes de consultar."
+  },
+  "error_interno": {
+    "status": 500,
+    "code": "AUD-500",
+    "title": "Error interno",
+    "summary": "Ocurrio un error inesperado en el servidor.",
+    "source": "server",
+    "reason": "Excepcion no controlada.",
+    "solution": "Intenta mas tarde o revisa los logs del servidor."
+  }
+}

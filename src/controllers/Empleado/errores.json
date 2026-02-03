@@ -1,0 +1,110 @@
+{
+  "payload_invalido": {
+    "status": 400,
+    "code": "EMP-001",
+    "title": "Payload invalido",
+    "summary": "El body no cumple con el esquema requerido.",
+    "source": "body",
+    "reason": "Faltan campos obligatorios o el tipo/longitud es incorrecto.",
+    "solution": "Envia los campos obligatorios con los tipos correctos.",
+    "requiredFields": ["nombre"],
+    "optionalFields": [
+      "email",
+      "numeroEmpleado",
+      "telefono",
+      "areaId",
+      "puestoId",
+      "localidadId",
+      "usuarioId",
+      "activo"
+    ],
+    "constraints": {
+      "nombre": "string 2-150",
+      "email": "email valido",
+      "numeroEmpleado": "string 1-50",
+      "telefono": "string 5-30",
+      "areaId": "number int > 0",
+      "puestoId": "number int > 0",
+      "localidadId": "number int > 0",
+      "usuarioId": "number int > 0",
+      "activo": "boolean"
+    },
+    "example": {
+      "nombre": "Juan Perez",
+      "email": "juan@empresa.com",
+      "numeroEmpleado": "EMP-100",
+      "areaId": 1,
+      "puestoId": 2,
+      "localidadId": 3
+    }
+  },
+  "id_invalido": {
+    "status": 400,
+    "code": "EMP-002",
+    "title": "ID invalido",
+    "summary": "El parametro de ruta no es valido.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no es numerico.",
+    "solution": "Envia un id numerico en la ruta.",
+    "expected": "number"
+  },
+  "empleado_no_encontrado": {
+    "status": 404,
+    "code": "EMP-003",
+    "title": "Empleado no encontrado",
+    "summary": "No existe un empleado con ese id.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no existe en base de datos.",
+    "solution": "Verifica el id antes de consultar."
+  },
+  "duplicado": {
+    "status": 409,
+    "code": "EMP-004",
+    "title": "Registro duplicado",
+    "summary": "Ya existe un empleado con el mismo email, numero o usuario.",
+    "source": "body",
+    "reason": "Violacion de indice unico.",
+    "solution": "Usa un email/numero/usuario diferente.",
+    "uniqueFields": ["email", "numeroEmpleado", "usuarioId"]
+  },
+  "sin_cambios": {
+    "status": 400,
+    "code": "EMP-005",
+    "title": "Sin cambios",
+    "summary": "No se enviaron campos para actualizar.",
+    "source": "body",
+    "reason": "El body esta vacio o solo contiene campos invalidos.",
+    "solution": "Envia al menos un campo valido.",
+    "updatableFields": [
+      "nombre",
+      "email",
+      "numeroEmpleado",
+      "telefono",
+      "areaId",
+      "puestoId",
+      "localidadId",
+      "usuarioId",
+      "activo"
+    ]
+  },
+  "relacion_invalida": {
+    "status": 409,
+    "code": "EMP-006",
+    "title": "Relacion invalida",
+    "summary": "El area, puesto, localidad o usuario indicado no existe.",
+    "source": "server",
+    "reason": "Restriccion de llave foranea.",
+    "solution": "Verifica los ids relacionados antes de guardar."
+  },
+  "error_interno": {
+    "status": 500,
+    "code": "EMP-500",
+    "title": "Error interno",
+    "summary": "Ocurrio un error inesperado en el servidor.",
+    "source": "server",
+    "reason": "Excepcion no controlada.",
+    "solution": "Intenta mas tarde o revisa los logs del servidor."
+  }
+}

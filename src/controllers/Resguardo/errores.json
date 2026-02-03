@@ -1,0 +1,96 @@
+{
+  "payload_invalido": {
+    "status": 400,
+    "code": "RES-001",
+    "title": "Payload invalido",
+    "summary": "El body no cumple con el esquema requerido.",
+    "source": "body",
+    "reason": "Faltan campos obligatorios o el tipo/longitud es incorrecto.",
+    "solution": "Envia los campos obligatorios con los tipos correctos.",
+    "requiredFields": ["empleadoId", "fechaInicio"],
+    "optionalFields": ["localidadId", "fechaFin", "estado", "observaciones", "folio"],
+    "constraints": {
+      "empleadoId": "number int > 0",
+      "localidadId": "number int > 0",
+      "fechaInicio": "date",
+      "fechaFin": "date",
+      "estado": "ACTIVO | FINALIZADO | CANCELADO",
+      "observaciones": "string <= 2000",
+      "folio": "string <= 100"
+    },
+    "example": {
+      "empleadoId": 10,
+      "localidadId": 2,
+      "fechaInicio": "2026-02-01",
+      "observaciones": "Entrega inicial",
+      "folio": "RES-0001"
+    }
+  },
+  "id_invalido": {
+    "status": 400,
+    "code": "RES-002",
+    "title": "ID invalido",
+    "summary": "El parametro de ruta no es valido.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no es numerico.",
+    "solution": "Envia un id numerico en la ruta.",
+    "expected": "number"
+  },
+  "resguardo_no_encontrado": {
+    "status": 404,
+    "code": "RES-003",
+    "title": "Resguardo no encontrado",
+    "summary": "No existe un resguardo con ese id.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no existe en base de datos.",
+    "solution": "Verifica el id antes de consultar."
+  },
+  "duplicado": {
+    "status": 409,
+    "code": "RES-004",
+    "title": "Registro duplicado",
+    "summary": "Ya existe un resguardo con el mismo folio.",
+    "source": "body",
+    "reason": "Violacion de indice unico.",
+    "solution": "Usa un folio diferente.",
+    "uniqueFields": ["folio"]
+  },
+  "sin_cambios": {
+    "status": 400,
+    "code": "RES-005",
+    "title": "Sin cambios",
+    "summary": "No se enviaron campos para actualizar.",
+    "source": "body",
+    "reason": "El body esta vacio o solo contiene campos invalidos.",
+    "solution": "Envia al menos un campo valido.",
+    "updatableFields": [
+      "empleadoId",
+      "localidadId",
+      "fechaInicio",
+      "fechaFin",
+      "estado",
+      "observaciones",
+      "folio"
+    ]
+  },
+  "relacion_invalida": {
+    "status": 409,
+    "code": "RES-006",
+    "title": "Relacion invalida",
+    "summary": "El empleado/localidad indicado no existe.",
+    "source": "server",
+    "reason": "Restriccion de llave foranea.",
+    "solution": "Verifica los ids relacionados antes de guardar."
+  },
+  "error_interno": {
+    "status": 500,
+    "code": "RES-500",
+    "title": "Error interno",
+    "summary": "Ocurrio un error inesperado en el servidor.",
+    "source": "server",
+    "reason": "Excepcion no controlada.",
+    "solution": "Intenta mas tarde o revisa los logs del servidor."
+  }
+}

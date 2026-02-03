@@ -1,0 +1,80 @@
+{
+  "payload_invalido": {
+    "status": 400,
+    "code": "LOC-001",
+    "title": "Payload invalido",
+    "summary": "El body no cumple con el esquema requerido.",
+    "source": "body",
+    "reason": "Faltan campos obligatorios o el tipo/longitud es incorrecto.",
+    "solution": "Envia los campos obligatorios con los tipos correctos.",
+    "requiredFields": ["nombre", "estado"],
+    "optionalFields": ["codigo", "ciudad", "direccion", "cp", "notas"],
+    "constraints": {
+      "codigo": "string 1-50",
+      "nombre": "string 2-150",
+      "estado": "string 2-100",
+      "ciudad": "string 2-120",
+      "direccion": "string 2-250",
+      "cp": "string 3-20",
+      "notas": "string <= 2000"
+    },
+    "example": {
+      "codigo": "GDL-01",
+      "nombre": "Guadalajara",
+      "estado": "Jalisco",
+      "ciudad": "Guadalajara",
+      "direccion": "Av. Central 123",
+      "cp": "44100"
+    }
+  },
+  "id_invalido": {
+    "status": 400,
+    "code": "LOC-002",
+    "title": "ID invalido",
+    "summary": "El parametro de ruta no es valido.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no es numerico.",
+    "solution": "Envia un id numerico en la ruta.",
+    "expected": "number"
+  },
+  "localidad_no_encontrada": {
+    "status": 404,
+    "code": "LOC-003",
+    "title": "Localidad no encontrada",
+    "summary": "No existe una localidad con ese id.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no existe en base de datos.",
+    "solution": "Verifica el id antes de consultar."
+  },
+  "duplicado": {
+    "status": 409,
+    "code": "LOC-004",
+    "title": "Registro duplicado",
+    "summary": "Ya existe una localidad con el mismo codigo.",
+    "source": "body",
+    "reason": "Violacion de indice unico.",
+    "solution": "Usa un codigo diferente.",
+    "uniqueFields": ["codigo"]
+  },
+  "sin_cambios": {
+    "status": 400,
+    "code": "LOC-005",
+    "title": "Sin cambios",
+    "summary": "No se enviaron campos para actualizar.",
+    "source": "body",
+    "reason": "El body esta vacio o solo contiene campos invalidos.",
+    "solution": "Envia al menos un campo valido.",
+    "updatableFields": ["codigo", "nombre", "estado", "ciudad", "direccion", "cp", "notas"]
+  },
+  "error_interno": {
+    "status": 500,
+    "code": "LOC-500",
+    "title": "Error interno",
+    "summary": "Ocurrio un error inesperado en el servidor.",
+    "source": "server",
+    "reason": "Excepcion no controlada.",
+    "solution": "Intenta mas tarde o revisa los logs del servidor."
+  }
+}
