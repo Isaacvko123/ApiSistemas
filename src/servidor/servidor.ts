@@ -24,6 +24,7 @@ import ChecklistItemRutas from "../routes/ChecklistItem/ChecklistItemRuta";
 import WifiCredencialRutas from "../routes/WifiCredencial/WifiCredencialRuta";
 import AuditLogRutas from "../routes/AuditLog/AuditLogRuta";
 import EquipoRutas from "../routes/Equipo/EquipoRuta";
+import { setupDocs } from "./docs";
 type RateEntry = {
   count: number;
   resetAt: number;
@@ -101,6 +102,10 @@ export function createApp(): Express {
 
   if (env.nodeEnv !== "production") {
     app.use(morgan("dev"));
+  }
+
+  if (env.nodeEnv !== "production") {
+    setupDocs(app);
   }
 
   app.use(authGlobal);

@@ -1,0 +1,1756 @@
+openapi: 3.0.3
+info:
+  title: ApiSistemas
+  version: 1.0.0
+  description: |
+    API para gestion de equipos de computo, resguardos, empleados, localidades y credenciales.
+    Autenticacion JWT, RBAC por roles, auditoria, cifrado AES-GCM y carga de documentos.
+servers:
+  - url: http://localhost:6000
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Health
+  - name: Auth
+  - name: Usuarios
+  - name: Areas
+  - name: Puestos
+  - name: Localidades
+  - name: Empleados
+  - name: Equipos
+  - name: Resguardos
+  - name: ResguardoEquipos
+  - name: Documentos
+  - name: Checklists
+  - name: ChecklistItems
+  - name: CredencialesWeb
+  - name: WifiCredenciales
+  - name: AuditLogs
+  - name: Admin
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      security: []
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Tokens y usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Payload invalido
+        '401':
+          description: Credenciales invalidas
+        '403':
+          description: Usuario inactivo
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Refresh tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: Tokens nuevos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          description: Payload invalido
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout (revoca la sesion actual)
+      responses:
+        '204':
+          description: OK
+        '401':
+          description: No autorizado
+
+  /auth/logout-all:
+    post:
+      tags: [Auth]
+      summary: Logout en todas las sesiones
+      responses:
+        '204':
+          description: OK
+        '401':
+          description: No autorizado
+
+  /usuarios:
+    get:
+      tags: [Usuarios]
+      summary: Lista usuarios
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsuarioPublic'
+        '401':
+          description: No autorizado
+    post:
+      tags: [Usuarios]
+      summary: Crea usuario
+      description: |
+        Requiere rol ADMIN/GERENTE. Se permite sin token solo si no existe ningun usuario (bootstrap).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioCreate'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioPublic'
+        '400':
+          description: Payload invalido
+        '409':
+          description: Duplicado
+
+  /usuarios/{id}:
+    get:
+      tags: [Usuarios]
+      summary: Obtiene usuario
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioPublic'
+        '404':
+          description: No encontrado
+    patch:
+      tags: [Usuarios]
+      summary: Actualiza usuario
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioPublic'
+        '400':
+          description: Payload invalido
+        '409':
+          description: Duplicado
+    delete:
+      tags: [Usuarios]
+      summary: Desactiva usuario
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioPublic'
+
+  /areas:
+    get:
+      tags: [Areas]
+      summary: Lista areas
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Area'
+        '401':
+          description: No autorizado
+    post:
+      tags: [Areas]
+      summary: Crea area (ADMIN/GERENTE)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AreaCreate'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Area'
+        '409':
+          description: Duplicado
+
+  /areas/{id}:
+    get:
+      tags: [Areas]
+      summary: Obtiene area
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Area'
+        '404':
+          description: No encontrado
+    patch:
+      tags: [Areas]
+      summary: Actualiza area (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AreaUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Area'
+    delete:
+      tags: [Areas]
+      summary: Elimina area (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Area'
+
+  /puestos:
+    get:
+      tags: [Puestos]
+      summary: Lista puestos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Puesto'
+    post:
+      tags: [Puestos]
+      summary: Crea puesto (ADMIN/GERENTE)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PuestoCreate'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Puesto'
+
+  /puestos/{id}:
+    get:
+      tags: [Puestos]
+      summary: Obtiene puesto
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Puesto'
+        '404':
+          description: No encontrado
+    patch:
+      tags: [Puestos]
+      summary: Actualiza puesto (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PuestoUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Puesto'
+    delete:
+      tags: [Puestos]
+      summary: Elimina puesto (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Puesto'
+
+  /localidades:
+    get:
+      tags: [Localidades]
+      summary: Lista localidades
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Localidad'
+    post:
+      tags: [Localidades]
+      summary: Crea localidad (ADMIN/GERENTE)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocalidadCreate'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Localidad'
+
+  /localidades/{id}:
+    get:
+      tags: [Localidades]
+      summary: Obtiene localidad
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Localidad'
+    patch:
+      tags: [Localidades]
+      summary: Actualiza localidad (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocalidadUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Localidad'
+    delete:
+      tags: [Localidades]
+      summary: Elimina localidad (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Localidad'
+
+  /empleados:
+    get:
+      tags: [Empleados]
+      summary: Lista empleados
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Empleado'
+    post:
+      tags: [Empleados]
+      summary: Crea empleado (ADMIN/GERENTE)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpleadoCreate'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empleado'
+
+  /empleados/{id}:
+    get:
+      tags: [Empleados]
+      summary: Obtiene empleado
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empleado'
+    patch:
+      tags: [Empleados]
+      summary: Actualiza empleado (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpleadoUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empleado'
+    delete:
+      tags: [Empleados]
+      summary: Desactiva empleado (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empleado'
+
+  /equipos:
+    get:
+      tags: [Equipos]
+      summary: Lista equipos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Equipo'
+    post:
+      tags: [Equipos]
+      summary: Crea equipo (ADMIN/GERENTE)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EquipoCreate'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Equipo'
+
+  /equipos/{id}:
+    get:
+      tags: [Equipos]
+      summary: Obtiene equipo
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Equipo'
+    patch:
+      tags: [Equipos]
+      summary: Actualiza equipo (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EquipoUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Equipo'
+    delete:
+      tags: [Equipos]
+      summary: Elimina equipo (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Equipo'
+
+  /resguardos:
+    get:
+      tags: [Resguardos]
+      summary: Lista resguardos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Resguardo'
+    post:
+      tags: [Resguardos]
+      summary: Crea resguardo (ADMIN/GERENTE)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResguardoCreate'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resguardo'
+
+  /resguardos/{id}:
+    get:
+      tags: [Resguardos]
+      summary: Obtiene resguardo
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resguardo'
+    patch:
+      tags: [Resguardos]
+      summary: Actualiza resguardo (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResguardoUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resguardo'
+    delete:
+      tags: [Resguardos]
+      summary: Cancela resguardo (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resguardo'
+
+  /resguardo-equipos:
+    get:
+      tags: [ResguardoEquipos]
+      summary: Lista resguardo-equipos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResguardoEquipo'
+    post:
+      tags: [ResguardoEquipos]
+      summary: Crea resguardo-equipo (ADMIN/GERENTE)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResguardoEquipoCreate'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResguardoEquipo'
+
+  /resguardo-equipos/{id}:
+    get:
+      tags: [ResguardoEquipos]
+      summary: Obtiene resguardo-equipo
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResguardoEquipo'
+    patch:
+      tags: [ResguardoEquipos]
+      summary: Actualiza resguardo-equipo (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResguardoEquipoUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResguardoEquipo'
+    delete:
+      tags: [ResguardoEquipos]
+      summary: Elimina resguardo-equipo (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResguardoEquipo'
+
+  /documentos:
+    get:
+      tags: [Documentos]
+      summary: Lista documentos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Documento'
+    post:
+      tags: [Documentos]
+      summary: Crea documento (sin upload)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentoCreate'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Documento'
+
+  /documentos/{id}:
+    get:
+      tags: [Documentos]
+      summary: Obtiene documento
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Documento'
+    patch:
+      tags: [Documentos]
+      summary: Actualiza documento (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentoUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Documento'
+    delete:
+      tags: [Documentos]
+      summary: Elimina documento (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Documento'
+
+  /documentos/upload:
+    post:
+      tags: [Documentos]
+      summary: Upload de documento (multipart)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DocumentoUpload'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Documento'
+        '400':
+          description: Archivo invalido
+        '401':
+          description: No autorizado
+
+  /checklists:
+    get:
+      tags: [Checklists]
+      summary: Lista checklists
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Checklist'
+    post:
+      tags: [Checklists]
+      summary: Crea checklist (ADMIN/GERENTE)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChecklistCreate'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checklist'
+
+  /checklists/{id}:
+    get:
+      tags: [Checklists]
+      summary: Obtiene checklist
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checklist'
+    patch:
+      tags: [Checklists]
+      summary: Actualiza checklist (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChecklistUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checklist'
+    delete:
+      tags: [Checklists]
+      summary: Elimina checklist (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checklist'
+
+  /checklist-items:
+    get:
+      tags: [ChecklistItems]
+      summary: Lista checklist items
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChecklistItem'
+    post:
+      tags: [ChecklistItems]
+      summary: Crea checklist item (ADMIN/GERENTE)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChecklistItemCreate'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistItem'
+
+  /checklist-items/{id}:
+    get:
+      tags: [ChecklistItems]
+      summary: Obtiene checklist item
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistItem'
+    patch:
+      tags: [ChecklistItems]
+      summary: Actualiza checklist item (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChecklistItemUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistItem'
+    delete:
+      tags: [ChecklistItems]
+      summary: Elimina checklist item (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistItem'
+
+  /credenciales:
+    get:
+      tags: [CredencialesWeb]
+      summary: Lista credenciales web (sin password)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CredencialWebPublic'
+    post:
+      tags: [CredencialesWeb]
+      summary: Crea credencial web (ADMIN/GERENTE)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredencialWebCreate'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredencialWebPublic'
+
+  /credenciales/{id}:
+    get:
+      tags: [CredencialesWeb]
+      summary: Obtiene credencial web (sin password)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredencialWebPublic'
+    patch:
+      tags: [CredencialesWeb]
+      summary: Actualiza credencial web (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredencialWebUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredencialWebPublic'
+    delete:
+      tags: [CredencialesWeb]
+      summary: Elimina credencial web (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredencialWebPublic'
+
+  /credenciales/{id}/secret:
+    get:
+      tags: [CredencialesWeb]
+      summary: Obtiene secreto (password) de credencial web
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredencialWebSecret'
+        '403':
+          description: Sin permisos
+
+  /wifi-credenciales:
+    get:
+      tags: [WifiCredenciales]
+      summary: Lista credenciales WiFi (sin password)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WifiCredencialPublic'
+    post:
+      tags: [WifiCredenciales]
+      summary: Crea credencial WiFi (ADMIN/GERENTE)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WifiCredencialCreate'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WifiCredencialPublic'
+
+  /wifi-credenciales/{id}:
+    get:
+      tags: [WifiCredenciales]
+      summary: Obtiene credencial WiFi (sin password)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WifiCredencialPublic'
+    patch:
+      tags: [WifiCredenciales]
+      summary: Actualiza credencial WiFi (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WifiCredencialUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WifiCredencialPublic'
+    delete:
+      tags: [WifiCredenciales]
+      summary: Elimina credencial WiFi (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WifiCredencialPublic'
+
+  /wifi-credenciales/{id}/secret:
+    get:
+      tags: [WifiCredenciales]
+      summary: Obtiene password WiFi
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WifiCredencialSecret'
+        '403':
+          description: Sin permisos
+
+  /audit-logs:
+    get:
+      tags: [AuditLogs]
+      summary: Lista auditoria (ADMIN/GERENTE)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
+
+  /audit-logs/{id}:
+    get:
+      tags: [AuditLogs]
+      summary: Obtiene auditoria por id (ADMIN/GERENTE)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLog'
+
+  /admin/rotate-credentials:
+    post:
+      tags: [Admin]
+      summary: Rotar credenciales cifradas (ADMIN)
+      responses:
+        '200':
+          description: OK
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+
+    LoginRequest:
+      type: object
+      required: [email, contrasena]
+      properties:
+        email:
+          type: string
+          format: email
+        contrasena:
+          type: string
+          minLength: 10
+
+    RefreshRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        sessionId:
+          type: string
+
+    LoginResponse:
+      allOf:
+        - $ref: '#/components/schemas/TokenResponse'
+        - type: object
+          properties:
+            usuario:
+              $ref: '#/components/schemas/UsuarioPublic'
+
+    Rol:
+      type: string
+      enum: [ADMIN, SUPERVISOR, GERENTE]
+
+    TipoEquipo:
+      type: string
+      enum: [LAPTOP, DESKTOP, TABLET, CELULAR, MONITOR, IMPRESORA, ROUTER, SWITCH, OTRO]
+
+    EstadoEquipo:
+      type: string
+      enum: [DISPONIBLE, ASIGNADO, MANTENIMIENTO, BAJA]
+
+    EstadoResguardo:
+      type: string
+      enum: [ACTIVO, FINALIZADO, CANCELADO]
+
+    TipoDocumento:
+      type: string
+      enum: [RESGUARDO, FOTO, FACTURA, GARANTIA]
+
+    UsuarioPublic:
+      type: object
+      properties:
+        id: { type: integer }
+        nombre: { type: string }
+        email: { type: string, format: email }
+        rol: { $ref: '#/components/schemas/Rol' }
+        activo: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    UsuarioCreate:
+      type: object
+      required: [nombre, email, contrasena]
+      properties:
+        nombre: { type: string }
+        email: { type: string, format: email }
+        contrasena: { type: string }
+        rol: { $ref: '#/components/schemas/Rol' }
+
+    UsuarioUpdate:
+      type: object
+      properties:
+        nombre: { type: string }
+        email: { type: string, format: email }
+        contrasena: { type: string }
+        rol: { $ref: '#/components/schemas/Rol' }
+        activo: { type: boolean }
+
+    Area:
+      type: object
+      properties:
+        id: { type: integer }
+        nombre: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    AreaCreate:
+      type: object
+      required: [nombre]
+      properties:
+        nombre: { type: string }
+
+    AreaUpdate:
+      type: object
+      properties:
+        nombre: { type: string }
+
+    Puesto:
+      type: object
+      properties:
+        id: { type: integer }
+        nombre: { type: string }
+        areaId: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    PuestoCreate:
+      type: object
+      required: [nombre, areaId]
+      properties:
+        nombre: { type: string }
+        areaId: { type: integer }
+
+    PuestoUpdate:
+      type: object
+      properties:
+        nombre: { type: string }
+        areaId: { type: integer }
+
+    Localidad:
+      type: object
+      properties:
+        id: { type: integer }
+        codigo: { type: string }
+        nombre: { type: string }
+        estado: { type: string }
+        ciudad: { type: string }
+        direccion: { type: string }
+        cp: { type: string }
+        notas: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    LocalidadCreate:
+      type: object
+      required: [nombre, estado]
+      properties:
+        codigo: { type: string }
+        nombre: { type: string }
+        estado: { type: string }
+        ciudad: { type: string }
+        direccion: { type: string }
+        cp: { type: string }
+        notas: { type: string }
+
+    LocalidadUpdate:
+      type: object
+      properties:
+        codigo: { type: string }
+        nombre: { type: string }
+        estado: { type: string }
+        ciudad: { type: string }
+        direccion: { type: string }
+        cp: { type: string }
+        notas: { type: string }
+
+    Empleado:
+      type: object
+      properties:
+        id: { type: integer }
+        nombre: { type: string }
+        email: { type: string, format: email }
+        numeroEmpleado: { type: string }
+        telefono: { type: string }
+        activo: { type: boolean }
+        areaId: { type: integer, nullable: true }
+        puestoId: { type: integer, nullable: true }
+        localidadId: { type: integer, nullable: true }
+        usuarioId: { type: integer, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    EmpleadoCreate:
+      type: object
+      required: [nombre]
+      properties:
+        nombre: { type: string }
+        email: { type: string, format: email }
+        numeroEmpleado: { type: string }
+        telefono: { type: string }
+        activo: { type: boolean }
+        areaId: { type: integer }
+        puestoId: { type: integer }
+        localidadId: { type: integer }
+        usuarioId: { type: integer }
+
+    EmpleadoUpdate:
+      type: object
+      properties:
+        nombre: { type: string }
+        email: { type: string, format: email }
+        numeroEmpleado: { type: string }
+        telefono: { type: string }
+        activo: { type: boolean }
+        areaId: { type: integer, nullable: true }
+        puestoId: { type: integer, nullable: true }
+        localidadId: { type: integer, nullable: true }
+        usuarioId: { type: integer, nullable: true }
+
+    Equipo:
+      type: object
+      properties:
+        id: { type: integer }
+        codigoInventario: { type: string }
+        serie: { type: string }
+        tipo: { $ref: '#/components/schemas/TipoEquipo' }
+        marca: { type: string }
+        modelo: { type: string }
+        descripcion: { type: string }
+        estado: { $ref: '#/components/schemas/EstadoEquipo' }
+        fechaCompra: { type: string, format: date-time }
+        costo: { type: number }
+        localidadId: { type: integer, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    EquipoCreate:
+      type: object
+      required: [tipo]
+      properties:
+        codigoInventario: { type: string }
+        serie: { type: string }
+        tipo: { $ref: '#/components/schemas/TipoEquipo' }
+        marca: { type: string }
+        modelo: { type: string }
+        descripcion: { type: string }
+        estado: { $ref: '#/components/schemas/EstadoEquipo' }
+        fechaCompra: { type: string, format: date-time }
+        costo: { type: number }
+        localidadId: { type: integer }
+
+    EquipoUpdate:
+      type: object
+      properties:
+        codigoInventario: { type: string }
+        serie: { type: string }
+        tipo: { $ref: '#/components/schemas/TipoEquipo' }
+        marca: { type: string }
+        modelo: { type: string }
+        descripcion: { type: string }
+        estado: { $ref: '#/components/schemas/EstadoEquipo' }
+        fechaCompra: { type: string, format: date-time }
+        costo: { type: number }
+        localidadId: { type: integer, nullable: true }
+
+    Resguardo:
+      type: object
+      properties:
+        id: { type: integer }
+        empleadoId: { type: integer }
+        localidadId: { type: integer, nullable: true }
+        fechaInicio: { type: string, format: date-time }
+        fechaFin: { type: string, format: date-time, nullable: true }
+        estado: { $ref: '#/components/schemas/EstadoResguardo' }
+        observaciones: { type: string }
+        folio: { type: string }
+        creadoPorId: { type: integer, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    ResguardoCreate:
+      type: object
+      required: [empleadoId, fechaInicio]
+      properties:
+        empleadoId: { type: integer }
+        localidadId: { type: integer }
+        fechaInicio: { type: string, format: date-time }
+        fechaFin: { type: string, format: date-time }
+        estado: { $ref: '#/components/schemas/EstadoResguardo' }
+        observaciones: { type: string }
+        folio: { type: string }
+
+    ResguardoUpdate:
+      type: object
+      properties:
+        empleadoId: { type: integer }
+        localidadId: { type: integer, nullable: true }
+        fechaInicio: { type: string, format: date-time }
+        fechaFin: { type: string, format: date-time, nullable: true }
+        estado: { $ref: '#/components/schemas/EstadoResguardo' }
+        observaciones: { type: string }
+        folio: { type: string }
+
+    ResguardoEquipo:
+      type: object
+      properties:
+        id: { type: integer }
+        resguardoId: { type: integer }
+        equipoId: { type: integer }
+        fechaEntrega: { type: string, format: date-time }
+        fechaDevolucion: { type: string, format: date-time, nullable: true }
+        observaciones: { type: string }
+        entregadoPorId: { type: integer, nullable: true }
+        recibidoPorId: { type: integer, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    ResguardoEquipoCreate:
+      type: object
+      required: [resguardoId, equipoId, fechaEntrega]
+      properties:
+        resguardoId: { type: integer }
+        equipoId: { type: integer }
+        fechaEntrega: { type: string, format: date-time }
+        fechaDevolucion: { type: string, format: date-time }
+        observaciones: { type: string }
+        entregadoPorId: { type: integer }
+        recibidoPorId: { type: integer }
+
+    ResguardoEquipoUpdate:
+      type: object
+      properties:
+        fechaEntrega: { type: string, format: date-time }
+        fechaDevolucion: { type: string, format: date-time, nullable: true }
+        observaciones: { type: string }
+        entregadoPorId: { type: integer, nullable: true }
+        recibidoPorId: { type: integer, nullable: true }
+
+    Documento:
+      type: object
+      properties:
+        id: { type: integer }
+        tipo: { $ref: '#/components/schemas/TipoDocumento' }
+        ruta: { type: string }
+        nombreArchivo: { type: string }
+        mime: { type: string }
+        sizeBytes: { type: integer }
+        checksum: { type: string }
+        equipoId: { type: integer, nullable: true }
+        resguardoId: { type: integer, nullable: true }
+        resguardoEquipoId: { type: integer, nullable: true }
+        subidoPorId: { type: integer, nullable: true }
+        createdAt: { type: string, format: date-time }
+
+    DocumentoCreate:
+      type: object
+      required: [tipo, ruta]
+      properties:
+        tipo: { $ref: '#/components/schemas/TipoDocumento' }
+        ruta: { type: string }
+        nombreArchivo: { type: string }
+        mime: { type: string }
+        sizeBytes: { type: integer }
+        checksum: { type: string }
+        equipoId: { type: integer }
+        resguardoId: { type: integer }
+        resguardoEquipoId: { type: integer }
+
+    DocumentoUpdate:
+      type: object
+      properties:
+        tipo: { $ref: '#/components/schemas/TipoDocumento' }
+        ruta: { type: string }
+        nombreArchivo: { type: string }
+        mime: { type: string }
+        sizeBytes: { type: integer }
+        checksum: { type: string }
+        equipoId: { type: integer, nullable: true }
+        resguardoId: { type: integer, nullable: true }
+        resguardoEquipoId: { type: integer, nullable: true }
+
+    DocumentoUpload:
+      type: object
+      required: [file, tipo]
+      properties:
+        file:
+          type: string
+          format: binary
+        tipo:
+          $ref: '#/components/schemas/TipoDocumento'
+        resguardoId:
+          type: integer
+        resguardoEquipoId:
+          type: integer
+        equipoId:
+          type: integer
+
+    Checklist:
+      type: object
+      properties:
+        id: { type: integer }
+        nombre: { type: string }
+        descripcion: { type: string }
+        puestoId: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    ChecklistCreate:
+      type: object
+      required: [nombre, puestoId]
+      properties:
+        nombre: { type: string }
+        descripcion: { type: string }
+        puestoId: { type: integer }
+
+    ChecklistUpdate:
+      type: object
+      properties:
+        nombre: { type: string }
+        descripcion: { type: string }
+        puestoId: { type: integer }
+
+    ChecklistItem:
+      type: object
+      properties:
+        id: { type: integer }
+        checklistId: { type: integer }
+        descripcion: { type: string }
+        tipoEquipo: { $ref: '#/components/schemas/TipoEquipo' }
+        cantidad: { type: integer }
+        obligatorio: { type: boolean }
+
+    ChecklistItemCreate:
+      type: object
+      required: [checklistId, descripcion]
+      properties:
+        checklistId: { type: integer }
+        descripcion: { type: string }
+        tipoEquipo: { $ref: '#/components/schemas/TipoEquipo' }
+        cantidad: { type: integer }
+        obligatorio: { type: boolean }
+
+    ChecklistItemUpdate:
+      type: object
+      properties:
+        descripcion: { type: string }
+        tipoEquipo: { $ref: '#/components/schemas/TipoEquipo' }
+        cantidad: { type: integer }
+        obligatorio: { type: boolean }
+
+    CredencialWebPublic:
+      type: object
+      properties:
+        id: { type: integer }
+        nombre: { type: string }
+        url: { type: string }
+        usuario: { type: string }
+        notas: { type: string }
+        activo: { type: boolean }
+        empleadoId: { type: integer, nullable: true }
+        areaId: { type: integer, nullable: true }
+        puestoId: { type: integer, nullable: true }
+        creadoPorId: { type: integer, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    CredencialWebSecret:
+      allOf:
+        - $ref: '#/components/schemas/CredencialWebPublic'
+        - type: object
+          properties:
+            password: { type: string }
+
+    CredencialWebCreate:
+      type: object
+      required: [nombre, url, usuario, password]
+      properties:
+        nombre: { type: string }
+        url: { type: string }
+        usuario: { type: string }
+        password: { type: string }
+        notas: { type: string }
+        activo: { type: boolean }
+        empleadoId: { type: integer }
+        areaId: { type: integer }
+        puestoId: { type: integer }
+
+    CredencialWebUpdate:
+      type: object
+      properties:
+        nombre: { type: string }
+        url: { type: string }
+        usuario: { type: string }
+        password: { type: string }
+        notas: { type: string }
+        activo: { type: boolean }
+        empleadoId: { type: integer, nullable: true }
+        areaId: { type: integer, nullable: true }
+        puestoId: { type: integer, nullable: true }
+
+    WifiCredencialPublic:
+      type: object
+      properties:
+        id: { type: integer }
+        ssid: { type: string }
+        usuario: { type: string }
+        notas: { type: string }
+        vigente: { type: boolean }
+        empleadoId: { type: integer, nullable: true }
+        localidadId: { type: integer, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    WifiCredencialSecret:
+      allOf:
+        - $ref: '#/components/schemas/WifiCredencialPublic'
+        - type: object
+          properties:
+            password: { type: string }
+
+    WifiCredencialCreate:
+      type: object
+      required: [ssid, usuario, password]
+      properties:
+        ssid: { type: string }
+        usuario: { type: string }
+        password: { type: string }
+        notas: { type: string }
+        vigente: { type: boolean }
+        empleadoId: { type: integer }
+        localidadId: { type: integer }
+
+    WifiCredencialUpdate:
+      type: object
+      properties:
+        ssid: { type: string }
+        usuario: { type: string }
+        password: { type: string }
+        notas: { type: string }
+        vigente: { type: boolean }
+        empleadoId: { type: integer, nullable: true }
+        localidadId: { type: integer, nullable: true }
+
+    AuditLog:
+      type: object
+      properties:
+        id: { type: integer }
+        action: { type: string }
+        actorId: { type: integer, nullable: true }
+        targetType: { type: string }
+        targetId: { type: string }
+        metadata: { type: object }
+        ip: { type: string }
+        userAgent: { type: string }
+        createdAt: { type: string, format: date-time }
