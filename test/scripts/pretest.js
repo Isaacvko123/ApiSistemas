@@ -21,3 +21,4 @@ if (!dbName.includes("test")) {
 }
 
 execSync("npx prisma@7.3.0 db push --force-reset", { stdio: "inherit" });
+execSync("npx prisma@7.3.0 generate", { stdio: "inherit" });

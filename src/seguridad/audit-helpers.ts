@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { AuditAction } from "@prisma/client";
+import { AuditAction, Prisma } from "@prisma/client";
 import { writeAuditLog } from "./audit";
 import { SesionesService } from "./sesiones.service";
 
@@ -9,7 +9,7 @@ export async function auditEntity(params: {
   action: AuditAction;
   targetType: string;
   targetId: string;
-  metadata?: Record<string, unknown>;
+  metadata?: Prisma.InputJsonValue | null;
 }) {
   const meta = SesionesService.extraerMeta(params.req);
   const actorId = params.res.locals.user?.sub ? Number(params.res.locals.user.sub) : null;

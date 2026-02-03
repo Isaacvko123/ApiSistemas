@@ -69,7 +69,7 @@ export class WifiCredencialController {
         orderBy: { id: "desc" },
       });
 
-      return res.status(200).json(rows.map(toWifiCredencialPublic));
+      return res.status(200).json(rows.map((row) => toWifiCredencialPublic(row)));
     } catch (error) {
       return handlePrismaError(res, error);
     }

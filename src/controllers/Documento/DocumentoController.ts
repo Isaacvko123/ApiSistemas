@@ -112,7 +112,9 @@ export class DocumentoController {
   }
 
   static async subir(req: Request, res: Response) {
-    const file = req.file as Express.Multer.File | undefined;
+    const file = req.file as
+      | { filename: string; originalname: string; mimetype: string; size: number }
+      | undefined;
     if (!file) {
       return respondError(res, "payload_invalido", { reason: "archivo requerido" });
     }

@@ -97,6 +97,14 @@ export class UsuarioController {
     }
 
     try {
+      const existing = await prisma.usuario.findUnique({
+        where: { email: parsed.data.email },
+        select: { id: true },
+      });
+      if (existing) {
+        return respondError(res, "duplicado", { target: ["email"] });
+      }
+
       const data = await toUsuarioCreateData(parsed.data);
       const usuario = await prisma.usuario.create({ data });
       const meta = SesionesService.extraerMeta(req);
