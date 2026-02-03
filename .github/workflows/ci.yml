@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mi_api_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d mi_api_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mi_api_test?schema=public
+      DATABASE_URL_TEST: postgresql://postgres:postgres@localhost:5432/mi_api_test?schema=public
+      JWT_ACCESS_SECRET: test-access-secret-1234567890
+      JWT_REFRESH_SECRET: test-refresh-secret-1234567890
+      JWT_ACCESS_TTL: 15m
+      JWT_REFRESH_TTL_DAYS: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - name: Install dependencies
+        run: npm ci
+      - name: Prisma generate
+        run: npx prisma@7.3.0 generate
+      - name: Prisma db push (test)
+        run: npx prisma@7.3.0 db push --force-reset
+      - name: Run tests
+        run: npm test

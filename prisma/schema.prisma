@@ -1,0 +1,412 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // (opcional) si te vuelve a salir P3014, agrega:
+  // shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+enum Rol {
+  ADMIN
+  SUPERVISOR
+  GERENTE
+}
+
+enum TipoEquipo {
+  LAPTOP
+  DESKTOP
+  TABLET
+  CELULAR
+  MONITOR
+  IMPRESORA
+  ROUTER
+  SWITCH
+  OTRO
+}
+
+enum EstadoEquipo {
+  DISPONIBLE
+  ASIGNADO
+  MANTENIMIENTO
+  BAJA
+}
+
+enum TipoDocumento {
+  RESGUARDO
+  FOTO
+  FACTURA
+  GARANTIA
+  OTRO
+}
+
+enum EstadoResguardo {
+  ACTIVO
+  FINALIZADO
+  CANCELADO
+}
+
+enum AuditAction {
+  LOGIN_SUCCESS
+  LOGIN_FAILED
+  LOGOUT
+  LOGOUT_ALL
+  USUARIO_CREATE
+  USUARIO_UPDATE
+  USUARIO_DELETE
+  CREDENCIAL_CREATE
+  CREDENCIAL_UPDATE
+  CREDENCIAL_DELETE
+  CREDENCIAL_READ
+  CREDENCIAL_READ_SECRET
+}
+
+model Area {
+  id     Int    @id @default(autoincrement())
+  nombre String @unique
+
+  empleados Empleado[]
+  puestos   Puesto[]
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  credencialWebs CredencialWeb[]
+
+  @@map("areas")
+}
+
+model Puesto {
+  id     Int    @id @default(autoincrement())
+  nombre String
+
+  areaId Int
+  area   Area @relation(fields: [areaId], references: [id], onDelete: Restrict)
+
+  empleados  Empleado[]
+  checklists Checklist[]
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  credencialWebs CredencialWeb[]
+
+  @@unique([areaId, nombre])
+  @@index([areaId])
+  @@map("puestos")
+}
+
+model Usuario {
+  id         Int    @id @default(autoincrement())
+  nombre     String
+  email      String @unique
+  contrasena String
+  rol        Rol    @default(SUPERVISOR)
+
+  activo       Boolean @default(true)
+  tokenVersion Int     @default(0) // revocación global
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sesiones          Sesion[]
+  empleado          Empleado?         @relation("UsuarioEmpleado")
+  resguardosCreados Resguardo[]       @relation("UsuarioResguardos")
+  entregas          ResguardoEquipo[] @relation("UsuarioEntregas")
+  recepciones       ResguardoEquipo[] @relation("UsuarioRecepciones")
+  credencialesWeb   CredencialWeb[]   @relation("UsuarioCredenciales")
+  documentosSubidos Documento[]       @relation("UsuarioDocumentos")
+  auditLogs         AuditLog[]
+
+  @@index([rol])
+  @@map("usuarios")
+}
+
+model Sesion {
+  id        String  @id @default(uuid())
+  usuarioId Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  refreshHash String
+
+  userAgent String?
+  ip        String?
+
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  lastUsedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([usuarioId])
+  @@index([expiresAt])
+  @@map("sesiones")
+}
+
+model AuditLog {
+  id        Int         @id @default(autoincrement())
+  action    AuditAction
+  actorId   Int?
+  actor     Usuario?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  targetType String?
+  targetId  String?
+  metadata  Json?
+  ip        String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  @@index([actorId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model Localidad {
+  id        Int     @id @default(autoincrement())
+  codigo    String? @unique
+  nombre    String
+  estado    String
+  ciudad    String?
+  direccion String?
+  cp        String?
+  notas     String?
+
+  empleados        Empleado[]
+  equipos          Equipo[]
+  resguardos       Resguardo[]
+  credencialesWifi WifiCredencial[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([estado])
+  @@map("localidades")
+}
+
+model Empleado {
+  id             Int     @id @default(autoincrement())
+  nombre         String
+  email          String? @unique
+  numeroEmpleado String? @unique
+  telefono       String?
+  activo         Boolean @default(true)
+
+  areaId   Int?
+  area     Area?   @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  puestoId Int?
+  puesto   Puesto? @relation(fields: [puestoId], references: [id], onDelete: SetNull)
+
+  localidadId Int?
+  localidad   Localidad? @relation(fields: [localidadId], references: [id], onDelete: SetNull)
+
+  usuarioId Int?     @unique
+  usuario   Usuario? @relation("UsuarioEmpleado", fields: [usuarioId], references: [id], onDelete: SetNull)
+
+  resguardos       Resguardo[]
+  credencialesWifi WifiCredencial[]
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  credencialWebs CredencialWeb[]
+
+  @@index([localidadId])
+  @@index([areaId])
+  @@index([puestoId])
+  @@map("empleados")
+}
+
+model Equipo {
+  id               Int          @id @default(autoincrement())
+  codigoInventario String?      @unique
+  serie            String?      @unique
+  tipo             TipoEquipo
+  marca            String?
+  modelo           String?
+  descripcion      String?
+  estado           EstadoEquipo @default(DISPONIBLE)
+  fechaCompra      DateTime?
+  costo            Decimal?     @db.Decimal(12, 2)
+
+  localidadId Int?
+  localidad   Localidad? @relation(fields: [localidadId], references: [id], onDelete: SetNull)
+
+  resguardoEquipos ResguardoEquipo[]
+  documentos       Documento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tipo])
+  @@index([estado])
+  @@index([localidadId])
+  @@map("equipos")
+}
+
+model Resguardo {
+  id            Int             @id @default(autoincrement())
+  empleadoId    Int
+  localidadId   Int?
+  fechaInicio   DateTime
+  fechaFin      DateTime?
+  estado        EstadoResguardo @default(ACTIVO)
+  observaciones String?
+  folio         String?         @unique
+
+  creadoPorId Int?
+  creadoPor   Usuario? @relation("UsuarioResguardos", fields: [creadoPorId], references: [id], onDelete: SetNull)
+
+  empleado  Empleado   @relation(fields: [empleadoId], references: [id], onDelete: Restrict)
+  localidad Localidad? @relation(fields: [localidadId], references: [id], onDelete: SetNull)
+
+  equipos    ResguardoEquipo[]
+  documentos Documento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([empleadoId])
+  @@index([localidadId])
+  @@index([fechaInicio])
+  @@map("resguardos")
+}
+
+model ResguardoEquipo {
+  id              Int       @id @default(autoincrement())
+  resguardoId     Int
+  equipoId        Int
+  fechaEntrega    DateTime
+  fechaDevolucion DateTime?
+  observaciones   String?
+
+  entregadoPorId Int?
+  entregadoPor   Usuario? @relation("UsuarioEntregas", fields: [entregadoPorId], references: [id], onDelete: SetNull)
+  recibidoPorId  Int?
+  recibidoPor    Usuario? @relation("UsuarioRecepciones", fields: [recibidoPorId], references: [id], onDelete: SetNull)
+
+  resguardo Resguardo @relation(fields: [resguardoId], references: [id], onDelete: Cascade)
+  equipo    Equipo    @relation(fields: [equipoId], references: [id], onDelete: Restrict)
+
+  documentos Documento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([resguardoId, equipoId])
+  @@index([equipoId])
+  @@index([fechaEntrega])
+  @@map("resguardo_equipos")
+}
+
+model Checklist {
+  id          Int     @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+
+  puestoId Int
+  puesto   Puesto @relation(fields: [puestoId], references: [id], onDelete: Cascade)
+
+  items ChecklistItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([puestoId, nombre])
+  @@index([puestoId])
+  @@map("checklists")
+}
+
+model ChecklistItem {
+  id          Int         @id @default(autoincrement())
+  checklistId Int
+  descripcion String
+  tipoEquipo  TipoEquipo?
+  cantidad    Int         @default(1)
+  obligatorio Boolean     @default(true)
+
+  checklist Checklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+
+  @@index([checklistId])
+  @@map("checklist_items")
+}
+
+model CredencialWeb {
+  id          Int     @id @default(autoincrement())
+  nombre      String // nombre del servicio (ej: "Microsoft 365")
+  url         String
+  usuario     String
+  passwordEnc String // contraseña cifrada (NO texto plano)
+  passwordIv  String // IV/nonce del cifrado
+  passwordTag String? // tag (si usas AES-GCM)
+  passwordKeyVersion Int @default(1)
+  notas       String?
+  activo      Boolean @default(true)
+
+  empleadoId Int?
+  empleado   Empleado? @relation(fields: [empleadoId], references: [id], onDelete: SetNull)
+  areaId     Int?
+  area       Area?     @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  puestoId   Int?
+  puesto     Puesto?   @relation(fields: [puestoId], references: [id], onDelete: SetNull)
+
+  creadoPorId Int?
+  creadoPor   Usuario? @relation("UsuarioCredenciales", fields: [creadoPorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([empleadoId])
+  @@index([areaId])
+  @@index([puestoId])
+  @@index([creadoPorId])
+  @@map("credenciales_web")
+}
+
+model Documento {
+  id            Int           @id @default(autoincrement())
+  tipo          TipoDocumento
+  ruta          String
+  nombreArchivo String?
+  mime          String?
+  sizeBytes     Int?
+  checksum      String?
+
+  equipoId          Int?
+  equipo            Equipo?          @relation(fields: [equipoId], references: [id], onDelete: Cascade)
+  resguardoId       Int?
+  resguardo         Resguardo?       @relation(fields: [resguardoId], references: [id], onDelete: Cascade)
+  resguardoEquipoId Int?
+  resguardoEquipo   ResguardoEquipo? @relation(fields: [resguardoEquipoId], references: [id], onDelete: Cascade)
+
+  subidoPorId Int?
+  subidoPor   Usuario? @relation("UsuarioDocumentos", fields: [subidoPorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([equipoId])
+  @@index([resguardoId])
+  @@index([resguardoEquipoId])
+  @@map("documentos")
+}
+
+model WifiCredencial {
+  id          Int     @id @default(autoincrement())
+  ssid        String
+  usuario     String
+  passwordEnc String
+  notas       String?
+  vigente     Boolean @default(true)
+
+  empleadoId  Int?
+  empleado    Empleado?  @relation(fields: [empleadoId], references: [id], onDelete: SetNull)
+  localidadId Int?
+  localidad   Localidad? @relation(fields: [localidadId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ssid])
+  @@index([empleadoId])
+  @@index([localidadId])
+  @@map("wifi_credenciales")
+}

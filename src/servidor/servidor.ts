@@ -1,0 +1,120 @@
+// src/servidor/servidor.ts
+import express, { type Express, type Request, type Response, type NextFunction } from "express";
+import http from "http";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import { env } from "../config/env";
+import UsuarioRutas from "../routes/Usuario/UsuarioRuta";
+import { authGlobal } from "../middlewares/auth";
+import AuthRutas from "../routes/Auth/AuthRuta";
+import { ensureBootstrapAdmin } from "../seguridad/bootstrap";
+import AdminRutas from "../routes/Admin/AdminRuta";
+import { startRotateCredentialsCron } from "../seguridad/rotate-credentials-cron";
+import CredencialWebRutas from "../routes/Credenciales/CredencialWebRuta";
+type RateEntry = {
+  count: number;
+  resetAt: number;
+  lastSeen: number;
+};
+
+function rateLimiter() {
+  const store = new Map<string, RateEntry>();
+  const windowMs = env.rateLimitWindowMs;
+  const max = env.rateLimitMax;
+
+  return (req: Request, res: Response, next: NextFunction) => {
+    const now = Date.now();
+    const ip = req.ip || "unknown";
+
+    let entry = store.get(ip);
+    if (!entry || now > entry.resetAt) {
+      entry = { count: 0, resetAt: now + windowMs, lastSeen: now };
+    }
+
+    entry.count += 1;
+    entry.lastSeen = now;
+    store.set(ip, entry);
+
+    res.setHeader("X-RateLimit-Limit", String(max));
+    res.setHeader("X-RateLimit-Remaining", String(Math.max(0, max - entry.count)));
+    res.setHeader("X-RateLimit-Reset", String(Math.ceil(entry.resetAt / 1000)));
+
+    if (entry.count > max) {
+      return res.status(429).json({ error: "Too many requests" });
+    }
+
+    if (store.size > 10000) {
+      for (const [key, value] of store) {
+        if (now > value.resetAt + windowMs) {
+          store.delete(key);
+        }
+      }
+    }
+
+    return next();
+  };
+}
+
+function buildCorsOptions() {
+  const origins = env.corsOrigins
+    ?.split(",")
+    .map((o) => o.trim())
+    .filter(Boolean);
+
+  if (origins && origins.length > 0) {
+    return { origin: origins, credentials: true };
+  }
+
+  if (env.nodeEnv !== "production") {
+    return { origin: true, credentials: true };
+  }
+
+  console.warn("[SECURITY] CORS_ORIGINS no configurado en producción; CORS deshabilitado.");
+  return { origin: false };
+}
+
+export function createApp(): Express {
+  const app: Express = express();
+
+  // Base mínima
+  app.disable("x-powered-by");
+  app.set("trust proxy", env.trustProxy);
+
+  app.use(helmet());
+  app.use(cors(buildCorsOptions()));
+  app.use(rateLimiter());
+  app.use(express.json({ limit: env.bodyLimit }));
+  app.use(express.urlencoded({ extended: true, limit: env.bodyLimit }));
+
+  if (env.nodeEnv !== "production") {
+    app.use(morgan("dev"));
+  }
+
+  app.use(authGlobal);
+
+  // Health para probar levantamiento
+  app.get("/health", (_req, res) => {
+    res.status(200).json({ ok: true });
+  });
+
+  app.use("/usuarios", UsuarioRutas);
+  app.use("/auth", AuthRutas);
+  app.use("/admin", AdminRutas);
+  app.use("/credenciales", CredencialWebRutas);
+  return app;
+}
+
+export async function iniciarServidor(): Promise<http.Server> {
+  const app = createApp();
+  await ensureBootstrapAdmin();
+  startRotateCredentialsCron();
+  const server = http.createServer(app);
+
+  const port = env.port; // fallback duro para este proyecto
+  server.listen(port, () => {
+    console.log(`[API] Listening on http://localhost:${port}`);
+  });
+
+  return server;
+}

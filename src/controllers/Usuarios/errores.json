@@ -1,0 +1,86 @@
+{
+  "payload_invalido": {
+    "status": 400,
+    "code": "USR-001",
+    "title": "Payload inválido",
+    "summary": "El body no cumple con el esquema requerido.",
+    "source": "body",
+    "reason": "Faltan campos obligatorios o el tipo/longitud es incorrecto.",
+    "solution": "Envía los campos obligatorios con los tipos correctos.",
+    "requiredFields": ["nombre", "email", "contrasena"],
+    "optionalFields": ["rol"],
+    "constraints": {
+      "nombre": "string 2-100",
+      "email": "email válido",
+      "contrasena": "string 10-200",
+      "rol": "ADMIN | SUPERVISOR | GERENTE"
+    },
+    "example": {
+      "nombre": "Ana Pérez",
+      "email": "ana@empresa.com",
+      "contrasena": "MiPasswordSegura123",
+      "rol": "SUPERVISOR"
+    }
+  },
+  "id_invalido": {
+    "status": 400,
+    "code": "USR-002",
+    "title": "ID inválido",
+    "summary": "El parámetro de ruta no es válido.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no es numérico.",
+    "solution": "Envía un id numérico en la ruta.",
+    "expected": "number"
+  },
+  "rol_invalido": {
+    "status": 400,
+    "code": "USR-003",
+    "title": "Rol inválido",
+    "summary": "El parámetro rol no coincide con valores permitidos.",
+    "source": "query",
+    "param": "rol",
+    "reason": "Rol fuera del catálogo.",
+    "solution": "Usa ADMIN, SUPERVISOR o GERENTE.",
+    "allowed": ["ADMIN", "SUPERVISOR", "GERENTE"]
+  },
+  "usuario_no_encontrado": {
+    "status": 404,
+    "code": "USR-004",
+    "title": "Usuario no encontrado",
+    "summary": "No existe un usuario con ese id.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no existe en base de datos.",
+    "solution": "Verifica el id antes de consultar."
+  },
+  "duplicado": {
+    "status": 409,
+    "code": "USR-005",
+    "title": "Registro duplicado",
+    "summary": "Ya existe un usuario con el mismo email.",
+    "source": "body",
+    "reason": "Violación de índice único.",
+    "solution": "Usa un email diferente.",
+    "uniqueFields": ["email"]
+  },
+  "sin_cambios": {
+    "status": 400,
+    "code": "USR-006",
+    "title": "Sin cambios",
+    "summary": "No se enviaron campos para actualizar.",
+    "source": "body",
+    "reason": "El body está vacío o solo contiene campos inválidos.",
+    "solution": "Envía al menos un campo válido.",
+    "updatableFields": ["nombre", "email", "contrasena", "rol", "activo"]
+  },
+  "error_interno": {
+    "status": 500,
+    "code": "USR-500",
+    "title": "Error interno",
+    "summary": "Ocurrió un error inesperado en el servidor.",
+    "source": "server",
+    "reason": "Excepción no controlada.",
+    "solution": "Intenta más tarde o revisa los logs del servidor."
+  }
+}
