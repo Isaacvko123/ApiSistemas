@@ -54,14 +54,15 @@ function handlePrismaError(res: Response, error: unknown) {
 export class EquipoController {
   static async listar(req: Request, res: Response) {
     try {
-      const tipo = typeof req.query.tipo === "string" ? req.query.tipo : undefined;
+      const tipoEquipoId =
+        typeof req.query.tipoEquipoId === "string" ? Number(req.query.tipoEquipoId) : undefined;
       const estado = typeof req.query.estado === "string" ? req.query.estado : undefined;
       const localidadId =
         typeof req.query.localidadId === "string" ? Number(req.query.localidadId) : undefined;
 
       const equipos = await prisma.equipo.findMany({
         where: {
-          ...(tipo ? { tipo: tipo as any } : {}),
+          ...(Number.isFinite(tipoEquipoId) ? { tipoEquipoId } : {}),
           ...(estado ? { estado: estado as any } : {}),
           ...(Number.isFinite(localidadId) ? { localidadId } : {}),
         },

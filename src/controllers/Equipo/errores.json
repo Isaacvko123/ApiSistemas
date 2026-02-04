@@ -7,7 +7,7 @@
     "source": "body",
     "reason": "Faltan campos obligatorios o el tipo/longitud es incorrecto.",
     "solution": "Envia los campos obligatorios con los tipos correctos.",
-    "requiredFields": ["tipo"],
+    "requiredFields": ["tipoEquipoId"],
     "optionalFields": [
       "codigoInventario",
       "serie",
@@ -15,12 +15,14 @@
       "modelo",
       "descripcion",
       "estado",
+      "imei1",
+      "imei2",
       "fechaCompra",
       "costo",
       "localidadId"
     ],
     "constraints": {
-      "tipo": "LAPTOP | DESKTOP | TABLET | CELULAR | MONITOR | IMPRESORA | ROUTER | SWITCH | OTRO",
+      "tipoEquipoId": "number int > 0",
       "estado": "DISPONIBLE | ASIGNADO | MANTENIMIENTO | BAJA",
       "codigoInventario": "string 1-100",
       "serie": "string 1-100",
@@ -32,9 +34,10 @@
       "localidadId": "number int > 0"
     },
     "example": {
-      "tipo": "LAPTOP",
+      "tipoEquipoId": 1,
       "codigoInventario": "INV-100",
       "serie": "ABC123",
+      "imei1": "351234567890123",
       "marca": "Dell",
       "modelo": "XPS",
       "estado": "DISPONIBLE"
@@ -82,7 +85,9 @@
     "updatableFields": [
       "codigoInventario",
       "serie",
-      "tipo",
+      "tipoEquipoId",
+      "imei1",
+      "imei2",
       "marca",
       "modelo",
       "descripcion",

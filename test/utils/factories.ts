@@ -1,5 +1,4 @@
 import { prisma } from "../../src/db/prisma";
-import { TipoEquipo } from "@prisma/client";
 
 export async function createArea(overrides?: { nombre?: string }) {
   return prisma.area.create({
@@ -45,10 +44,19 @@ export async function createEmpleado(overrides?: {
   return prisma.empleado.create({ data });
 }
 
-export async function createEquipo(overrides?: { tipo?: TipoEquipo }) {
+export async function createTipoEquipo(overrides?: { nombre?: string }) {
+  return prisma.tipoEquipo.create({
+    data: {
+      nombre: overrides?.nombre ?? `Tipo-${Date.now()}`,
+    },
+  });
+}
+
+export async function createEquipo(overrides?: { tipoEquipoId?: number }) {
+  const tipoEquipoId = overrides?.tipoEquipoId ?? (await createTipoEquipo()).id;
   return prisma.equipo.create({
     data: {
-      tipo: overrides?.tipo ?? "LAPTOP",
+      tipoEquipo: { connect: { id: tipoEquipoId } },
     },
   });
 }

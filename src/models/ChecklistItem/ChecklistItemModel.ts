@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { type Prisma, type ChecklistItem, TipoEquipo } from "@prisma/client";
+import { type Prisma, type ChecklistItem } from "@prisma/client";
 
 export const checklistItemCreateSchema = z.object({
   checklistId: z.number().int().positive(),
   descripcion: z.string().min(2).max(300),
-  tipoEquipo: z.nativeEnum(TipoEquipo).optional(),
+  tipoEquipoId: z.number().int().positive().optional(),
   cantidad: z.number().int().positive().optional(),
   obligatorio: z.boolean().optional(),
 });
@@ -12,7 +12,7 @@ export const checklistItemCreateSchema = z.object({
 export const checklistItemUpdateSchema = z
   .object({
     descripcion: z.string().min(2).max(300).optional(),
-    tipoEquipo: z.nativeEnum(TipoEquipo).optional().nullable(),
+    tipoEquipoId: z.number().int().positive().optional().nullable(),
     cantidad: z.number().int().positive().optional(),
     obligatorio: z.boolean().optional(),
     checklistId: z.number().int().positive().optional(),
@@ -31,10 +31,10 @@ export function toChecklistItemCreateData(
   const data = checklistItemCreateSchema.parse(input);
   return {
     descripcion: data.descripcion,
-    tipoEquipo: data.tipoEquipo,
     cantidad: data.cantidad ?? 1,
     obligatorio: data.obligatorio ?? true,
     checklist: { connect: { id: data.checklistId } },
+    ...(data.tipoEquipoId ? { tipoEquipo: { connect: { id: data.tipoEquipoId } } } : {}),
   };
 }
 
@@ -44,10 +44,16 @@ export function toChecklistItemUpdateData(
   const data = checklistItemUpdateSchema.parse(input);
   const update: Prisma.ChecklistItemUpdateInput = {
     descripcion: data.descripcion,
-    tipoEquipo: data.tipoEquipo === null ? null : data.tipoEquipo,
     cantidad: data.cantidad,
     obligatorio: data.obligatorio,
   };
+
+  if (data.tipoEquipoId !== undefined) {
+    update.tipoEquipo =
+      data.tipoEquipoId === null
+        ? { disconnect: true }
+        : { connect: { id: data.tipoEquipoId } };
+  }
 
   if (data.checklistId !== undefined) {
     update.checklist = { connect: { id: data.checklistId } };

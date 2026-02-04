@@ -2,6 +2,7 @@ import request from "supertest";
 import { createApp } from "../src/servidor/servidor";
 import { truncateAll, disconnect } from "./utils/db";
 import { createAdminAuth } from "./utils/auth";
+import { createTipoEquipo } from "./utils/factories";
 
 const app = createApp();
 
@@ -21,14 +22,15 @@ describe("Equipo routes", () => {
 
   it("crea equipo con token valido", async () => {
     const { token } = await createAdminAuth();
+    const tipo = await createTipoEquipo({ nombre: "Laptop" });
 
     const res = await request(app)
       .post("/equipos")
       .set("Authorization", `Bearer ${token}`)
-      .send({ tipo: "LAPTOP", marca: "Dell" });
+      .send({ tipoEquipoId: tipo.id, marca: "Dell" });
 
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty("id");
-    expect(res.body).toHaveProperty("tipo", "LAPTOP");
+    expect(res.body).toHaveProperty("tipoEquipoId", tipo.id);
   });
 });

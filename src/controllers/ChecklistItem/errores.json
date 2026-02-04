@@ -8,18 +8,18 @@
     "reason": "Faltan campos obligatorios o el tipo/longitud es incorrecto.",
     "solution": "Envia los campos obligatorios con los tipos correctos.",
     "requiredFields": ["checklistId", "descripcion"],
-    "optionalFields": ["tipoEquipo", "cantidad", "obligatorio"],
+    "optionalFields": ["tipoEquipoId", "cantidad", "obligatorio"],
     "constraints": {
       "checklistId": "number int > 0",
       "descripcion": "string 2-300",
-      "tipoEquipo": "LAPTOP | DESKTOP | TABLET | CELULAR | MONITOR | IMPRESORA | ROUTER | SWITCH | OTRO",
+      "tipoEquipoId": "number int > 0",
       "cantidad": "number int > 0",
       "obligatorio": "boolean"
     },
     "example": {
       "checklistId": 3,
       "descripcion": "Laptop asignada",
-      "tipoEquipo": "LAPTOP",
+      "tipoEquipoId": 1,
       "cantidad": 1,
       "obligatorio": true
     }
@@ -53,7 +53,7 @@
     "source": "body",
     "reason": "El body esta vacio o solo contiene campos invalidos.",
     "solution": "Envia al menos un campo valido.",
-    "updatableFields": ["descripcion", "tipoEquipo", "cantidad", "obligatorio", "checklistId"]
+    "updatableFields": ["descripcion", "tipoEquipoId", "cantidad", "obligatorio", "checklistId"]
   },
   "relacion_invalida": {
     "status": 409,

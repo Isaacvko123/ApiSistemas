@@ -58,6 +58,9 @@ export class DocumentoController {
       const resguardoEquipoId =
         typeof req.query.resguardoEquipoId === "string" ? Number(req.query.resguardoEquipoId) : undefined;
       const tipo = typeof req.query.tipo === "string" ? req.query.tipo : undefined;
+      const empleadoId =
+        typeof req.query.empleadoId === "string" ? Number(req.query.empleadoId) : undefined;
+      const evento = typeof req.query.evento === "string" ? req.query.evento : undefined;
 
       const documentos = await prisma.documento.findMany({
         where: {
@@ -65,6 +68,8 @@ export class DocumentoController {
           ...(Number.isFinite(resguardoId) ? { resguardoId } : {}),
           ...(Number.isFinite(resguardoEquipoId) ? { resguardoEquipoId } : {}),
           ...(tipo ? { tipo: tipo as any } : {}),
+          ...(Number.isFinite(empleadoId) ? { empleadoId } : {}),
+          ...(evento ? { evento: evento as any } : {}),
         },
         orderBy: { id: "desc" },
       });
@@ -127,6 +132,9 @@ export class DocumentoController {
         ? Number(req.body.resguardoEquipoId)
         : undefined;
     const tipo = typeof req.body.tipo === "string" ? req.body.tipo : undefined;
+    const evento = typeof req.body.evento === "string" ? req.body.evento : undefined;
+    const empleadoId =
+      typeof req.body.empleadoId === "string" ? Number(req.body.empleadoId) : undefined;
 
     const actorId = res.locals.user?.sub ? Number(res.locals.user.sub) : null;
 
@@ -141,6 +149,8 @@ export class DocumentoController {
       resguardoEquipoId: Number.isFinite(resguardoEquipoId)
         ? (resguardoEquipoId as number)
         : undefined,
+      empleadoId: Number.isFinite(empleadoId) ? (empleadoId as number) : undefined,
+      evento,
       subidoPorId: Number.isFinite(actorId as number) ? (actorId as number) : undefined,
     });
 

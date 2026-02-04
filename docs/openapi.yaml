@@ -1266,7 +1266,11 @@ components:
 
     TipoDocumento:
       type: string
-      enum: [RESGUARDO, FOTO, FACTURA, GARANTIA]
+      enum: [RESGUARDO, FOTO, FACTURA, GARANTIA, OTRO]
+
+    DocumentoEvento:
+      type: string
+      enum: [ENTREGA, DEVOLUCION, OTRO]
 
     UsuarioPublic:
       type: object
@@ -1424,7 +1428,9 @@ components:
         id: { type: integer }
         codigoInventario: { type: string }
         serie: { type: string }
-        tipo: { $ref: '#/components/schemas/TipoEquipo' }
+        imei1: { type: string }
+        imei2: { type: string }
+        tipoEquipoId: { type: integer }
         marca: { type: string }
         modelo: { type: string }
         descripcion: { type: string }
@@ -1437,11 +1443,13 @@ components:
 
     EquipoCreate:
       type: object
-      required: [tipo]
+      required: [tipoEquipoId]
       properties:
         codigoInventario: { type: string }
         serie: { type: string }
-        tipo: { $ref: '#/components/schemas/TipoEquipo' }
+        imei1: { type: string }
+        imei2: { type: string }
+        tipoEquipoId: { type: integer }
         marca: { type: string }
         modelo: { type: string }
         descripcion: { type: string }
@@ -1455,7 +1463,9 @@ components:
       properties:
         codigoInventario: { type: string }
         serie: { type: string }
-        tipo: { $ref: '#/components/schemas/TipoEquipo' }
+        imei1: { type: string }
+        imei2: { type: string }
+        tipoEquipoId: { type: integer }
         marca: { type: string }
         modelo: { type: string }
         descripcion: { type: string }
@@ -1542,6 +1552,7 @@ components:
       properties:
         id: { type: integer }
         tipo: { $ref: '#/components/schemas/TipoDocumento' }
+        evento: { $ref: '#/components/schemas/DocumentoEvento' }
         ruta: { type: string }
         nombreArchivo: { type: string }
         mime: { type: string }
@@ -1550,6 +1561,7 @@ components:
         equipoId: { type: integer, nullable: true }
         resguardoId: { type: integer, nullable: true }
         resguardoEquipoId: { type: integer, nullable: true }
+        empleadoId: { type: integer, nullable: true }
         subidoPorId: { type: integer, nullable: true }
         createdAt: { type: string, format: date-time }
 
@@ -1558,6 +1570,7 @@ components:
       required: [tipo, ruta]
       properties:
         tipo: { $ref: '#/components/schemas/TipoDocumento' }
+        evento: { $ref: '#/components/schemas/DocumentoEvento' }
         ruta: { type: string }
         nombreArchivo: { type: string }
         mime: { type: string }
@@ -1566,11 +1579,13 @@ components:
         equipoId: { type: integer }
         resguardoId: { type: integer }
         resguardoEquipoId: { type: integer }
+        empleadoId: { type: integer }
 
     DocumentoUpdate:
       type: object
       properties:
         tipo: { $ref: '#/components/schemas/TipoDocumento' }
+        evento: { $ref: '#/components/schemas/DocumentoEvento' }
         ruta: { type: string }
         nombreArchivo: { type: string }
         mime: { type: string }
@@ -1579,6 +1594,7 @@ components:
         equipoId: { type: integer, nullable: true }
         resguardoId: { type: integer, nullable: true }
         resguardoEquipoId: { type: integer, nullable: true }
+        empleadoId: { type: integer, nullable: true }
 
     DocumentoUpload:
       type: object
@@ -1589,11 +1605,15 @@ components:
           format: binary
         tipo:
           $ref: '#/components/schemas/TipoDocumento'
+        evento:
+          $ref: '#/components/schemas/DocumentoEvento'
         resguardoId:
           type: integer
         resguardoEquipoId:
           type: integer
         equipoId:
+          type: integer
+        empleadoId:
           type: integer
 
     Checklist:
@@ -1627,7 +1647,7 @@ components:
         id: { type: integer }
         checklistId: { type: integer }
         descripcion: { type: string }
-        tipoEquipo: { $ref: '#/components/schemas/TipoEquipo' }
+        tipoEquipoId: { type: integer }
         cantidad: { type: integer }
         obligatorio: { type: boolean }
 
@@ -1637,7 +1657,7 @@ components:
       properties:
         checklistId: { type: integer }
         descripcion: { type: string }
-        tipoEquipo: { $ref: '#/components/schemas/TipoEquipo' }
+        tipoEquipoId: { type: integer }
         cantidad: { type: integer }
         obligatorio: { type: boolean }
 
@@ -1645,7 +1665,7 @@ components:
       type: object
       properties:
         descripcion: { type: string }
-        tipoEquipo: { $ref: '#/components/schemas/TipoEquipo' }
+        tipoEquipoId: { type: integer }
         cantidad: { type: integer }
         obligatorio: { type: boolean }
 

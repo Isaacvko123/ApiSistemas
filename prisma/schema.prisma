@@ -14,18 +14,6 @@ enum Rol {
   GERENTE
 }
 
-enum TipoEquipo {
-  LAPTOP
-  DESKTOP
-  TABLET
-  CELULAR
-  MONITOR
-  IMPRESORA
-  ROUTER
-  SWITCH
-  OTRO
-}
-
 enum EstadoEquipo {
   DISPONIBLE
   ASIGNADO
@@ -39,6 +27,27 @@ enum TipoDocumento {
   FACTURA
   GARANTIA
   OTRO
+}
+
+enum DocumentoEvento {
+  ENTREGA
+  DEVOLUCION
+  OTRO
+}
+
+model TipoEquipo {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique
+  descripcion String?
+  activo      Boolean @default(true)
+
+  equipos        Equipo[]
+  checklistItems ChecklistItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tipos_equipo")
 }
 
 enum EstadoResguardo {
@@ -210,6 +219,8 @@ model Empleado {
 
   resguardos       Resguardo[]
   credencialesWifi WifiCredencial[]
+  documentos       Documento[]
+  respaldos        Respaldo[]
 
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
@@ -225,7 +236,10 @@ model Equipo {
   id               Int          @id @default(autoincrement())
   codigoInventario String?      @unique
   serie            String?      @unique
-  tipo             TipoEquipo
+  imei1            String?
+  imei2            String?
+  tipoEquipoId     Int
+  tipoEquipo       TipoEquipo   @relation(fields: [tipoEquipoId], references: [id], onDelete: Restrict)
   marca            String?
   modelo           String?
   descripcion      String?
@@ -238,11 +252,12 @@ model Equipo {
 
   resguardoEquipos ResguardoEquipo[]
   documentos       Documento[]
+  respaldos        Respaldo[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([tipo])
+  @@index([tipoEquipoId])
   @@index([estado])
   @@index([localidadId])
   @@map("equipos")
@@ -303,6 +318,24 @@ model ResguardoEquipo {
   @@map("resguardo_equipos")
 }
 
+model Respaldo {
+  id            Int      @id @default(autoincrement())
+  equipoId      Int
+  empleadoId    Int?
+  fechaRespaldo DateTime @default(now())
+  notas         String?
+
+  equipo   Equipo   @relation(fields: [equipoId], references: [id], onDelete: Cascade)
+  empleado Empleado? @relation(fields: [empleadoId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([equipoId])
+  @@index([empleadoId])
+  @@map("respaldos")
+}
+
 model Checklist {
   id          Int     @id @default(autoincrement())
   nombre      String
@@ -325,13 +358,15 @@ model ChecklistItem {
   id          Int         @id @default(autoincrement())
   checklistId Int
   descripcion String
-  tipoEquipo  TipoEquipo?
+  tipoEquipoId Int?
   cantidad    Int         @default(1)
   obligatorio Boolean     @default(true)
 
-  checklist Checklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+  checklist  Checklist  @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+  tipoEquipo TipoEquipo? @relation(fields: [tipoEquipoId], references: [id], onDelete: SetNull)
 
   @@index([checklistId])
+  @@index([tipoEquipoId])
   @@map("checklist_items")
 }
 
@@ -370,6 +405,7 @@ model CredencialWeb {
 model Documento {
   id            Int           @id @default(autoincrement())
   tipo          TipoDocumento
+  evento        DocumentoEvento?
   ruta          String
   nombreArchivo String?
   mime          String?
@@ -383,6 +419,9 @@ model Documento {
   resguardoEquipoId Int?
   resguardoEquipo   ResguardoEquipo? @relation(fields: [resguardoEquipoId], references: [id], onDelete: Cascade)
 
+  empleadoId Int?
+  empleado   Empleado? @relation(fields: [empleadoId], references: [id], onDelete: SetNull)
+
   subidoPorId Int?
   subidoPor   Usuario? @relation("UsuarioDocumentos", fields: [subidoPorId], references: [id], onDelete: SetNull)
 
@@ -391,6 +430,7 @@ model Documento {
   @@index([equipoId])
   @@index([resguardoId])
   @@index([resguardoEquipoId])
+  @@index([empleadoId])
   @@map("documentos")
 }
 

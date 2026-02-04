@@ -1,8 +1,9 @@
 import { z } from "zod";
-import { type Prisma, type Documento, TipoDocumento } from "@prisma/client";
+import { type Prisma, type Documento, TipoDocumento, DocumentoEvento } from "@prisma/client";
 
 const baseCreate = z.object({
   tipo: z.nativeEnum(TipoDocumento),
+  evento: z.nativeEnum(DocumentoEvento).optional(),
   ruta: z.string().min(1),
   nombreArchivo: z.string().max(255).optional(),
   mime: z.string().max(150).optional(),
@@ -11,6 +12,7 @@ const baseCreate = z.object({
   equipoId: z.number().int().positive().optional(),
   resguardoId: z.number().int().positive().optional(),
   resguardoEquipoId: z.number().int().positive().optional(),
+  empleadoId: z.number().int().positive().optional(),
   subidoPorId: z.number().int().positive().optional(),
 });
 
@@ -27,6 +29,7 @@ export const documentoCreateSchema = baseCreate.superRefine((data, ctx) => {
 export const documentoUpdateSchema = z
   .object({
     tipo: z.nativeEnum(TipoDocumento).optional(),
+    evento: z.nativeEnum(DocumentoEvento).optional().nullable(),
     ruta: z.string().min(1).optional(),
     nombreArchivo: z.string().max(255).optional(),
     mime: z.string().max(150).optional(),
@@ -35,6 +38,7 @@ export const documentoUpdateSchema = z
     equipoId: z.number().int().positive().optional().nullable(),
     resguardoId: z.number().int().positive().optional().nullable(),
     resguardoEquipoId: z.number().int().positive().optional().nullable(),
+    empleadoId: z.number().int().positive().optional().nullable(),
     subidoPorId: z.number().int().positive().optional().nullable(),
   })
   .strict();
@@ -51,6 +55,7 @@ export function toDocumentoCreateData(
   const data = documentoCreateSchema.parse(input);
   return {
     tipo: data.tipo,
+    evento: data.evento,
     ruta: data.ruta,
     nombreArchivo: data.nombreArchivo,
     mime: data.mime,
@@ -61,6 +66,7 @@ export function toDocumentoCreateData(
     ...(data.resguardoEquipoId
       ? { resguardoEquipo: { connect: { id: data.resguardoEquipoId } } }
       : {}),
+    ...(data.empleadoId ? { empleado: { connect: { id: data.empleadoId } } } : {}),
     ...(data.subidoPorId ? { subidoPor: { connect: { id: data.subidoPorId } } } : {}),
   };
 }
@@ -71,6 +77,7 @@ export function toDocumentoUpdateData(
   const data = documentoUpdateSchema.parse(input);
   const update: Prisma.DocumentoUpdateInput = {
     tipo: data.tipo,
+    evento: data.evento === null ? null : data.evento,
     ruta: data.ruta,
     nombreArchivo: data.nombreArchivo,
     mime: data.mime,
@@ -93,6 +100,12 @@ export function toDocumentoUpdateData(
       data.resguardoEquipoId === null
         ? { disconnect: true }
         : { connect: { id: data.resguardoEquipoId } };
+  }
+  if (data.empleadoId !== undefined) {
+    update.empleado =
+      data.empleadoId === null
+        ? { disconnect: true }
+        : { connect: { id: data.empleadoId } };
   }
   if (data.subidoPorId !== undefined) {
     update.subidoPor =

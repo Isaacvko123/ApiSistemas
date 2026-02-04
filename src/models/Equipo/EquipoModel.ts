@@ -1,10 +1,12 @@
 import { z } from "zod";
-import { type Prisma, type Equipo, EstadoEquipo, TipoEquipo } from "@prisma/client";
+import { type Prisma, type Equipo, EstadoEquipo } from "@prisma/client";
 
 export const equipoCreateSchema = z.object({
   codigoInventario: z.string().min(1).max(100).optional(),
   serie: z.string().min(1).max(100).optional(),
-  tipo: z.nativeEnum(TipoEquipo),
+  imei1: z.string().min(1).max(30).optional(),
+  imei2: z.string().min(1).max(30).optional(),
+  tipoEquipoId: z.number().int().positive(),
   marca: z.string().max(100).optional(),
   modelo: z.string().max(100).optional(),
   descripcion: z.string().max(2000).optional(),
@@ -18,7 +20,9 @@ export const equipoUpdateSchema = z
   .object({
     codigoInventario: z.string().min(1).max(100).optional(),
     serie: z.string().min(1).max(100).optional(),
-    tipo: z.nativeEnum(TipoEquipo).optional(),
+    imei1: z.string().min(1).max(30).optional().nullable(),
+    imei2: z.string().min(1).max(30).optional().nullable(),
+    tipoEquipoId: z.number().int().positive().optional(),
     marca: z.string().max(100).optional(),
     modelo: z.string().max(100).optional(),
     descripcion: z.string().max(2000).optional(),
@@ -42,13 +46,15 @@ export function toEquipoCreateData(
   return {
     codigoInventario: data.codigoInventario,
     serie: data.serie,
-    tipo: data.tipo,
+    imei1: data.imei1,
+    imei2: data.imei2,
     marca: data.marca,
     modelo: data.modelo,
     descripcion: data.descripcion,
     estado: data.estado ?? EstadoEquipo.DISPONIBLE,
     fechaCompra: data.fechaCompra,
     costo: data.costo,
+    tipoEquipo: { connect: { id: data.tipoEquipoId } },
     ...(data.localidadId ? { localidad: { connect: { id: data.localidadId } } } : {}),
   };
 }
@@ -60,7 +66,8 @@ export function toEquipoUpdateData(
   const update: Prisma.EquipoUpdateInput = {
     codigoInventario: data.codigoInventario,
     serie: data.serie,
-    tipo: data.tipo,
+    imei1: data.imei1 === undefined ? undefined : data.imei1,
+    imei2: data.imei2 === undefined ? undefined : data.imei2,
     marca: data.marca,
     modelo: data.modelo,
     descripcion: data.descripcion,
@@ -68,6 +75,10 @@ export function toEquipoUpdateData(
     fechaCompra: data.fechaCompra === undefined ? undefined : data.fechaCompra,
     costo: data.costo === undefined ? undefined : data.costo,
   };
+
+  if (data.tipoEquipoId !== undefined) {
+    update.tipoEquipo = { connect: { id: data.tipoEquipoId } };
+  }
 
   if (data.localidadId !== undefined) {
     update.localidad =
