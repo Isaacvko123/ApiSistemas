@@ -31,4 +31,36 @@ describe("TipoEquipo routes", () => {
     expect(res.body).toHaveProperty("id");
     expect(res.body).toHaveProperty("nombre", "Laptop");
   });
+
+  it("actualiza tipo de equipo con token valido", async () => {
+    const { token } = await createAdminAuth();
+
+    const created = await request(app)
+      .post("/tipos-equipo")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ nombre: "Monitor", descripcion: "Pantalla" });
+
+    const res = await request(app)
+      .patch(`/tipos-equipo/${created.body.id}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ descripcion: "Pantalla 27" });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("descripcion", "Pantalla 27");
+  });
+
+  it("elimina tipo de equipo con token valido", async () => {
+    const { token } = await createAdminAuth();
+
+    const created = await request(app)
+      .post("/tipos-equipo")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ nombre: "Mouse" });
+
+    const res = await request(app)
+      .delete(`/tipos-equipo/${created.body.id}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+  });
 });

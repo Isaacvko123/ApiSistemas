@@ -22,16 +22,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
                   },
-                  "typeName": "ZodObject"
+                  "contrasena": {
+                    "type": "string"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "email",
+                  "contrasena"
+                ]
               }
             }
           }
@@ -42,16 +45,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string"
                     },
-                    "typeName": "ZodObject"
+                    "refreshToken": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "accessToken",
+                    "refreshToken"
+                  ]
                 }
               }
             }
@@ -71,16 +77,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
                   },
-                  "typeName": "ZodObject"
+                  "contrasena": {
+                    "type": "string"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "email",
+                  "contrasena"
+                ]
               }
             }
           }
@@ -91,16 +100,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string"
                     },
-                    "typeName": "ZodObject"
+                    "refreshToken": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "accessToken",
+                    "refreshToken"
+                  ]
                 }
               }
             }
@@ -120,16 +132,27 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
                   },
-                  "typeName": "ZodObject"
+                  "email": {
+                    "type": "string"
+                  },
+                  "contrasena": {
+                    "type": "string"
+                  },
+                  "rol": {
+                    "type": "string"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "nombre",
+                  "email",
+                  "contrasena",
+                  "rol"
+                ]
               }
             }
           }
@@ -140,16 +163,27 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "rol": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "nombre",
+                    "email",
+                    "rol"
+                  ]
                 }
               }
             }
@@ -168,16 +202,216 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "rol": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "nombre",
+                    "email",
+                    "rol"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/usuarios/{id}": {
+      "get": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Obtiene usuarios",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "rol": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre",
+                    "email",
+                    "rol"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Actualiza usuarios",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "contrasenaHash": {
+                    "type": "string"
+                  },
+                  "rol": {
+                    "type": "string"
+                  },
+                  "activo": {
+                    "type": "boolean"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "rol": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre",
+                    "email",
+                    "rol"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Elimina usuarios",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "rol": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre",
+                    "email",
+                    "rol"
+                  ]
                 }
               }
             }
@@ -201,16 +435,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
                   },
-                  "typeName": "ZodObject"
+                  "contrasena": {
+                    "type": "string"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "email",
+                  "contrasena"
+                ]
               }
             }
           }
@@ -221,16 +458,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string"
                     },
-                    "typeName": "ZodObject"
+                    "refreshToken": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "accessToken",
+                    "refreshToken"
+                  ]
                 }
               }
             }
@@ -254,16 +494,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
                   },
-                  "typeName": "ZodObject"
+                  "contrasena": {
+                    "type": "string"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "email",
+                  "contrasena"
+                ]
               }
             }
           }
@@ -274,16 +517,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string"
                     },
-                    "typeName": "ZodObject"
+                    "refreshToken": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "accessToken",
+                    "refreshToken"
+                  ]
                 }
               }
             }
@@ -307,16 +553,15 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
-                  },
-                  "typeName": "ZodObject"
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "nombre"
+                ]
               }
             }
           }
@@ -327,16 +572,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "nombre": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
                 }
               }
             }
@@ -359,16 +607,172 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "nombre": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/areas/{id}": {
+      "get": {
+        "tags": [
+          "Áreas"
+        ],
+        "summary": "Obtiene áreas",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Áreas"
+        ],
+        "summary": "Actualiza áreas",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Áreas"
+        ],
+        "summary": "Elimina áreas",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
                 }
               }
             }
@@ -392,16 +796,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
                   },
-                  "typeName": "ZodObject"
+                  "areaId": {
+                    "type": "number"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "nombre",
+                  "areaId"
+                ]
               }
             }
           }
@@ -412,16 +819,23 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "areaId": {
+                      "type": "number"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "nombre",
+                    "areaId"
+                  ]
                 }
               }
             }
@@ -444,16 +858,191 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "areaId": {
+                      "type": "number"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "nombre",
+                    "areaId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/puestos/{id}": {
+      "get": {
+        "tags": [
+          "Puestos"
+        ],
+        "summary": "Obtiene puestos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "areaId": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre",
+                    "areaId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Puestos"
+        ],
+        "summary": "Actualiza puestos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
+                  },
+                  "areaId": {
+                    "type": "number"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "areaId": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre",
+                    "areaId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Puestos"
+        ],
+        "summary": "Elimina puestos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "areaId": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre",
+                    "areaId"
+                  ]
                 }
               }
             }
@@ -477,16 +1066,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
                   },
-                  "typeName": "ZodObject"
+                  "codigo": {
+                    "type": "string"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "nombre",
+                  "codigo"
+                ]
               }
             }
           }
@@ -497,16 +1089,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "nombre": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
                 }
               }
             }
@@ -529,16 +1124,178 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "nombre": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/localidades/{id}": {
+      "get": {
+        "tags": [
+          "Localidades"
+        ],
+        "summary": "Obtiene localidades",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Localidades"
+        ],
+        "summary": "Actualiza localidades",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
+                  },
+                  "codigo": {
+                    "type": "string"
+                  },
+                  "estado": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Localidades"
+        ],
+        "summary": "Elimina localidades",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
                 }
               }
             }
@@ -562,16 +1319,23 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
                   },
-                  "typeName": "ZodObject"
+                  "email": {
+                    "type": "string"
+                  },
+                  "numeroEmpleado": {
+                    "type": "string"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "nombre",
+                  "email",
+                  "numeroEmpleado"
+                ]
               }
             }
           }
@@ -582,16 +1346,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "nombre": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
                 }
               }
             }
@@ -614,16 +1381,464 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "nombre": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/empleados/{id}": {
+      "get": {
+        "tags": [
+          "Empleados"
+        ],
+        "summary": "Obtiene empleados",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Empleados"
+        ],
+        "summary": "Actualiza empleados",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "numeroEmpleado": {
+                    "type": "string"
+                  },
+                  "areaId": {
+                    "type": "number"
+                  },
+                  "puestoId": {
+                    "type": "number"
+                  },
+                  "localidadId": {
+                    "type": "number"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Empleados"
+        ],
+        "summary": "Elimina empleados",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tipos-equipo": {
+      "post": {
+        "tags": [
+          "Tipos de equipo"
+        ],
+        "summary": "Crea tipo de equipo",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
+                  },
+                  "descripcion": {
+                    "type": "string"
+                  },
+                  "activo": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "nombre",
+                  "descripcion",
+                  "activo"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "activo": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre",
+                    "activo"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Tipos de equipo"
+        ],
+        "summary": "Lista tipos de equipo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "activo": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre",
+                    "activo"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tipos-equipo/{id}": {
+      "get": {
+        "tags": [
+          "Tipos de equipo"
+        ],
+        "summary": "Obtiene un tipo de equipo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "activo": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre",
+                    "activo"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Tipos de equipo"
+        ],
+        "summary": "Actualiza tipo de equipo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
+                  },
+                  "descripcion": {
+                    "type": "string"
+                  },
+                  "activo": {
+                    "type": "boolean"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "activo": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre",
+                    "activo"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Tipos de equipo"
+        ],
+        "summary": "Elimina tipo de equipo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    },
+                    "activo": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre",
+                    "activo"
+                  ]
                 }
               }
             }
@@ -647,16 +1862,23 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "serie": {
+                    "type": "string"
                   },
-                  "typeName": "ZodObject"
+                  "modelo": {
+                    "type": "string"
+                  },
+                  "tipoEquipoId": {
+                    "type": "number"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "serie",
+                  "modelo",
+                  "tipoEquipoId"
+                ]
               }
             }
           }
@@ -667,16 +1889,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "serie": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "serie"
+                  ]
                 }
               }
             }
@@ -699,16 +1924,187 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "serie": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "serie"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/equipos/{id}": {
+      "get": {
+        "tags": [
+          "Equipos"
+        ],
+        "summary": "Obtiene equipos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "serie": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "serie"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Equipos"
+        ],
+        "summary": "Actualiza equipos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "serie": {
+                    "type": "string"
+                  },
+                  "modelo": {
+                    "type": "string"
+                  },
+                  "imei1": {
+                    "type": "string"
+                  },
+                  "imei2": {
+                    "type": "string"
+                  },
+                  "tipoEquipoId": {
+                    "type": "number"
+                  },
+                  "localidadId": {
+                    "type": "number"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "serie": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "serie"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Equipos"
+        ],
+        "summary": "Elimina equipos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "serie": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "serie"
+                  ]
                 }
               }
             }
@@ -732,16 +2128,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "empleadoId": {
+                    "type": "number"
                   },
-                  "typeName": "ZodObject"
+                  "fechaInicio": {
+                    "type": "string"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "empleadoId",
+                  "fechaInicio"
+                ]
               }
             }
           }
@@ -752,16 +2151,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "folio": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "folio"
+                  ]
                 }
               }
             }
@@ -784,16 +2186,181 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "folio": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "folio"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/resguardos/{id}": {
+      "get": {
+        "tags": [
+          "Resguardos"
+        ],
+        "summary": "Obtiene resguardos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "folio": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "folio"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Resguardos"
+        ],
+        "summary": "Actualiza resguardos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "folio": {
+                    "type": "string"
+                  },
+                  "empleadoId": {
+                    "type": "number"
+                  },
+                  "localidadId": {
+                    "type": "number"
+                  },
+                  "fechaInicio": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "folio": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "folio"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Resguardos"
+        ],
+        "summary": "Elimina resguardos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "folio": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "folio"
+                  ]
                 }
               }
             }
@@ -817,16 +2384,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "resguardoId": {
+                    "type": "number"
                   },
-                  "typeName": "ZodObject"
+                  "equipoId": {
+                    "type": "number"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "resguardoId",
+                  "equipoId"
+                ]
               }
             }
           }
@@ -837,16 +2407,15 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
-                    },
-                    "typeName": "ZodObject"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id"
+                  ]
                 }
               }
             }
@@ -869,16 +2438,165 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
-                    },
-                    "typeName": "ZodObject"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/resguardo-equipos/{id}": {
+      "get": {
+        "tags": [
+          "Resguardo equipos"
+        ],
+        "summary": "Obtiene resguardo equipos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Resguardo equipos"
+        ],
+        "summary": "Actualiza resguardo equipos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "resguardoId": {
+                    "type": "number"
+                  },
+                  "equipoId": {
+                    "type": "number"
+                  },
+                  "fechaEntrega": {
+                    "type": "string"
+                  },
+                  "fechaDevolucion": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Resguardo equipos"
+        ],
+        "summary": "Elimina resguardo equipos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
                 }
               }
             }
@@ -902,16 +2620,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string"
                   },
-                  "typeName": "ZodObject"
+                  "tipo": {
+                    "type": "string"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "file",
+                  "tipo"
+                ]
               }
             }
           }
@@ -922,16 +2643,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "ruta": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "ruta"
+                  ]
                 }
               }
             }
@@ -956,16 +2680,238 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "ruta": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "ruta"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Crea documentos",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string"
+                  },
+                  "tipo": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "file",
+                  "tipo"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "ruta": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "ruta"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/documentos/{id}": {
+      "get": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Obtiene documentos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "ruta": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "ruta"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Actualiza documentos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ruta": {
+                    "type": "string"
+                  },
+                  "tipo": {
+                    "type": "string"
+                  },
+                  "resguardoId": {
+                    "type": "number"
+                  },
+                  "empleadoId": {
+                    "type": "number"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "ruta": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "ruta"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Elimina documentos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "ruta": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "ruta"
+                  ]
                 }
               }
             }
@@ -989,16 +2935,15 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
-                  },
-                  "typeName": "ZodObject"
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "nombre"
+                ]
               }
             }
           }
@@ -1009,16 +2954,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "nombre": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
                 }
               }
             }
@@ -1041,16 +2989,175 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
                     },
-                    "typeName": "ZodObject"
+                    "nombre": {
+                      "type": "string"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/checklists/{id}": {
+      "get": {
+        "tags": [
+          "Checklists"
+        ],
+        "summary": "Obtiene checklists",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Checklists"
+        ],
+        "summary": "Actualiza checklists",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
+                  },
+                  "puestoId": {
+                    "type": "number"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Checklists"
+        ],
+        "summary": "Elimina checklists",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "nombre": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nombre"
+                  ]
                 }
               }
             }
@@ -1074,16 +3181,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
                   },
-                  "typeName": "ZodObject"
+                  "checklistId": {
+                    "type": "number"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "nombre",
+                  "checklistId"
+                ]
               }
             }
           }
@@ -1094,16 +3204,15 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
-                    },
-                    "typeName": "ZodObject"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id"
+                  ]
                 }
               }
             }
@@ -1126,16 +3235,162 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
-                    },
-                    "typeName": "ZodObject"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/checklist-items/{id}": {
+      "get": {
+        "tags": [
+          "Checklist items"
+        ],
+        "summary": "Obtiene checklist items",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Checklist items"
+        ],
+        "summary": "Actualiza checklist items",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
+                  },
+                  "checklistId": {
+                    "type": "number"
+                  },
+                  "tipoEquipoId": {
+                    "type": "number"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Checklist items"
+        ],
+        "summary": "Elimina checklist items",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
                 }
               }
             }
@@ -1159,16 +3414,23 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string"
                   },
-                  "typeName": "ZodObject"
+                  "usuario": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "url",
+                  "usuario",
+                  "password"
+                ]
               }
             }
           }
@@ -1179,16 +3441,15 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
-                    },
-                    "typeName": "ZodObject"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id"
+                  ]
                 }
               }
             }
@@ -1211,16 +3472,168 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
-                    },
-                    "typeName": "ZodObject"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/credenciales/{id}": {
+      "get": {
+        "tags": [
+          "Credenciales web"
+        ],
+        "summary": "Obtiene credenciales web",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Credenciales web"
+        ],
+        "summary": "Actualiza credenciales web",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string"
+                  },
+                  "usuario": {
+                    "type": "string"
+                  },
+                  "passwordEnc": {
+                    "type": "string"
+                  },
+                  "passwordIv": {
+                    "type": "string"
+                  },
+                  "passwordTag": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Credenciales web"
+        ],
+        "summary": "Elimina credenciales web",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
                 }
               }
             }
@@ -1244,16 +3657,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "_def": {
-                  "unknownKeys": "strip",
-                  "catchall": {
-                    "_def": {
-                      "typeName": "ZodNever"
-                    }
+                "type": "object",
+                "properties": {
+                  "ssid": {
+                    "type": "string"
                   },
-                  "typeName": "ZodObject"
+                  "usuario": {
+                    "type": "string"
+                  }
                 },
-                "_cached": null
+                "required": [
+                  "ssid",
+                  "usuario"
+                ]
               }
             }
           }
@@ -1264,16 +3680,15 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
-                    },
-                    "typeName": "ZodObject"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id"
+                  ]
                 }
               }
             }
@@ -1296,16 +3711,15 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
-                    },
-                    "typeName": "ZodObject"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id"
+                  ]
                 }
               }
             }
@@ -1324,22 +3738,184 @@
           "WiFi credenciales"
         ],
         "summary": "Revela password",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
-                      }
-                    },
-                    "typeName": "ZodObject"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
                   },
-                  "_cached": null
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/wifi-credenciales/{id}": {
+      "get": {
+        "tags": [
+          "WiFi credenciales"
+        ],
+        "summary": "Obtiene wifi credenciales",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "WiFi credenciales"
+        ],
+        "summary": "Actualiza wifi credenciales",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ssid": {
+                    "type": "number"
+                  },
+                  "usuario": {
+                    "type": "string"
+                  },
+                  "passwordEnc": {
+                    "type": "string"
+                  },
+                  "passwordIv": {
+                    "type": "string"
+                  },
+                  "passwordTag": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "WiFi credenciales"
+        ],
+        "summary": "Elimina wifi credenciales",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
                 }
               }
             }
@@ -1364,16 +3940,22 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "_def": {
-                    "unknownKeys": "strip",
-                    "catchall": {
-                      "_def": {
-                        "typeName": "ZodNever"
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "action": {
+                        "type": "string"
                       }
                     },
-                    "typeName": "ZodObject"
-                  },
-                  "_cached": null
+                    "required": [
+                      "id",
+                      "action"
+                    ]
+                  }
                 }
               }
             }
@@ -1388,215 +3970,6 @@
     }
   },
   "components": {
-    "components": {
-      "schemas": {
-        "LoginRequest": {
-          "type": "object",
-          "properties": {
-            "email": {
-              "type": "string",
-              "format": "email"
-            },
-            "contrasena": {
-              "type": "string",
-              "minLength": 10
-            }
-          },
-          "required": [
-            "email",
-            "contrasena"
-          ]
-        },
-        "RefreshRequest": {
-          "type": "object",
-          "properties": {
-            "refreshToken": {
-              "type": "string",
-              "minLength": 20
-            }
-          },
-          "required": [
-            "refreshToken"
-          ]
-        },
-        "UsuariosRequest": {
-          "type": "object",
-          "properties": {
-            "nombre": {
-              "nullable": true
-            },
-            "email": {
-              "nullable": true
-            },
-            "contrasena": {
-              "nullable": true
-            },
-            "rol": {
-              "nullable": true
-            }
-          }
-        },
-        "SesionesRequest": {
-          "type": "object",
-          "properties": {
-            "email": {
-              "nullable": true
-            },
-            "contrasena": {
-              "nullable": true
-            }
-          }
-        },
-        "ÁreasRequest": {
-          "type": "object",
-          "properties": {
-            "nombre": {
-              "nullable": true
-            }
-          }
-        },
-        "PuestosRequest": {
-          "type": "object",
-          "properties": {
-            "nombre": {
-              "nullable": true
-            },
-            "areaId": {
-              "nullable": true
-            }
-          }
-        },
-        "LocalidadesRequest": {
-          "type": "object",
-          "properties": {
-            "nombre": {
-              "nullable": true
-            },
-            "codigo": {
-              "nullable": true
-            }
-          }
-        },
-        "EmpleadosRequest": {
-          "type": "object",
-          "properties": {
-            "nombre": {
-              "nullable": true
-            },
-            "email": {
-              "nullable": true
-            },
-            "numeroEmpleado": {
-              "nullable": true
-            }
-          }
-        },
-        "Tipos de equipoRequest": {
-          "type": "object",
-          "properties": {
-            "nombre": {
-              "nullable": true
-            }
-          }
-        },
-        "EquiposRequest": {
-          "type": "object",
-          "properties": {
-            "serie": {
-              "nullable": true
-            },
-            "modelo": {
-              "nullable": true
-            },
-            "tipoEquipoId": {
-              "nullable": true
-            }
-          }
-        },
-        "ResguardosRequest": {
-          "type": "object",
-          "properties": {
-            "empleadoId": {
-              "nullable": true
-            },
-            "fechaInicio": {
-              "nullable": true
-            }
-          }
-        },
-        "Resguardo equiposRequest": {
-          "type": "object",
-          "properties": {
-            "resguardoId": {
-              "nullable": true
-            },
-            "equipoId": {
-              "nullable": true
-            }
-          }
-        },
-        "DocumentosRequest": {
-          "type": "object",
-          "properties": {
-            "file": {
-              "nullable": true
-            },
-            "tipo": {
-              "nullable": true
-            }
-          }
-        },
-        "ChecklistsRequest": {
-          "type": "object",
-          "properties": {
-            "nombre": {
-              "nullable": true
-            }
-          }
-        },
-        "Checklist itemsRequest": {
-          "type": "object",
-          "properties": {
-            "nombre": {
-              "nullable": true
-            },
-            "checklistId": {
-              "nullable": true
-            }
-          }
-        },
-        "Credenciales webRequest": {
-          "type": "object",
-          "properties": {
-            "url": {
-              "nullable": true
-            },
-            "usuario": {
-              "nullable": true
-            },
-            "password": {
-              "nullable": true
-            }
-          }
-        },
-        "WiFi credencialesRequest": {
-          "type": "object",
-          "properties": {
-            "ssid": {
-              "nullable": true
-            },
-            "usuario": {
-              "nullable": true
-            }
-          }
-        },
-        "Audit logsRequest": {
-          "type": "object",
-          "properties": {}
-        }
-      },
-      "parameters": {}
-    },
     "securitySchemes": {
       "BearerAuth": {
         "type": "http",

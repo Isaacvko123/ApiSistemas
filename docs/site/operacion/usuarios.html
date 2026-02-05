@@ -27,7 +27,7 @@
         <h2>Rutas y permisos</h2>
         <table>
           <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Auth</th><th>Roles</th></tr></thead>
-          <tbody><tr><td>POST</td><td>/usuarios</td><td>Crea usuario</td><td>No</td><td>-</td></tr><tr><td>GET</td><td>/usuarios</td><td>Lista usuarios</td><td>Sí</td><td>ADMIN, GERENTE</td></tr></tbody>
+          <tbody><tr><td>POST</td><td>/usuarios</td><td>Crea usuario</td><td>No</td><td>-</td></tr><tr><td>GET</td><td>/usuarios</td><td>Lista usuarios</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>GET</td><td>/usuarios/{id}</td><td>Obtiene usuarios</td><td>Sí</td><td>-</td></tr><tr><td>PATCH</td><td>/usuarios/{id}</td><td>Actualiza usuarios</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>DELETE</td><td>/usuarios/{id}</td><td>Elimina usuarios</td><td>Sí</td><td>ADMIN, GERENTE</td></tr></tbody>
         </table>
       </section>
       <section class="card">

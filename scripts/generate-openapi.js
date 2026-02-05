@@ -1,39 +1,74 @@
 const fs = require("fs");
 const path = require("path");
 const { z } = require("zod-3");
-const { OpenAPIRegistry, OpenApiGeneratorV3, extendZodWithOpenApi } = require("@asteasolutions/zod-to-openapi");
-
 const modulesPath = path.join(__dirname, "..", "docs", "content", "modules.json");
 const modules = fs.existsSync(modulesPath)
   ? JSON.parse(fs.readFileSync(modulesPath, "utf8")).modules || []
   : [];
 
-extendZodWithOpenApi(z);
-const registry = new OpenAPIRegistry();
-
-const loginSchema = z.object({
-  email: z.string().email(),
-  contrasena: z.string().min(10),
-});
-const refreshSchema = z.object({
-  refreshToken: z.string().min(20),
-});
-
-registry.register("LoginRequest", loginSchema);
-registry.register("RefreshRequest", refreshSchema);
-
 function schemaFromExample(example) {
-  if (!example || typeof example !== "object") return z.object({});
+  if (example === null || example === undefined) return z.object({});
+  if (Array.isArray(example)) {
+    const item = example[0];
+    return z.array(schemaFromExample(item));
+  }
+  if (typeof example !== "object") {
+    if (typeof example === "string") return z.string();
+    if (typeof example === "number") return z.number();
+    if (typeof example === "boolean") return z.boolean();
+    return z.any();
+  }
   const shape = {};
   for (const key of Object.keys(example)) {
-    shape[key] = z.any();
+    shape[key] = schemaFromExample(example[key]);
   }
   return z.object(shape);
 }
 
-for (const mod of modules) {
-  const reqSchema = schemaFromExample(mod.examples?.request);
-  registry.register(`${mod.title || mod.slug}Request`, reqSchema);
+function fieldType(field) {
+  const lower = field.toLowerCase();
+  if (lower === "id" || lower.endsWith("id")) return z.number();
+  if (lower.includes("fecha") || lower.endsWith("at")) return z.string();
+  if (lower === "activo" || lower === "vigente") return z.boolean();
+  return z.string();
+}
+
+function jsonTypeFromValue(value) {
+  if (typeof value === "string") return { type: "string" };
+  if (typeof value === "number") return { type: "number" };
+  if (typeof value === "boolean") return { type: "boolean" };
+  if (Array.isArray(value)) return { type: "array", items: jsonSchemaFromExample(value[0] ?? "") };
+  if (value && typeof value === "object") return jsonSchemaFromExample(value);
+  return { type: "string" };
+}
+
+function jsonSchemaFromExample(example) {
+  if (example === null || example === undefined) return { type: "object", properties: {} };
+  if (Array.isArray(example)) return { type: "array", items: jsonSchemaFromExample(example[0] ?? "") };
+  if (typeof example !== "object") return jsonTypeFromValue(example);
+  const properties = {};
+  const required = [];
+  for (const key of Object.keys(example)) {
+    properties[key] = jsonTypeFromValue(example[key]);
+    required.push(key);
+  }
+  return { type: "object", properties, required };
+}
+
+function jsonSchemaFromFields(fields, optionalAll = false, exclude = []) {
+  const properties = {};
+  const required = [];
+  for (const f of fields || []) {
+    if (exclude.includes(f)) continue;
+    const lower = f.toLowerCase();
+    let schema = { type: "string" };
+    if (lower === "id" || lower.endsWith("id")) schema = { type: "number" };
+    if (lower.includes("fecha") || lower.endsWith("at")) schema = { type: "string" };
+    if (lower === "activo" || lower === "vigente") schema = { type: "boolean" };
+    properties[f] = schema;
+    if (!optionalAll) required.push(f);
+  }
+  return { type: "object", properties, required };
 }
 
 const paths = {
@@ -43,7 +78,18 @@ const paths = {
       summary: "Login",
       requestBody: {
         required: true,
-        content: { "application/json": { schema: loginSchema } },
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                email: { type: "string", format: "email" },
+                contrasena: { type: "string", minLength: 10 },
+              },
+              required: ["email", "contrasena"],
+            },
+          },
+        },
       },
       responses: { "200": { description: "OK" } },
     },
@@ -54,7 +100,17 @@ const paths = {
       summary: "Refresh tokens",
       requestBody: {
         required: true,
-        content: { "application/json": { schema: refreshSchema } },
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                refreshToken: { type: "string", minLength: 20 },
+              },
+              required: ["refreshToken"],
+            },
+          },
+        },
       },
       responses: { "200": { description: "OK" } },
     },
@@ -62,24 +118,48 @@ const paths = {
 };
 
 for (const mod of modules) {
-  const reqSchema = schemaFromExample(mod.examples?.request);
-  const resSchema = schemaFromExample(mod.examples?.response);
+  const modelFields = mod.model || [];
+  const reqSchemaPost = jsonSchemaFromExample(mod.examples?.request);
+  const reqSchemaPatch = jsonSchemaFromFields(modelFields, true, ["id", "createdAt", "updatedAt"]);
+  const resSchema = jsonSchemaFromExample(mod.examples?.response);
+  const resFallback = jsonSchemaFromFields(modelFields, false);
   for (const route of mod.routes || []) {
     const method = route.method.toLowerCase();
     if (!paths[route.path]) paths[route.path] = {};
+    const params = route.path.includes("{id}")
+      ? [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "number" },
+          },
+        ]
+      : undefined;
     paths[route.path][method] = {
       tags: [mod.title || mod.slug],
       summary: route.desc || `${route.method} ${route.path}`,
+      parameters: params,
       requestBody: ["post", "put", "patch"].includes(method)
         ? {
             required: true,
-            content: { "application/json": { schema: reqSchema } },
+            content: {
+              "application/json": {
+                schema: method === "patch"
+                  ? reqSchemaPatch
+                  : reqSchemaPost || jsonSchemaFromFields(modelFields, false, ["id", "createdAt", "updatedAt"]),
+              },
+            },
           }
         : undefined,
       responses: {
         "200": {
           description: "OK",
-          content: { "application/json": { schema: resSchema } },
+          content: {
+            "application/json": {
+              schema: resSchema || resFallback,
+            },
+          },
         },
       },
       security: route.auth ? [{ BearerAuth: [] }] : [],
@@ -87,8 +167,6 @@ for (const mod of modules) {
   }
 }
 
-const generator = new OpenApiGeneratorV3(registry.definitions);
-const components = generator.generateComponents();
 const doc = {
   openapi: "3.0.3",
   info: {
@@ -99,7 +177,6 @@ const doc = {
   servers: [{ url: "http://localhost:8080" }],
   paths,
   components: {
-    ...components,
     securitySchemes: {
       BearerAuth: {
         type: "http",

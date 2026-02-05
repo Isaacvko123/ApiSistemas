@@ -6,18 +6,93 @@
       "subtitle": "Gestión de cuentas y roles",
       "description": "Crea, lista y administra usuarios de la plataforma. Integra RBAC y hash Argon2.",
       "routes": [
-        { "method": "POST", "path": "/usuarios", "desc": "Crea usuario", "auth": false, "roles": [] },
-        { "method": "GET", "path": "/usuarios", "desc": "Lista usuarios", "auth": true, "roles": ["ADMIN","GERENTE"] }
+        {
+          "method": "POST",
+          "path": "/usuarios",
+          "desc": "Crea usuario",
+          "auth": false,
+          "roles": []
+        },
+        {
+          "method": "GET",
+          "path": "/usuarios",
+          "desc": "Lista usuarios",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/usuarios/{id}",
+          "desc": "Obtiene usuarios",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "PATCH",
+          "path": "/usuarios/{id}",
+          "desc": "Actualiza usuarios",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/usuarios/{id}",
+          "desc": "Elimina usuarios",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list", "create"],
-      "model": ["id", "nombre", "email", "contrasenaHash", "rol", "activo", "createdAt"],
-      "validations": ["email único", "password >= 10", "rol válido"],
-      "errors": ["400 payload inválido", "401 sin auth", "409 email duplicado"],
+      "controller": [
+        "list",
+        "create"
+      ],
+      "model": [
+        "id",
+        "nombre",
+        "email",
+        "contrasenaHash",
+        "rol",
+        "activo",
+        "createdAt"
+      ],
+      "validations": [
+        "email único",
+        "password >= 10",
+        "rol válido"
+      ],
+      "errors": [
+        "400 payload inválido",
+        "401 sin auth",
+        "409 email duplicado"
+      ],
       "examples": {
-        "request": { "nombre": "Ana Pérez", "email": "ana@empresa.com", "contrasena": "PasswordSegura123", "rol": "ADMIN" },
-        "response": { "id": 1, "nombre": "Ana Pérez", "email": "ana@empresa.com", "rol": "ADMIN" }
+        "request": {
+          "nombre": "Ana Pérez",
+          "email": "ana@empresa.com",
+          "contrasena": "PasswordSegura123",
+          "rol": "ADMIN"
+        },
+        "response": {
+          "id": 1,
+          "nombre": "Ana Pérez",
+          "email": "ana@empresa.com",
+          "rol": "ADMIN"
+        }
       },
-      "checklist": ["Hash Argon2", "Auditoría de creación", "No exponer contrasena"]
+      "checklist": [
+        "Hash Argon2",
+        "Auditoría de creación",
+        "No exponer contrasena"
+      ]
     },
     {
       "slug": "sesiones",
@@ -25,20 +100,71 @@
       "subtitle": "Control de refresh tokens",
       "description": "Registra sesiones por usuario y permite revocación por sesión o global.",
       "routes": [
-        { "method": "POST", "path": "/auth/login", "desc": "Crea sesión y tokens", "auth": false, "roles": [] },
-        { "method": "POST", "path": "/auth/refresh", "desc": "Rota refresh", "auth": false, "roles": [] },
-        { "method": "POST", "path": "/auth/logout", "desc": "Revoca sesión actual", "auth": true, "roles": [] },
-        { "method": "POST", "path": "/auth/logout-all", "desc": "Revoca todas las sesiones", "auth": true, "roles": [] }
+        {
+          "method": "POST",
+          "path": "/auth/login",
+          "desc": "Crea sesión y tokens",
+          "auth": false,
+          "roles": []
+        },
+        {
+          "method": "POST",
+          "path": "/auth/refresh",
+          "desc": "Rota refresh",
+          "auth": false,
+          "roles": []
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout",
+          "desc": "Revoca sesión actual",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout-all",
+          "desc": "Revoca todas las sesiones",
+          "auth": true,
+          "roles": []
+        }
       ],
-      "controller": ["login", "refresh", "logout", "logoutAll"],
-      "model": ["id", "usuarioId", "refreshHash", "expiresAt", "lastUsedAt"],
-      "validations": ["JWT válido", "refreshHash coincide"],
-      "errors": ["401 token inválido", "401 refresh revocado"],
+      "controller": [
+        "login",
+        "refresh",
+        "logout",
+        "logoutAll"
+      ],
+      "model": [
+        "id",
+        "usuarioId",
+        "refreshHash",
+        "expiresAt",
+        "lastUsedAt"
+      ],
+      "validations": [
+        "JWT válido",
+        "refreshHash coincide"
+      ],
+      "errors": [
+        "401 token inválido",
+        "401 refresh revocado"
+      ],
       "examples": {
-        "request": { "email": "ana@empresa.com", "contrasena": "PasswordSegura123" },
-        "response": { "accessToken": "...", "refreshToken": "..." }
+        "request": {
+          "email": "ana@empresa.com",
+          "contrasena": "PasswordSegura123"
+        },
+        "response": {
+          "accessToken": "...",
+          "refreshToken": "..."
+        }
       },
-      "checklist": ["Rotación refresh", "Revocación global", "Audit logs de login"]
+      "checklist": [
+        "Rotación refresh",
+        "Revocación global",
+        "Audit logs de login"
+      ]
     },
     {
       "slug": "areas",
@@ -46,15 +172,77 @@
       "subtitle": "Estructura organizacional",
       "description": "Catálogo de áreas para empleados y puestos.",
       "routes": [
-        { "method": "POST", "path": "/areas", "desc": "Crea área", "auth": true, "roles": ["ADMIN","GERENTE"] },
-        { "method": "GET", "path": "/areas", "desc": "Lista áreas", "auth": true, "roles": [] }
+        {
+          "method": "POST",
+          "path": "/areas",
+          "desc": "Crea área",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/areas",
+          "desc": "Lista áreas",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "GET",
+          "path": "/areas/{id}",
+          "desc": "Obtiene áreas",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "PATCH",
+          "path": "/areas/{id}",
+          "desc": "Actualiza áreas",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/areas/{id}",
+          "desc": "Elimina áreas",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list", "create"],
-      "model": ["id", "nombre"],
-      "validations": ["nombre único"],
-      "errors": ["409 duplicado"],
-      "examples": { "request": { "nombre": "Sistemas" }, "response": { "id": 1, "nombre": "Sistemas" } },
-      "checklist": ["Auditoría de cambios"]
+      "controller": [
+        "list",
+        "create"
+      ],
+      "model": [
+        "id",
+        "nombre"
+      ],
+      "validations": [
+        "nombre único"
+      ],
+      "errors": [
+        "409 duplicado"
+      ],
+      "examples": {
+        "request": {
+          "nombre": "Sistemas"
+        },
+        "response": {
+          "id": 1,
+          "nombre": "Sistemas"
+        }
+      },
+      "checklist": [
+        "Auditoría de cambios"
+      ]
     },
     {
       "slug": "puestos",
@@ -62,15 +250,81 @@
       "subtitle": "Roles operativos",
       "description": "Puestos ligados a un área. Usados en empleados y checklist.",
       "routes": [
-        { "method": "POST", "path": "/puestos", "desc": "Crea puesto", "auth": true, "roles": ["ADMIN","GERENTE"] },
-        { "method": "GET", "path": "/puestos", "desc": "Lista puestos", "auth": true, "roles": [] }
+        {
+          "method": "POST",
+          "path": "/puestos",
+          "desc": "Crea puesto",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/puestos",
+          "desc": "Lista puestos",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "GET",
+          "path": "/puestos/{id}",
+          "desc": "Obtiene puestos",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "PATCH",
+          "path": "/puestos/{id}",
+          "desc": "Actualiza puestos",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/puestos/{id}",
+          "desc": "Elimina puestos",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list", "create"],
-      "model": ["id", "nombre", "areaId"],
-      "validations": ["areaId existente"],
-      "errors": ["404 área no encontrada", "409 duplicado"],
-      "examples": { "request": { "nombre": "Soporte", "areaId": 1 }, "response": { "id": 1, "nombre": "Soporte", "areaId": 1 } },
-      "checklist": ["Relación con áreas"]
+      "controller": [
+        "list",
+        "create"
+      ],
+      "model": [
+        "id",
+        "nombre",
+        "areaId"
+      ],
+      "validations": [
+        "areaId existente"
+      ],
+      "errors": [
+        "404 área no encontrada",
+        "409 duplicado"
+      ],
+      "examples": {
+        "request": {
+          "nombre": "Soporte",
+          "areaId": 1
+        },
+        "response": {
+          "id": 1,
+          "nombre": "Soporte",
+          "areaId": 1
+        }
+      },
+      "checklist": [
+        "Relación con áreas"
+      ]
     },
     {
       "slug": "localidades",
@@ -78,15 +332,80 @@
       "subtitle": "Sitios físicos",
       "description": "Localidades para equipos, empleados y resguardos.",
       "routes": [
-        { "method": "POST", "path": "/localidades", "desc": "Crea localidad", "auth": true, "roles": ["ADMIN","GERENTE"] },
-        { "method": "GET", "path": "/localidades", "desc": "Lista localidades", "auth": true, "roles": [] }
+        {
+          "method": "POST",
+          "path": "/localidades",
+          "desc": "Crea localidad",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/localidades",
+          "desc": "Lista localidades",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "GET",
+          "path": "/localidades/{id}",
+          "desc": "Obtiene localidades",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "PATCH",
+          "path": "/localidades/{id}",
+          "desc": "Actualiza localidades",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/localidades/{id}",
+          "desc": "Elimina localidades",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list", "create"],
-      "model": ["id", "nombre", "codigo", "estado"],
-      "validations": ["codigo único"],
-      "errors": ["409 duplicado"],
-      "examples": { "request": { "nombre": "CDMX", "codigo": "CDMX" }, "response": { "id": 1, "nombre": "CDMX" } },
-      "checklist": ["Auditoría de cambios"]
+      "controller": [
+        "list",
+        "create"
+      ],
+      "model": [
+        "id",
+        "nombre",
+        "codigo",
+        "estado"
+      ],
+      "validations": [
+        "codigo único"
+      ],
+      "errors": [
+        "409 duplicado"
+      ],
+      "examples": {
+        "request": {
+          "nombre": "CDMX",
+          "codigo": "CDMX"
+        },
+        "response": {
+          "id": 1,
+          "nombre": "CDMX"
+        }
+      },
+      "checklist": [
+        "Auditoría de cambios"
+      ]
     },
     {
       "slug": "empleados",
@@ -94,15 +413,86 @@
       "subtitle": "Personal operativo",
       "description": "Registro de empleados con área, puesto y localidad.",
       "routes": [
-        { "method": "POST", "path": "/empleados", "desc": "Crea empleado", "auth": true, "roles": ["ADMIN","GERENTE"] },
-        { "method": "GET", "path": "/empleados", "desc": "Lista empleados", "auth": true, "roles": [] }
+        {
+          "method": "POST",
+          "path": "/empleados",
+          "desc": "Crea empleado",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/empleados",
+          "desc": "Lista empleados",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "GET",
+          "path": "/empleados/{id}",
+          "desc": "Obtiene empleados",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "PATCH",
+          "path": "/empleados/{id}",
+          "desc": "Actualiza empleados",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/empleados/{id}",
+          "desc": "Elimina empleados",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list", "create"],
-      "model": ["id", "nombre", "email", "numeroEmpleado", "areaId", "puestoId", "localidadId"],
-      "validations": ["email único", "numeroEmpleado único"],
-      "errors": ["409 duplicado", "404 relación inválida"],
-      "examples": { "request": { "nombre": "Luis", "email": "luis@empresa.com", "numeroEmpleado": "A123" }, "response": { "id": 1, "nombre": "Luis" } },
-      "checklist": ["Relaciones obligatorias"]
+      "controller": [
+        "list",
+        "create"
+      ],
+      "model": [
+        "id",
+        "nombre",
+        "email",
+        "numeroEmpleado",
+        "areaId",
+        "puestoId",
+        "localidadId"
+      ],
+      "validations": [
+        "email único",
+        "numeroEmpleado único"
+      ],
+      "errors": [
+        "409 duplicado",
+        "404 relación inválida"
+      ],
+      "examples": {
+        "request": {
+          "nombre": "Luis",
+          "email": "luis@empresa.com",
+          "numeroEmpleado": "A123"
+        },
+        "response": {
+          "id": 1,
+          "nombre": "Luis"
+        }
+      },
+      "checklist": [
+        "Relaciones obligatorias"
+      ]
     },
     {
       "slug": "tipos_equipo",
@@ -110,18 +500,90 @@
       "subtitle": "Catálogo de dispositivos",
       "description": "Catálogo maestro usado por equipos y checklist_items.",
       "routes": [
-        { "method": "POST", "path": "/tipos-equipo", "desc": "Crea tipo de equipo", "auth": true, "roles": ["ADMIN","GERENTE"] },
-        { "method": "GET", "path": "/tipos-equipo", "desc": "Lista tipos de equipo", "auth": true, "roles": [] },
-        { "method": "GET", "path": "/tipos-equipo/{id}", "desc": "Obtiene un tipo de equipo", "auth": true, "roles": [] },
-        { "method": "PATCH", "path": "/tipos-equipo/{id}", "desc": "Actualiza tipo de equipo", "auth": true, "roles": ["ADMIN","GERENTE"] },
-        { "method": "DELETE", "path": "/tipos-equipo/{id}", "desc": "Elimina tipo de equipo", "auth": true, "roles": ["ADMIN","GERENTE"] }
+        {
+          "method": "POST",
+          "path": "/tipos-equipo",
+          "desc": "Crea tipo de equipo",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/tipos-equipo",
+          "desc": "Lista tipos de equipo",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "GET",
+          "path": "/tipos-equipo/{id}",
+          "desc": "Obtiene un tipo de equipo",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "PATCH",
+          "path": "/tipos-equipo/{id}",
+          "desc": "Actualiza tipo de equipo",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/tipos-equipo/{id}",
+          "desc": "Elimina tipo de equipo",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list", "get", "create", "update", "delete"],
-      "model": ["id", "nombre", "descripcion", "activo"],
-      "validations": ["nombre único", "descripcion opcional", "activo boolean"],
-      "errors": ["400 payload inválido", "409 duplicado", "404 no encontrado"],
-      "examples": { "request": { "nombre": "Laptop", "descripcion": "Equipo portátil", "activo": true }, "response": { "id": 1, "nombre": "Laptop", "activo": true } },
-      "checklist": ["Auditoría de cambios", "No borrar si hay equipos ligados"]
+      "controller": [
+        "list",
+        "get",
+        "create",
+        "update",
+        "delete"
+      ],
+      "model": [
+        "id",
+        "nombre",
+        "descripcion",
+        "activo"
+      ],
+      "validations": [
+        "nombre único",
+        "descripcion opcional",
+        "activo boolean"
+      ],
+      "errors": [
+        "400 payload inválido",
+        "409 duplicado",
+        "404 no encontrado"
+      ],
+      "examples": {
+        "request": {
+          "nombre": "Laptop",
+          "descripcion": "Equipo portátil",
+          "activo": true
+        },
+        "response": {
+          "id": 1,
+          "nombre": "Laptop",
+          "activo": true
+        }
+      },
+      "checklist": [
+        "Auditoría de cambios",
+        "No borrar si hay equipos ligados"
+      ]
     },
     {
       "slug": "equipos",
@@ -129,15 +591,86 @@
       "subtitle": "Inventario tecnológico",
       "description": "Registro de equipos con serie, IMEI y tipo.",
       "routes": [
-        { "method": "POST", "path": "/equipos", "desc": "Crea equipo", "auth": true, "roles": ["ADMIN","GERENTE"] },
-        { "method": "GET", "path": "/equipos", "desc": "Lista equipos", "auth": true, "roles": [] }
+        {
+          "method": "POST",
+          "path": "/equipos",
+          "desc": "Crea equipo",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/equipos",
+          "desc": "Lista equipos",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "GET",
+          "path": "/equipos/{id}",
+          "desc": "Obtiene equipos",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "PATCH",
+          "path": "/equipos/{id}",
+          "desc": "Actualiza equipos",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/equipos/{id}",
+          "desc": "Elimina equipos",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list", "create"],
-      "model": ["id", "serie", "modelo", "imei1", "imei2", "tipoEquipoId", "localidadId"],
-      "validations": ["serie única", "tipoEquipoId válido"],
-      "errors": ["409 duplicado", "404 relación inválida"],
-      "examples": { "request": { "serie": "ABC123", "modelo": "ThinkPad", "tipoEquipoId": 1 }, "response": { "id": 1, "serie": "ABC123" } },
-      "checklist": ["Vincular tipo_equipo"]
+      "controller": [
+        "list",
+        "create"
+      ],
+      "model": [
+        "id",
+        "serie",
+        "modelo",
+        "imei1",
+        "imei2",
+        "tipoEquipoId",
+        "localidadId"
+      ],
+      "validations": [
+        "serie única",
+        "tipoEquipoId válido"
+      ],
+      "errors": [
+        "409 duplicado",
+        "404 relación inválida"
+      ],
+      "examples": {
+        "request": {
+          "serie": "ABC123",
+          "modelo": "ThinkPad",
+          "tipoEquipoId": 1
+        },
+        "response": {
+          "id": 1,
+          "serie": "ABC123"
+        }
+      },
+      "checklist": [
+        "Vincular tipo_equipo"
+      ]
     },
     {
       "slug": "resguardos",
@@ -145,15 +678,81 @@
       "subtitle": "Asignación de equipos",
       "description": "Flujo de entrega y devolución de equipos con evidencia documental.",
       "routes": [
-        { "method": "POST", "path": "/resguardos", "desc": "Crea resguardo", "auth": true, "roles": ["ADMIN","GERENTE"] },
-        { "method": "GET", "path": "/resguardos", "desc": "Lista resguardos", "auth": true, "roles": [] }
+        {
+          "method": "POST",
+          "path": "/resguardos",
+          "desc": "Crea resguardo",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/resguardos",
+          "desc": "Lista resguardos",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "GET",
+          "path": "/resguardos/{id}",
+          "desc": "Obtiene resguardos",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "PATCH",
+          "path": "/resguardos/{id}",
+          "desc": "Actualiza resguardos",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/resguardos/{id}",
+          "desc": "Elimina resguardos",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list", "create"],
-      "model": ["id", "folio", "empleadoId", "localidadId", "fechaInicio"],
-      "validations": ["empleadoId válido"],
-      "errors": ["404 empleado no encontrado"],
-      "examples": { "request": { "empleadoId": 1, "fechaInicio": "2025-01-01" }, "response": { "id": 1, "folio": "RG-0001" } },
-      "checklist": ["Auditoría por cambio"]
+      "controller": [
+        "list",
+        "create"
+      ],
+      "model": [
+        "id",
+        "folio",
+        "empleadoId",
+        "localidadId",
+        "fechaInicio"
+      ],
+      "validations": [
+        "empleadoId válido"
+      ],
+      "errors": [
+        "404 empleado no encontrado"
+      ],
+      "examples": {
+        "request": {
+          "empleadoId": 1,
+          "fechaInicio": "2025-01-01"
+        },
+        "response": {
+          "id": 1,
+          "folio": "RG-0001"
+        }
+      },
+      "checklist": [
+        "Auditoría por cambio"
+      ]
     },
     {
       "slug": "resguardo_equipos",
@@ -161,15 +760,80 @@
       "subtitle": "Detalle de entrega",
       "description": "Detalle por equipo en un resguardo (entrega y devolución).",
       "routes": [
-        { "method": "POST", "path": "/resguardo-equipos", "desc": "Agrega equipo a resguardo", "auth": true, "roles": ["ADMIN","GERENTE"] },
-        { "method": "GET", "path": "/resguardo-equipos", "desc": "Lista detalles", "auth": true, "roles": [] }
+        {
+          "method": "POST",
+          "path": "/resguardo-equipos",
+          "desc": "Agrega equipo a resguardo",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/resguardo-equipos",
+          "desc": "Lista detalles",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "GET",
+          "path": "/resguardo-equipos/{id}",
+          "desc": "Obtiene resguardo equipos",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "PATCH",
+          "path": "/resguardo-equipos/{id}",
+          "desc": "Actualiza resguardo equipos",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/resguardo-equipos/{id}",
+          "desc": "Elimina resguardo equipos",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list", "create"],
-      "model": ["id", "resguardoId", "equipoId", "fechaEntrega", "fechaDevolucion"],
-      "validations": ["resguardoId y equipoId válidos"],
-      "errors": ["404 resguardo/equipo no encontrado"],
-      "examples": { "request": { "resguardoId": 1, "equipoId": 2 }, "response": { "id": 1 } },
-      "checklist": ["Documento de entrega/devolución"]
+      "controller": [
+        "list",
+        "create"
+      ],
+      "model": [
+        "id",
+        "resguardoId",
+        "equipoId",
+        "fechaEntrega",
+        "fechaDevolucion"
+      ],
+      "validations": [
+        "resguardoId y equipoId válidos"
+      ],
+      "errors": [
+        "404 resguardo/equipo no encontrado"
+      ],
+      "examples": {
+        "request": {
+          "resguardoId": 1,
+          "equipoId": 2
+        },
+        "response": {
+          "id": 1
+        }
+      },
+      "checklist": [
+        "Documento de entrega/devolución"
+      ]
     },
     {
       "slug": "documentos",
@@ -177,15 +841,93 @@
       "subtitle": "Evidencias",
       "description": "Carga y registro de PDF/imagen relacionados a resguardos.",
       "routes": [
-        { "method": "POST", "path": "/documentos/upload", "desc": "Sube documento", "auth": true, "roles": ["ADMIN","GERENTE"] },
-        { "method": "GET", "path": "/documentos", "desc": "Lista documentos", "auth": true, "roles": [] }
+        {
+          "method": "POST",
+          "path": "/documentos/upload",
+          "desc": "Sube documento",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/documentos",
+          "desc": "Lista documentos",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "GET",
+          "path": "/documentos/{id}",
+          "desc": "Obtiene documentos",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "POST",
+          "path": "/documentos",
+          "desc": "Crea documentos",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "PATCH",
+          "path": "/documentos/{id}",
+          "desc": "Actualiza documentos",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/documentos/{id}",
+          "desc": "Elimina documentos",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list", "upload"],
-      "model": ["id", "ruta", "tipo", "resguardoId", "empleadoId"],
-      "validations": ["MIME permitido", "tamaño <= límite"],
-      "errors": ["400 tipo inválido", "413 tamaño excedido"],
-      "examples": { "request": { "file": "archivo.pdf", "tipo": "RESGUARDO" }, "response": { "id": 1, "ruta": "uploads/..." } },
-      "checklist": ["Guardar ruta en DB"]
+      "controller": [
+        "list",
+        "upload"
+      ],
+      "model": [
+        "id",
+        "ruta",
+        "tipo",
+        "resguardoId",
+        "empleadoId"
+      ],
+      "validations": [
+        "MIME permitido",
+        "tamaño <= límite"
+      ],
+      "errors": [
+        "400 tipo inválido",
+        "413 tamaño excedido"
+      ],
+      "examples": {
+        "request": {
+          "file": "archivo.pdf",
+          "tipo": "RESGUARDO"
+        },
+        "response": {
+          "id": 1,
+          "ruta": "uploads/..."
+        }
+      },
+      "checklist": [
+        "Guardar ruta en DB"
+      ]
     },
     {
       "slug": "checklists",
@@ -193,15 +935,78 @@
       "subtitle": "Requisitos por puesto",
       "description": "Checklists por puesto para control operativo.",
       "routes": [
-        { "method": "POST", "path": "/checklists", "desc": "Crea checklist", "auth": true, "roles": ["ADMIN","GERENTE"] },
-        { "method": "GET", "path": "/checklists", "desc": "Lista checklists", "auth": true, "roles": [] }
+        {
+          "method": "POST",
+          "path": "/checklists",
+          "desc": "Crea checklist",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/checklists",
+          "desc": "Lista checklists",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "GET",
+          "path": "/checklists/{id}",
+          "desc": "Obtiene checklists",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "PATCH",
+          "path": "/checklists/{id}",
+          "desc": "Actualiza checklists",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/checklists/{id}",
+          "desc": "Elimina checklists",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list", "create"],
-      "model": ["id", "nombre", "puestoId"],
-      "validations": ["puestoId válido"],
-      "errors": ["404 puesto no encontrado"],
-      "examples": { "request": { "nombre": "Entrega" }, "response": { "id": 1, "nombre": "Entrega" } },
-      "checklist": ["Evitar duplicados por puesto"]
+      "controller": [
+        "list",
+        "create"
+      ],
+      "model": [
+        "id",
+        "nombre",
+        "puestoId"
+      ],
+      "validations": [
+        "puestoId válido"
+      ],
+      "errors": [
+        "404 puesto no encontrado"
+      ],
+      "examples": {
+        "request": {
+          "nombre": "Entrega"
+        },
+        "response": {
+          "id": 1,
+          "nombre": "Entrega"
+        }
+      },
+      "checklist": [
+        "Evitar duplicados por puesto"
+      ]
     },
     {
       "slug": "checklist_items",
@@ -209,15 +1014,79 @@
       "subtitle": "Requisitos unitarios",
       "description": "Items dentro de checklist, opcionalmente ligados a tipo de equipo.",
       "routes": [
-        { "method": "POST", "path": "/checklist-items", "desc": "Crea item", "auth": true, "roles": ["ADMIN","GERENTE"] },
-        { "method": "GET", "path": "/checklist-items", "desc": "Lista items", "auth": true, "roles": [] }
+        {
+          "method": "POST",
+          "path": "/checklist-items",
+          "desc": "Crea item",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/checklist-items",
+          "desc": "Lista items",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "GET",
+          "path": "/checklist-items/{id}",
+          "desc": "Obtiene checklist items",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "PATCH",
+          "path": "/checklist-items/{id}",
+          "desc": "Actualiza checklist items",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/checklist-items/{id}",
+          "desc": "Elimina checklist items",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list", "create"],
-      "model": ["id", "nombre", "checklistId", "tipoEquipoId"],
-      "validations": ["checklistId válido"],
-      "errors": ["404 checklist no encontrado"],
-      "examples": { "request": { "nombre": "Cargador", "checklistId": 1 }, "response": { "id": 1 } },
-      "checklist": ["Opcional tipo_equipo"]
+      "controller": [
+        "list",
+        "create"
+      ],
+      "model": [
+        "id",
+        "nombre",
+        "checklistId",
+        "tipoEquipoId"
+      ],
+      "validations": [
+        "checklistId válido"
+      ],
+      "errors": [
+        "404 checklist no encontrado"
+      ],
+      "examples": {
+        "request": {
+          "nombre": "Cargador",
+          "checklistId": 1
+        },
+        "response": {
+          "id": 1
+        }
+      },
+      "checklist": [
+        "Opcional tipo_equipo"
+      ]
     },
     {
       "slug": "credenciales_web",
@@ -225,15 +1094,83 @@
       "subtitle": "Secretos cifrados",
       "description": "Almacena accesos web cifrados con AES-GCM y auditoría.",
       "routes": [
-        { "method": "POST", "path": "/credenciales", "desc": "Crea credencial web", "auth": true, "roles": ["ADMIN","GERENTE"] },
-        { "method": "GET", "path": "/credenciales", "desc": "Lista credenciales", "auth": true, "roles": [] }
+        {
+          "method": "POST",
+          "path": "/credenciales",
+          "desc": "Crea credencial web",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/credenciales",
+          "desc": "Lista credenciales",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "GET",
+          "path": "/credenciales/{id}",
+          "desc": "Obtiene credenciales web",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "PATCH",
+          "path": "/credenciales/{id}",
+          "desc": "Actualiza credenciales web",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/credenciales/{id}",
+          "desc": "Elimina credenciales web",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list", "create"],
-      "model": ["id", "url", "usuario", "passwordEnc", "passwordIv", "passwordTag"],
-      "validations": ["url válido"],
-      "errors": ["400 payload inválido"],
-      "examples": { "request": { "url": "https://app.com", "usuario": "ana", "password": "***" }, "response": { "id": 1 } },
-      "checklist": ["AES-GCM", "Auditoría acceso"]
+      "controller": [
+        "list",
+        "create"
+      ],
+      "model": [
+        "id",
+        "url",
+        "usuario",
+        "passwordEnc",
+        "passwordIv",
+        "passwordTag"
+      ],
+      "validations": [
+        "url válido"
+      ],
+      "errors": [
+        "400 payload inválido"
+      ],
+      "examples": {
+        "request": {
+          "url": "https://app.com",
+          "usuario": "ana",
+          "password": "***"
+        },
+        "response": {
+          "id": 1
+        }
+      },
+      "checklist": [
+        "AES-GCM",
+        "Auditoría acceso"
+      ]
     },
     {
       "slug": "wifi_credenciales",
@@ -241,16 +1178,93 @@
       "subtitle": "Accesos WiFi",
       "description": "Registra y protege credenciales WiFi con cifrado.",
       "routes": [
-        { "method": "POST", "path": "/wifi-credenciales", "desc": "Crea credencial WiFi", "auth": true, "roles": ["ADMIN","GERENTE"] },
-        { "method": "GET", "path": "/wifi-credenciales", "desc": "Lista credenciales WiFi", "auth": true, "roles": [] },
-        { "method": "GET", "path": "/wifi-credenciales/{id}/secret", "desc": "Revela password", "auth": true, "roles": ["ADMIN","GERENTE"] }
+        {
+          "method": "POST",
+          "path": "/wifi-credenciales",
+          "desc": "Crea credencial WiFi",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/wifi-credenciales",
+          "desc": "Lista credenciales WiFi",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "GET",
+          "path": "/wifi-credenciales/{id}/secret",
+          "desc": "Revela password",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/wifi-credenciales/{id}",
+          "desc": "Obtiene wifi credenciales",
+          "auth": true,
+          "roles": []
+        },
+        {
+          "method": "PATCH",
+          "path": "/wifi-credenciales/{id}",
+          "desc": "Actualiza wifi credenciales",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "path": "/wifi-credenciales/{id}",
+          "desc": "Elimina wifi credenciales",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list", "create", "readSecret"],
-      "model": ["id", "ssid", "usuario", "passwordEnc", "passwordIv", "passwordTag"],
-      "validations": ["ssid requerido"],
-      "errors": ["404 no encontrado", "401 sin permiso"],
-      "examples": { "request": { "ssid": "CORP", "usuario": "it" }, "response": { "id": 1 } },
-      "checklist": ["Auditoría lectura secreto"]
+      "controller": [
+        "list",
+        "create",
+        "readSecret"
+      ],
+      "model": [
+        "id",
+        "ssid",
+        "usuario",
+        "passwordEnc",
+        "passwordIv",
+        "passwordTag"
+      ],
+      "validations": [
+        "ssid requerido"
+      ],
+      "errors": [
+        "404 no encontrado",
+        "401 sin permiso"
+      ],
+      "examples": {
+        "request": {
+          "ssid": "CORP",
+          "usuario": "it"
+        },
+        "response": {
+          "id": 1
+        }
+      },
+      "checklist": [
+        "Auditoría lectura secreto"
+      ]
     },
     {
       "slug": "audit_logs",
@@ -258,14 +1272,45 @@
       "subtitle": "Trazabilidad",
       "description": "Consulta de eventos críticos del sistema.",
       "routes": [
-        { "method": "GET", "path": "/audit-logs", "desc": "Lista auditoría", "auth": true, "roles": ["ADMIN","GERENTE"] }
+        {
+          "method": "GET",
+          "path": "/audit-logs",
+          "desc": "Lista auditoría",
+          "auth": true,
+          "roles": [
+            "ADMIN",
+            "GERENTE"
+          ]
+        }
       ],
-      "controller": ["list"],
-      "model": ["id", "action", "actorId", "metadata", "createdAt"],
-      "validations": ["solo lectura"],
-      "errors": ["401 sin auth"],
-      "examples": { "request": {}, "response": [{ "id": 1, "action": "LOGIN_SUCCESS" }] },
-      "checklist": ["Filtrar por rango de fecha"]
+      "controller": [
+        "list"
+      ],
+      "model": [
+        "id",
+        "action",
+        "actorId",
+        "metadata",
+        "createdAt"
+      ],
+      "validations": [
+        "solo lectura"
+      ],
+      "errors": [
+        "401 sin auth"
+      ],
+      "examples": {
+        "request": {},
+        "response": [
+          {
+            "id": 1,
+            "action": "LOGIN_SUCCESS"
+          }
+        ]
+      },
+      "checklist": [
+        "Filtrar por rango de fecha"
+      ]
     }
   ]
 }
