@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TABLA - Operación Técnica</title>
+    <style>
+      :root {
+        --bg:#f4f6f8;
+        --ink:#0f172a;
+        --muted:#475569;
+        --card:#ffffff;
+        --accent:#0b3a5b;
+        --line:#e2e8f0;
+        --shadow: 0 14px 30px rgba(2,6,23,0.08);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin:0;
+        font-family: "Manrope", "Inter", "Segoe UI", sans-serif;
+        background:
+          radial-gradient(900px 500px at 15% -10%, rgba(14,165,233,0.10), transparent 60%),
+          radial-gradient(900px 500px at 85% -5%, rgba(15,118,110,0.08), transparent 60%),
+          var(--bg);
+        color: var(--ink);
+      }
+      header {
+        padding: 32px 40px 24px;
+        border-bottom: 1px solid var(--line);
+        background: #ffffff;
+        box-shadow: var(--shadow);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      h1 { margin: 0 0 6px; font-size: 30px; letter-spacing: -0.6px; font-weight: 800; }
+      h2 { margin: 0 0 10px; font-size: 20px; font-weight: 700; }
+      p { margin: 0; color: var(--muted); }
+      main { padding: 28px 40px 48px; display: grid; gap: 16px; }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow); }
+      .nav { display:flex; gap:12px; margin-top:10px; flex-wrap: wrap; }
+      .nav a { color: var(--accent); text-decoration: none; font-weight: 700; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: #f8fafc; }
+      .nav a:hover { background:#e2e8f0; }
+      .grid { display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+      .box { border:1px solid var(--line); background:#ffffff; padding:12px; border-radius:12px; }
+      ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); }
+      li { margin: 4px 0; }
+      code { background:#f1f5f9; padding:2px 6px; border-radius:6px; }
+      @media (max-width: 720px) {
+        header { padding: 22px 20px; }
+        main { padding: 20px; }
+        h1 { font-size: 24px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>TABLA</h1>
+      <p>Controller, modelo, validaciones, DB y respuestas.</p>
+      <div class="nav">
+        <a href="/docs/operacion">Índice</a>
+        <a href="/docs/portal">Inicio</a>
+        <a href="/docs">Swagger</a>
+      </div>
+    </header>
+    <main>
+      <section class="card">
+        <h2>Descripción</h2>
+        <p>Describe la responsabilidad principal de esta tabla.</p>
+      </section>
+      <section class="card">
+        <h2>Campos clave</h2>
+        <div class="grid">
+          <div class="box">
+            <ul>
+              <li><code>id</code> (PK)</li>
+              <li><code>createdAt</code>, <code>updatedAt</code></li>
+            </ul>
+          </div>
+          <div class="box">
+            <ul>
+              <li>Campos específicos del dominio.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Relaciones</h2>
+        <ul>
+          <li>Relación principal con otras tablas.</li>
+        </ul>
+      </section>
+      <section class="card">
+        <h2>Controller (métodos)</h2>
+        <ul>
+          <li><b>create</b>: valida y crea registro.</li>
+          <li><b>list</b>: consulta paginada.</li>
+          <li><b>update</b>: cambios controlados.</li>
+          <li><b>delete</b>: eliminación segura (si aplica).</li>
+        </ul>
+      </section>
+      <section class="card">
+        <h2>Modelo / Validaciones</h2>
+        <ul>
+          <li>Reglas de negocio y Zod.</li>
+          <li>Campos obligatorios y opcionales.</li>
+        </ul>
+      </section>
+      <section class="card">
+        <h2>Respuestas y errores</h2>
+        <ul>
+          <li>HTTP 200/201 OK con JSON.</li>
+          <li>Errores 4xx con explicación en sandbox.</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

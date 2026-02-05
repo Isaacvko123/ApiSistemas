@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>localidades - Operación Técnica</title>
+    <style>
+      :root { --bg:#f4f6f8; --ink:#0f172a; --muted:#475569; --card:#ffffff; --accent:#0b3a5b; --line:#e2e8f0; --shadow: 0 14px 30px rgba(2,6,23,0.08); }
+      * { box-sizing: border-box; }
+      body { margin:0; font-family:"Manrope","Inter","Segoe UI",sans-serif; background: radial-gradient(900px 500px at 15% -10%, rgba(14,165,233,0.10), transparent 60%), radial-gradient(900px 500px at 85% -5%, rgba(15,118,110,0.08), transparent 60%), var(--bg); color: var(--ink); }
+      header { padding: 32px 40px 24px; border-bottom: 1px solid var(--line); background:#fff; box-shadow: var(--shadow); position: sticky; top:0; z-index:10; }
+      h1 { margin:0 0 6px; font-size:30px; letter-spacing:-0.6px; font-weight:800; }
+      h2 { margin:0 0 10px; font-size:20px; font-weight:700; }
+      h3 { margin:0 0 8px; font-size:18px; font-weight:700; }
+      p { margin:0; color: var(--muted); }
+      main { padding: 28px 40px 48px; display:grid; gap:16px; }
+      .card { background: var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; box-shadow: var(--shadow); }
+      .nav { display:flex; gap:12px; margin-top:10px; flex-wrap:wrap; }
+      .nav a { color: var(--accent); text-decoration:none; font-weight:700; padding:8px 14px; border-radius:999px; border:1px solid var(--line); background:#f8fafc; }
+      .nav a:hover { background:#e2e8f0; }
+      .grid { display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+      .box { border:1px solid var(--line); background:#fff; padding:12px; border-radius:12px; }
+      ul { margin:8px 0 0; padding-left:18px; color: var(--muted); }
+      li { margin:4px 0; }
+      code { background:#f1f5f9; padding:2px 6px; border-radius:6px; }
+      pre { background:#0f172a; color:#e2e8f0; padding:12px; border-radius:12px; overflow:auto; }
+      table { width:100%; border-collapse: collapse; }
+      th, td { text-align:left; padding:8px; border-bottom:1px solid var(--line); }
+      th { color:#1e293b; font-weight:800; }
+      .tag { display:inline-block; font-size:12px; padding:3px 10px; border-radius:999px; background:#e2e8f0; color:#1e293b; border:1px solid #cbd5e1; font-weight:700; }
+      .role { font-weight:800; }
+      @media (max-width: 720px) { header { padding:22px 20px; } main { padding:20px; } h1 { font-size:24px; } }
+</style>
+  </head>
+  <body>
+    <header>
+      <h1>localidades</h1>
+      <p>Ubicación física de equipos y empleados.</p>
+      <div class="nav">
+        <a href="/docs/operacion">Índice</a>
+        <a href="/docs/portal">Inicio</a>
+        <a href="/docs">Swagger</a>
+      </div>
+    </header>
+    <main>
+      <section class="card">
+        <h2>Descripción</h2>
+        <p>Representa sitios físicos. Se usa para asignar equipos y empleados.</p>
+      </section>
+      <section class="card">
+        <h2>Relación visual rápida</h2>
+        <svg viewBox="0 0 720 200" role="img" aria-label="Relaciones localidades"><rect x="30" y="60" width="180" height="90" rx="14" fill="#0b3a5b"/><text x="60" y="110" fill="#fff" font-size="16">LOCALIDAD</text><rect x="280" y="20" width="160" height="70" rx="12" fill="#0ea5e9"/><text x="320" y="60" fill="#fff" font-size="14">EQUIPO</text><rect x="280" y="110" width="160" height="70" rx="12" fill="#0f766e"/><text x="305" y="150" fill="#fff" font-size="14">EMPLEADO</text><path d="M210 105 L280 55" stroke="#0f172a" stroke-width="2"/><path d="M210 105 L280 145" stroke="#0f172a" stroke-width="2"/></svg>
+      </section>
+      <section class="card">
+        <h2>Campos clave</h2>
+        <div class="grid"><div class="box"><div class="tag">Obligatorios</div><ul><li><code>nombre</code></li><li><code>estado</code></li></ul></div><div class="box"><div class="tag">Opcionales</div><ul><li><code>codigo</code></li><li><code>ciudad</code></li><li><code>direccion</code></li><li><code>cp</code></li><li><code>notas</code></li></ul></div></div>
+      </section>
+      <section class="card">
+        <h2>Rutas y permisos</h2>
+        <table><thead><tr><th>Ruta</th><th>Rol</th><th>Notas</th></tr></thead><tbody><tr><td><code>GET /localidades</code></td><td class="role">Autenticado</td><td>Filtros: <code>?estado</code>, <code>?codigo</code>.</td></tr><tr><td><code>GET /localidades/:id</code></td><td class="role">Autenticado</td><td>Por id.</td></tr><tr><td><code>POST /localidades</code></td><td class="role">ADMIN / GERENTE</td><td>Crea localidad.</td></tr><tr><td><code>PATCH /localidades/:id</code></td><td class="role">ADMIN / GERENTE</td><td>Actualiza datos.</td></tr><tr><td><code>DELETE /localidades/:id</code></td><td class="role">ADMIN / GERENTE</td><td>Elimina registro.</td></tr></tbody></table>
+      </section>
+      <section class="card">
+        <h2>Controller (métodos)</h2>
+        <div class="grid"><div class="box"><div class="tag">listar</div><ul><li>Filtro por estado/código.</li><li>Orden <code>id DESC</code>.</li></ul></div><div class="box"><div class="tag">obtener</div><ul><li>Valida id.</li><li>404 si no existe.</li></ul></div><div class="box"><div class="tag">crear</div><ul><li>Zod create.</li><li>Audit <code>ENTITY_CREATE</code>.</li></ul></div><div class="box"><div class="tag">actualizar</div><ul><li>Zod update.</li><li>Audit <code>ENTITY_UPDATE</code>.</li></ul></div><div class="box"><div class="tag">eliminar</div><ul><li>Elimina.</li><li>Audit <code>ENTITY_DELETE</code>.</li></ul></div></div>
+      </section>
+      <section class="card">
+        <h2>Modelo / Validaciones</h2>
+        <ul><li><code>localidadCreateSchema</code>: nombre + estado; resto opcional.</li><li><code>localidadUpdateSchema</code>: campos opcionales.</li></ul>
+      </section>
+      <section class="card">
+        <h2>Ejemplos (requests / responses)</h2>
+        <div class="grid"><div class="box"><div class="tag">POST /localidades</div><pre>{
+  "codigo": "GDL-01",
+  "nombre": "Guadalajara",
+  "estado": "Jalisco"
+}</pre></div><div class="box"><div class="tag">201 OK</div><pre>{
+  "id": 1,
+  "codigo": "GDL-01",
+  "nombre": "Guadalajara"
+}</pre></div></div>
+      </section>
+      <section class="card">
+        <h2>Errores comunes</h2>
+        <table><thead><tr><th>HTTP</th><th>Causa</th><th>Solución</th></tr></thead><tbody><tr><td>400</td><td>Payload inválido</td><td>Revisar campos.</td></tr><tr><td>404</td><td>Localidad no encontrada</td><td>Validar id.</td></tr><tr><td>409</td><td>Duplicado</td><td>Código único.</td></tr></tbody></table>
+      </section>
+      <section class="card">
+        <h2>Checklist operativo</h2>
+        <ul><li>Validar rol.</li><li>Evitar duplicados por código.</li><li>Auditar cambios.</li></ul>
+      </section>
+    </main>
+  </body>
+</html>

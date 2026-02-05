@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Arquitectura Visual - ApiSistemas</title>
+    <style>
+      :root {
+        --bg:#f4f6f8;
+        --ink:#0f172a;
+        --muted:#475569;
+        --card:#ffffff;
+        --accent:#0b3a5b;
+        --accent-2:#0ea5e9;
+        --accent-3:#0f766e;
+        --line:#e2e8f0;
+        --shadow: 0 14px 30px rgba(2,6,23,0.08);
+        --shadow-lg: 0 24px 60px rgba(2,6,23,0.14);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin:0;
+        font-family: "Manrope", "Inter", "Segoe UI", sans-serif;
+        background:
+          radial-gradient(900px 500px at 15% -10%, rgba(14,165,233,0.10), transparent 60%),
+          radial-gradient(900px 500px at 85% -5%, rgba(15,118,110,0.08), transparent 60%),
+          var(--bg);
+        color: var(--ink);
+      }
+      header {
+        padding: 32px 40px 24px;
+        border-bottom: 1px solid var(--line);
+        background: #ffffff;
+        box-shadow: var(--shadow);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      main { padding: 28px 32px 48px; display: grid; gap: 24px; }
+      h1 { margin: 0 0 6px; font-size: 32px; letter-spacing: -0.6px; font-weight: 800; }
+      h2 { margin: 0 0 10px; font-size: 20px; letter-spacing: -0.3px; font-weight: 700; }
+      h3 { margin: 0 0 8px; font-size: 18px; font-weight: 700; }
+      p { margin: 0; color: var(--muted); }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); }
+      .nav { display:flex; gap:12px; margin-top:10px; flex-wrap: wrap; }
+      .nav a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 700;
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: #f8fafc;
+      }
+      .nav a:hover { background:#e2e8f0; }
+      .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+      .tag { display: inline-block; font-size: 12px; padding: 3px 10px; border-radius: 999px; background: #e2e8f0; color: #1e293b; border:1px solid #cbd5e1; font-weight: 700; }
+      .legend { display:flex; gap:12px; flex-wrap: wrap; color: var(--muted); font-size: 12px; }
+      .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; background:#f6efe5; border:1px solid var(--line); }
+      .kpi { font-size: 13px; color: var(--muted); }
+      .stepper { display:grid; gap:10px; }
+      .step { display:flex; gap:10px; align-items:flex-start; }
+      .dot { width:22px; height:22px; border-radius:50%; background: var(--accent); color:#ffffff; font-size:12px; display:flex; align-items:center; justify-content:center; flex:0 0 22px; font-weight:700; }
+      .rail { border-left:2px dashed #d7c8b1; margin-left:10px; padding-left:18px; }
+      .swimlane { display:grid; grid-template-columns: 120px 1fr; gap:10px; }
+      .lane-title { font-weight:700; color:#2f2f2f; }
+      .lane { border:1px dashed #e1d5c6; padding:10px; border-radius:12px; background:#fffdf7; }
+      .box { border:1px solid var(--line); background:#ffffff; padding:12px; border-radius:12px; margin-bottom:8px; }
+      .icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; }
+      .icon.a { background: var(--accent); color:#ffffff; }
+      .icon.b { background: var(--accent-2); color:#ffffff; }
+      .icon.c { background: var(--accent-3); color:#ffffff; }
+      svg { width:100%; height:auto; }
+      .mermaid { background:#ffffff; border-radius:12px; padding:10px; border:1px solid var(--line); }
+      ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); }
+      li { margin: 4px 0; }
+      .quiz { display:grid; gap:12px; }
+      .q { border:1px solid var(--line); border-radius:12px; padding:12px; background:#f8fafc; }
+      .q h4 { margin:0 0 6px; font-size:16px; }
+      .opts { display:grid; gap:6px; }
+      .opts label { display:flex; gap:8px; align-items:flex-start; cursor:pointer; }
+      .result { padding:10px 12px; border-radius:10px; background:#ecfdf3; border:1px solid #bbf7d0; color:#065f46; font-weight:700; }
+      .fail { background:#fef2f2; border-color:#fecaca; color:#991b1b; }
+      button { padding:10px 14px; border-radius:12px; border:1px solid var(--line); background:#ffffff; cursor:pointer; font-weight:700; color:var(--ink); box-shadow: var(--shadow); }
+      button:hover { background:#f1f5f9; }
+      .tabs { display:flex; flex-wrap:wrap; gap:8px; }
+      .tab { padding:8px 12px; border-radius:999px; border:1px solid var(--line); background:#ffffff; cursor:pointer; font-weight:700; color:var(--ink); }
+      .tab.active { background:var(--accent); border-color:var(--accent); color:#ffffff; }
+      .explain { margin-top:8px; padding:8px 10px; border-radius:8px; background:#f1f5f9; border:1px dashed var(--line); color:#475569; font-size:13px; }
+      .progress { height:10px; border-radius:999px; background:#e2e8f0; overflow:hidden; border:1px solid var(--line); }
+      .progress > span { display:block; height:100%; background:linear-gradient(90deg, var(--accent-2), var(--accent-3)); width:0%; transition: width .3s ease; }
+      .case { background:#f8fafc; border:1px solid var(--line); border-radius:12px; padding:12px; }
+
+      @media (max-width: 720px) {
+        header { padding: 22px 20px; }
+        main { padding: 20px; }
+        h1 { font-size: 26px; }
+        .grid { grid-template-columns: 1fr; }
+        .nav { gap: 8px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Arquitectura Visual para Capacitación</h1>
+      <p>Enfoque didáctico para aprendizaje visual y kinestésico.</p>
+      <div class="nav">
+        <a href="/docs/portal">Inicio</a>
+        <a href="/docs">Swagger</a>
+        <a href="/docs/diagramas">Diagramas</a>
+      </div>
+    </header>
+    <main>
+      <section class="card">
+        <h2>Mapa visual de módulos (¿qué existe y para qué?)</h2>
+        <div class="grid">
+          <div class="box">
+            <div class="icon a">AU</div>
+            <h3>Auth & Sesiones</h3>
+            <p class="kpi">Login, refresh, revocación, tokens.</p>
+          </div>
+          <div class="box">
+            <div class="icon b">HR</div>
+            <h3>Áreas / Puestos / Empleados / Localidades</h3>
+            <p class="kpi">Estructura organizacional y personal.</p>
+          </div>
+          <div class="box">
+            <div class="icon c">EQ</div>
+            <h3>Equipos / Resguardos / Respaldo</h3>
+            <p class="kpi">Inventario, asignación, devoluciones, respaldos.</p>
+          </div>
+          <div class="box">
+            <div class="icon a">DOC</div>
+            <h3>Documentos</h3>
+            <p class="kpi">Cargas PDF/imagen ligadas a resguardos.</p>
+          </div>
+          <div class="box">
+            <div class="icon b">CR</div>
+            <h3>Credenciales Web/WiFi</h3>
+            <p class="kpi">Cifrado AES‑GCM y acceso controlado.</p>
+          </div>
+          <div class="box">
+            <div class="icon c">AUD</div>
+            <h3>Auditoría</h3>
+            <p class="kpi">Registro de acciones críticas y lectura de secretos.</p>
+          </div>
+        </div>
+        <div class="legend">
+          <span class="pill">Visual</span>
+          <span class="pill">Resumen ejecutivo</span>
+          <span class="pill">Capacitación rápida</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Flujo principal (resguardo) — paso a paso</h2>
+        <div class="stepper">
+          <div class="step"><div class="dot">1</div><div><b>Alta de empleado</b><br><span class="kpi">Se registra el empleado y su puesto.</span></div></div>
+          <div class="rail">
+            <div class="step"><div class="dot">2</div><div><b>Alta de equipo</b><br><span class="kpi">Se registra el equipo y su tipo.</span></div></div>
+          </div>
+          <div class="rail">
+            <div class="step"><div class="dot">3</div><div><b>Creación de resguardo</b><br><span class="kpi">Se asigna equipo al empleado (fecha, responsable).</span></div></div>
+          </div>
+          <div class="rail">
+            <div class="step"><div class="dot">4</div><div><b>Documento de entrega</b><br><span class="kpi">Se sube PDF/imagen con evidencia.</span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Swimlane (quién hace qué)</h2>
+        <div class="swimlane">
+          <div class="lane-title">Usuario</div>
+          <div class="lane">
+            <div class="box">Inicia sesión</div>
+            <div class="box">Crea empleado</div>
+            <div class="box">Asigna equipo</div>
+            <div class="box">Sube documento</div>
+          </div>
+          <div class="lane-title">API</div>
+          <div class="lane">
+            <div class="box">Valida token + rol</div>
+            <div class="box">Guarda empleado</div>
+            <div class="box">Crea resguardo</div>
+            <div class="box">Registra auditoría</div>
+          </div>
+          <div class="lane-title">DB</div>
+          <div class="lane">
+            <div class="box">Usuarios / Sesiones</div>
+            <div class="box">Empleados</div>
+            <div class="box">Resguardos</div>
+            <div class="box">Documentos</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Arquitectura visual (bloques)</h2>
+        <svg viewBox="0 0 900 420" role="img" aria-label="Arquitectura visual">
+          <rect x="20" y="20" width="250" height="90" rx="14" fill="#0d5b7c"/>
+          <text x="45" y="60" fill="#fff" font-size="16">Frontend (Web/Admin)</text>
+          <text x="45" y="82" fill="#d7edf7" font-size="12">Usuarios y operaciones</text>
+
+          <rect x="330" y="20" width="250" height="90" rx="14" fill="#0f7a5c"/>
+          <text x="355" y="60" fill="#fff" font-size="16">API Express</text>
+          <text x="355" y="82" fill="#d7f7ea" font-size="12">RBAC, JWT, auditoría</text>
+
+          <rect x="640" y="20" width="240" height="90" rx="14" fill="#b25b1a"/>
+          <text x="665" y="60" fill="#fff" font-size="16">Servicios de Soporte</text>
+          <text x="665" y="82" fill="#fde7d2" font-size="12">Logs, métricas, backups</text>
+
+          <rect x="120" y="160" width="300" height="90" rx="14" fill="#f4efe6" stroke="#e0d2bd"/>
+          <text x="150" y="200" fill="#2c2c2c" font-size="16">PostgreSQL</text>
+          <text x="150" y="222" fill="#6b6b6b" font-size="12">Tablas de negocio</text>
+
+          <rect x="480" y="160" width="300" height="90" rx="14" fill="#f4efe6" stroke="#e0d2bd"/>
+          <text x="510" y="200" fill="#2c2c2c" font-size="16">Storage / Uploads</text>
+          <text x="510" y="222" fill="#6b6b6b" font-size="12">PDFs, imágenes</text>
+
+          <path d="M270 65 L330 65" stroke="#2f2f2f" stroke-width="2"/>
+          <path d="M580 65 L640 65" stroke="#2f2f2f" stroke-width="2"/>
+          <path d="M455 110 L270 160" stroke="#2f2f2f" stroke-width="2"/>
+          <path d="M455 110 L630 160" stroke="#2f2f2f" stroke-width="2"/>
+        </svg>
+      </section>
+
+      <section class="card">
+        <h2>Diagrama de relaciones (con guía)</h2>
+        <p class="kpi">Lee las flechas como “A tiene muchos B” y observa qué entidades son “dueñas” (izquierda) y cuáles son “dependientes” (derecha).</p>
+        <div class="legend">
+          <span class="pill">|| = uno</span>
+          <span class="pill">o{ = muchos</span>
+          <span class="pill">: etiqueta = relación</span>
+        </div>
+        <div class="mermaid">
+erDiagram
+  USUARIO ||--o{ SESION : "inicia"
+  USUARIO ||--o{ RESGUARDO : "crea"
+  EMPLEADO ||--o{ RESGUARDO : "recibe"
+  EQUIPO ||--o{ RESGUARDO_EQUIPO : "asignado"
+  RESGUARDO ||--o{ DOCUMENTO : "soporta"
+  LOCALIDAD ||--o{ EQUIPO : "ubica"
+  AREA ||--o{ EMPLEADO : "organiza"
+  PUESTO ||--o{ EMPLEADO : "define"
+  TIPO_EQUIPO ||--o{ EQUIPO : "clasifica"
+        </div>
+        <div class="grid">
+          <div class="box">
+            <div class="tag">Ejemplo</div>
+            <p>Un <b>Empleado</b> puede tener muchos <b>Resguardos</b>, pero cada resguardo pertenece a un solo empleado.</p>
+          </div>
+          <div class="box">
+            <div class="tag">Uso</div>
+            <p>Si falta un empleado, no se puede crear un resguardo: el flujo se detiene.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Checklist visual (para capacitación)</h2>
+        <div class="grid">
+          <div class="box">
+            <div class="tag">Antes</div>
+            <ul>
+              <li>Crear área y puesto.</li>
+              <li>Registrar empleado.</li>
+              <li>Registrar equipo y tipo.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">Durante</div>
+            <ul>
+              <li>Crear resguardo.</li>
+              <li>Asignar equipo al resguardo.</li>
+              <li>Subir documento de entrega.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">Después</div>
+            <ul>
+              <li>Actualizar estado del equipo.</li>
+              <li>Registrar respaldo si aplica.</li>
+              <li>Auditoría automática.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Resumen clave (lo que se evalúa)</h2>
+        <div class="grid">
+          <div class="box">
+            <div class="tag">Auth + Roles</div>
+            <ul>
+              <li>El módulo <b>Auth + Sesiones</b> gestiona login, refresh y revocación.</li>
+              <li>Roles con escritura: <b>ADMIN</b> y <b>GERENTE</b>.</li>
+              <li><b>SUPERVISOR</b> solo consulta rutas críticas.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">Resguardo</div>
+            <ul>
+              <li>Para crear un resguardo debe existir <b>Empleado</b> y <b>Equipo</b>.</li>
+              <li>El detalle de equipos se guarda en <b>resguardo_equipos</b>.</li>
+              <li>El responsable crea y el empleado recibe el resguardo.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">Documentos</div>
+            <ul>
+              <li>Los archivos físicos se guardan en <b>Uploads</b>.</li>
+              <li>La referencia queda en la tabla <b>documentos</b>.</li>
+              <li>Documentos soportan entrega o devolución del equipo.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">Equipos</div>
+            <ul>
+              <li><b>TipoEquipo</b> clasifica equipos.</li>
+              <li>Equipo puede tener <b>IMEI1/IMEI2</b> y serie.</li>
+              <li>Localidad ubica físicamente al equipo.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">Auditoría</div>
+            <ul>
+              <li><b>AuditLog</b> registra acciones críticas.</li>
+              <li>Lectura de secretos debe quedar auditada.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Guía por roles (qué puede hacer cada uno)</h2>
+        <div class="grid">
+          <div class="box">
+            <div class="tag">ADMIN</div>
+            <ul>
+              <li>Crear, editar y eliminar recursos críticos.</li>
+              <li>Gestionar usuarios, roles y auditoría.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">GERENTE</div>
+            <ul>
+              <li>Crear y editar operaciones clave (resguardos, equipos).</li>
+              <li>Acceso a reportes y supervisión operativa.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">SUPERVISOR</div>
+            <ul>
+              <li>Solo lectura en rutas críticas.</li>
+              <li>Consulta de inventario y resguardos.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Casos de uso reales (para entrenamiento)</h2>
+        <div class="grid">
+          <div class="case">
+            <h3>Caso 1: Alta de resguardo</h3>
+            <ul>
+              <li>Crear empleado y equipo.</li>
+              <li>Generar resguardo y asociar equipo.</li>
+              <li>Subir documento de entrega.</li>
+            </ul>
+          </div>
+          <div class="case">
+            <h3>Caso 2: Devolución de equipo</h3>
+            <ul>
+              <li>Registrar devolución en resguardo.</li>
+              <li>Subir evidencia de devolución.</li>
+              <li>Actualizar estado de equipo.</li>
+            </ul>
+          </div>
+          <div class="case">
+            <h3>Caso 3: Auditoría de credenciales</h3>
+            <ul>
+              <li>Acceso controlado a secreto.</li>
+              <li>Registro automático en AuditLog.</li>
+              <li>Revisión por administrador.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Micro‑examen (10 preguntas aleatorias)</h2>
+        <p class="kpi">Selecciona módulo. Para aprobar necesitas mínimo <b>8/10</b>. Cada intento elige 10 preguntas al azar.</p>
+        <div class="tabs">
+          <button class="tab active" data-module="general">General</button>
+          <button class="tab" data-module="auth">Auth + Roles</button>
+          <button class="tab" data-module="resguardo">Resguardo</button>
+          <button class="tab" data-module="documentos">Documentos</button>
+          <button class="tab" data-module="equipos">Equipos</button>
+          <button class="tab" data-module="auditoria">Auditoría</button>
+        </div>
+        <div id="quiz" class="quiz"></div>
+        <div style="display:flex; gap:10px;">
+          <button id="btn-check">Calificar</button>
+          <button id="btn-new">Nuevo intento</button>
+        </div>
+        <div id="quiz-result" class="result" style="display:none;"></div>
+      </section>
+
+      <section class="card">
+        <h2>Checklist interactivo (progreso)</h2>
+        <div class="progress"><span id="progress-bar"></span></div>
+        <p class="kpi" id="progress-text">0% completado</p>
+        <div class="grid">
+          <label class="box"><input type="checkbox" class="ck"> Crear área y puesto</label>
+          <label class="box"><input type="checkbox" class="ck"> Registrar empleado</label>
+          <label class="box"><input type="checkbox" class="ck"> Registrar equipo y tipo</label>
+          <label class="box"><input type="checkbox" class="ck"> Crear resguardo</label>
+          <label class="box"><input type="checkbox" class="ck"> Subir documento</label>
+          <label class="box"><input type="checkbox" class="ck"> Verificar auditoría</label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Glosario rápido</h2>
+        <div class="grid">
+          <div class="box"><b>Resguardo:</b> asignación formal de un equipo a un empleado.</div>
+          <div class="box"><b>ResguardoEquipo:</b> detalle de equipos dentro del resguardo.</div>
+          <div class="box"><b>Documento:</b> evidencia de entrega/devolución.</div>
+          <div class="box"><b>TipoEquipo:</b> catálogo de clases de equipos.</div>
+          <div class="box"><b>AuditLog:</b> bitácora de acciones críticas.</div>
+          <div class="box"><b>Uploads:</b> carpeta física de archivos.</div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({ startOnLoad: true });
+
+      const banks = {
+        general: [
+          { q: "¿Qué módulo gestiona login y refresh?", a: 0, o: ["Auth + Sesiones", "Documentos", "Resguardos", "Auditoría"], e: "Revisa la sección Auth + Roles." },
+          { q: "¿Qué tabla guarda la evidencia en PDF/imagen?", a: 1, o: ["resguardos", "documentos", "equipos", "areas"], e: "Se indica en la sección Documentos." },
+          { q: "¿Qué entidad conecta empleado con equipo?", a: 2, o: ["sesiones", "areas", "resguardo_equipos", "wifi_credenciales"], e: "El detalle de equipos está en resguardo_equipos." },
+          { q: "¿Qué se crea primero para un resguardo válido?", a: 0, o: ["Empleado", "Resguardo", "Documento", "Auditoría"], e: "Sin empleado no hay resguardo." },
+          { q: "¿Qué rol no puede editar recursos críticos?", a: 3, o: ["ADMIN", "GERENTE", "SUPERADMIN", "SUPERVISOR"], e: "El resumen de roles lo indica." },
+          { q: "¿Dónde se guardan los archivos físicos?", a: 1, o: ["PostgreSQL", "Uploads", "Sesiones", "Cache"], e: "Uploads es almacenamiento físico." },
+          { q: "¿Qué registro muestra quién hizo acciones críticas?", a: 0, o: ["AuditLog", "Checklist", "Puesto", "Localidad"], e: "AuditLog registra acciones críticas." },
+          { q: "¿Qué relación indica ‘uno a muchos’?", a: 1, o: ["o|", "||--o{", "--", "{--}"], e: "En la guía de ER se explica." },
+          { q: "¿Qué entidad clasifica equipos?", a: 0, o: ["TipoEquipo", "Checklist", "Respaldo", "Resguardo"], e: "TipoEquipo clasifica equipos." },
+          { q: "¿Qué módulo gestiona documentos?", a: 1, o: ["HR", "Documentos", "Auth", "Auditoría"], e: "Revisa la sección Documentos." },
+        ],
+        auth: [
+          { q: "¿Qué módulo gestiona login y refresh?", a: 0, o: ["Auth + Sesiones", "Documentos", "Resguardos", "Auditoría"], e: "Auth + Sesiones." },
+          { q: "¿Qué servicio maneja sesiones?", a: 1, o: ["AuditHelpers", "SesionesService", "Upload", "Cron"], e: "SesionesService." },
+          { q: "¿Qué rol puede escribir recursos?", a: 2, o: ["SUPERVISOR", "INVITADO", "ADMIN", "LECTOR"], e: "ADMIN y GERENTE escriben." },
+          { q: "¿Qué rol NO puede editar?", a: 3, o: ["ADMIN", "GERENTE", "SUPERADMIN", "SUPERVISOR"], e: "SUPERVISOR solo consulta." },
+          { q: "¿Qué componente verifica permisos por rol?", a: 3, o: ["Upload", "Zod", "Prisma", "RBAC"], e: "RBAC valida roles." },
+          { q: "¿Qué se revoca al cerrar sesión?", a: 1, o: ["JWT access", "Token refresh", "Auditoría", "Documento"], e: "Se revoca el refresh." },
+          { q: "¿Qué se renueva con refresh?", a: 0, o: ["Access token", "Archivo", "Checklist", "Equipo"], e: "Se renueva el access token." },
+          { q: "¿Qué tabla guarda sesiones?", a: 2, o: ["usuarios", "credenciales", "sesiones", "equipos"], e: "Tabla sesiones." },
+          { q: "¿Qué módulo registra quién hizo acciones críticas?", a: 3, o: ["Uploads", "Checklist", "Auth", "AuditLog"], e: "AuditLog." },
+          { q: "¿Qué middleware protege rutas?", a: 1, o: ["upload", "authGlobal", "helmet", "cors"], e: "authGlobal." },
+        ],
+        resguardo: [
+          { q: "¿Qué se crea primero para un resguardo válido?", a: 0, o: ["Empleado", "Resguardo", "Documento", "Auditoría"], e: "Empleado primero." },
+          { q: "¿Qué entidad conecta empleado con equipo?", a: 2, o: ["sesiones", "areas", "resguardo_equipos", "wifi_credenciales"], e: "resguardo_equipos." },
+          { q: "¿Quién recibe un resguardo?", a: 1, o: ["Usuario", "Empleado", "Localidad", "Puesto"], e: "Lo recibe el empleado." },
+          { q: "¿Qué indica un resguardo?", a: 3, o: ["Un login", "Un backup", "Un área", "Asignación de equipo"], e: "Asignación de equipo." },
+          { q: "¿Qué tabla contiene el detalle de equipos?", a: 2, o: ["resguardos", "equipos", "resguardo_equipos", "documentos"], e: "resguardo_equipos." },
+          { q: "¿Qué sucede si falta Empleado?", a: 3, o: ["Se crea igual", "Se guarda en cola", "Se borra", "Falla la creación"], e: "Falla la creación." },
+          { q: "¿Qué tabla guarda la evidencia en PDF/imagen?", a: 1, o: ["resguardos", "documentos", "equipos", "areas"], e: "documentos." },
+          { q: "¿Qué entidad organiza empleados?", a: 3, o: ["Resguardo", "Documento", "Equipo", "Área"], e: "Área organiza empleados." },
+          { q: "¿Qué entidad clasifica equipos?", a: 0, o: ["TipoEquipo", "Checklist", "Respaldo", "Resguardo"], e: "TipoEquipo." },
+          { q: "¿Qué entidad ubica físicamente el equipo?", a: 1, o: ["areaId", "localidadId", "puestoId", "usuarioId"], e: "localidadId." },
+        ],
+        documentos: [
+          { q: "¿Dónde se guardan los archivos físicos?", a: 1, o: ["PostgreSQL", "Uploads", "Sesiones", "Cache"], e: "Uploads." },
+          { q: "¿Dónde queda la referencia del archivo subido?", a: 1, o: ["uploads", "documentos", "resguardos", "areas"], e: "documentos." },
+          { q: "¿Qué tabla guarda la evidencia en PDF/imagen?", a: 1, o: ["resguardos", "documentos", "equipos", "areas"], e: "documentos." },
+          { q: "¿Qué se usa para evidencias de entrega?", a: 2, o: ["Respaldo", "WiFi", "Documento", "TipoEquipo"], e: "Documento." },
+          { q: "¿Qué módulo gestiona documentos?", a: 1, o: ["HR", "Documentos", "Auth", "Auditoría"], e: "Documentos." },
+          { q: "¿Qué entidad soporta documentos ligados a resguardo?", a: 3, o: ["area", "puesto", "equipo", "resguardo"], e: "resguardo." },
+          { q: "¿Qué servicio maneja uploads?", a: 2, o: ["RBAC", "Zod", "Upload Middleware", "Prisma"], e: "Upload Middleware." },
+          { q: "¿Qué entidad recibe el documento?", a: 2, o: ["Sesión", "Usuario", "Resguardo", "Checklist"], e: "Resguardo." },
+          { q: "¿Qué registra el documento además de la ruta?", a: 0, o: ["Evento (entrega/devolución)", "Rol", "Token", "IMEI"], e: "Evento de entrega/devolución." },
+          { q: "¿Qué tipo de archivo se usa?", a: 1, o: ["Solo TXT", "PDF/imagen", "Solo video", "Solo zip"], e: "PDF/imagen." },
+        ],
+        equipos: [
+          { q: "¿Qué entidad clasifica equipos?", a: 0, o: ["TipoEquipo", "Checklist", "Respaldo", "Resguardo"], e: "TipoEquipo." },
+          { q: "¿Qué entidad puede tener IMEI?", a: 1, o: ["Empleado", "Equipo", "Puesto", "Área"], e: "Equipo." },
+          { q: "¿Qué campo ubica el equipo físicamente?", a: 1, o: ["areaId", "localidadId", "puestoId", "usuarioId"], e: "localidadId." },
+          { q: "¿Qué entidad conecta empleado con equipo?", a: 2, o: ["sesiones", "areas", "resguardo_equipos", "wifi_credenciales"], e: "resguardo_equipos." },
+          { q: "¿Qué indica un resguardo?", a: 3, o: ["Un login", "Un backup", "Un área", "Asignación de equipo"], e: "Asignación de equipo." },
+          { q: "¿Qué módulo es de Activos?", a: 0, o: ["Equipos/Resguardos", "Auth", "Credenciales", "Auditoría"], e: "Activos = Equipos/Resguardos." },
+          { q: "¿Qué entidad organiza empleados?", a: 3, o: ["Resguardo", "Documento", "Equipo", "Área"], e: "Área." },
+          { q: "¿Qué tabla contiene detalle de equipos en resguardo?", a: 2, o: ["resguardos", "equipos", "resguardo_equipos", "documentos"], e: "resguardo_equipos." },
+          { q: "¿Qué tabla guarda evidencia de entrega?", a: 1, o: ["resguardos", "documentos", "equipos", "areas"], e: "documentos." },
+          { q: "¿Qué entidad relaciona equipo con documentos?", a: 1, o: ["documentos", "usuarios", "areas", "sesiones"], e: "documentos." },
+        ],
+        auditoria: [
+          { q: "¿Qué registro muestra quién hizo acciones críticas?", a: 0, o: ["AuditLog", "Checklist", "Puesto", "Localidad"], e: "AuditLog." },
+          { q: "¿Qué módulo soporta auditoría?", a: 0, o: ["Audit Helpers", "Uploads", "Checklist", "Localidad"], e: "Audit Helpers." },
+          { q: "¿Qué acción debe quedar auditada?", a: 2, o: ["Health check", "Listar catálogo", "Leer secreto", "Ver inicio"], e: "Leer secretos." },
+          { q: "¿Qué entidad tiene relación con auditoría?", a: 1, o: ["Equipo", "Usuario", "Localidad", "Documento"], e: "Usuario." },
+          { q: "¿Qué rol puede generar cambios críticos?", a: 0, o: ["ADMIN", "SUPERVISOR", "LECTOR", "INVITADO"], e: "ADMIN." },
+          { q: "¿Qué capa registra auditoría automática?", a: 1, o: ["Router", "Audit Helpers", "Uploads", "Docs"], e: "Audit Helpers." },
+          { q: "¿Qué tabla guarda auditoría?", a: 2, o: ["usuarios", "sesiones", "audit_logs", "documentos"], e: "audit_logs." },
+          { q: "¿Qué módulo cifra credenciales?", a: 2, o: ["Auditoría", "Documentos", "Credenciales", "Resguardos"], e: "Credenciales." },
+          { q: "¿Qué pasa si un secreto es leído?", a: 1, o: ["Se ignora", "Se registra en auditoría", "Se elimina", "Se publica"], e: "Se registra." },
+          { q: "¿Qué entidad crea el usuario?", a: 3, o: ["Checklist", "Documento", "Equipo", "Auditoría"], e: "Auditoría." },
+        ],
+      };
+
+      function initQuiz() {
+        const quizEl = document.getElementById("quiz");
+        const resultEl = document.getElementById("quiz-result");
+        const btnCheck = document.getElementById("btn-check");
+        const btnNew = document.getElementById("btn-new");
+        const tabs = Array.from(document.querySelectorAll(".tab"));
+
+        if (!quizEl || !resultEl || !btnCheck || !btnNew) {
+          return;
+        }
+
+        let activeModule = "general";
+
+        function pickQuestions() {
+          const source = banks[activeModule] ?? banks.general;
+          const shuffled = [...source].sort(() => Math.random() - 0.5);
+          return shuffled.slice(0, 10);
+        }
+
+        let current = [];
+
+        function renderQuiz() {
+          current = pickQuestions();
+          quizEl.innerHTML = "";
+          resultEl.style.display = "none";
+          current.forEach((item, idx) => {
+            const q = document.createElement("div");
+            q.className = "q";
+            q.innerHTML = `<h4>${idx + 1}. ${item.q}</h4>`;
+            const opts = document.createElement("div");
+            opts.className = "opts";
+            item.o.forEach((opt, oi) => {
+              const id = `q${idx}_o${oi}`;
+              const label = document.createElement("label");
+              label.innerHTML = `<input type="radio" name="q${idx}" id="${id}" value="${oi}"> <span>${opt}</span>`;
+              opts.appendChild(label);
+            });
+            q.appendChild(opts);
+            quizEl.appendChild(q);
+          });
+        }
+
+        btnCheck.addEventListener("click", () => {
+          let correct = 0;
+          current.forEach((item, idx) => {
+            const picked = document.querySelector(`input[name="q${idx}"]:checked`);
+            if (picked && Number(picked.value) === item.a) correct += 1;
+            const qNode = quizEl.children[idx];
+            const existing = qNode.querySelector(".explain");
+            if (existing) existing.remove();
+            if (!picked || Number(picked.value) !== item.a) {
+              const exp = document.createElement("div");
+              exp.className = "explain";
+              exp.textContent = item.e || "Revisa el resumen clave en esta página.";
+              qNode.appendChild(exp);
+            }
+          });
+          const pass = correct >= 8;
+          resultEl.className = `result ${pass ? "" : "fail"}`;
+          resultEl.textContent = pass
+            ? `Aprobado: ${correct}/10. Excelente trabajo.`
+            : `No aprobado: ${correct}/10. Necesitas mínimo 8.`;
+          resultEl.style.display = "block";
+          btnCheck.disabled = true;
+          const inputs = quizEl.querySelectorAll("input");
+          inputs.forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        btnNew.addEventListener("click", () => {
+          btnCheck.disabled = false;
+          renderQuiz();
+        });
+
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            tabs.forEach((t) => t.classList.remove("active"));
+            tab.classList.add("active");
+            activeModule = tab.getAttribute("data-module") || "general";
+            renderQuiz();
+          });
+        });
+
+        renderQuiz();
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initQuiz);
+      } else {
+        initQuiz();
+      }
+
+      const cks = Array.from(document.querySelectorAll(".ck"));
+      const bar = document.getElementById("progress-bar");
+      const text = document.getElementById("progress-text");
+      function updateProgress() {
+        const done = cks.filter((c) => c.checked).length;
+        const total = cks.length || 1;
+        const pct = Math.round((done / total) * 100);
+        if (bar) bar.style.width = `${pct}%`;
+        if (text) text.textContent = `${pct}% completado`;
+      }
+      cks.forEach((c) => c.addEventListener("change", updateProgress));
+      updateProgress();
+    </script>
+  </body>
+</html>

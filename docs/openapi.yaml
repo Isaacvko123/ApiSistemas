@@ -6,7 +6,7 @@ info:
     API para gestion de equipos de computo, resguardos, empleados, localidades y credenciales.
     Autenticacion JWT, RBAC por roles, auditoria, cifrado AES-GCM y carga de documentos.
 servers:
-  - url: http://localhost:6000
+  - url: http://localhost:8080
 
 security:
   - bearerAuth: []

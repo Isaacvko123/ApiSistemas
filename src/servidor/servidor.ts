@@ -94,7 +94,12 @@ export function createApp(): Express {
   app.disable("x-powered-by");
   app.set("trust proxy", env.trustProxy);
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      // En desarrollo permitimos scripts inline/CDN para el portal de docs/diagramas.
+      contentSecurityPolicy: env.nodeEnv === "development" ? false : undefined,
+    }),
+  );
   app.use(cors(buildCorsOptions()));
   app.use(rateLimiter());
   app.use(express.json({ limit: env.bodyLimit }));
@@ -104,7 +109,7 @@ export function createApp(): Express {
     app.use(morgan("dev"));
   }
 
-  if (env.nodeEnv !== "production") {
+  if (env.nodeEnv === "development") {
     setupDocs(app);
   }
 

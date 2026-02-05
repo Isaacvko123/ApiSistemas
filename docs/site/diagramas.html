@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Diagramas de Interacción y Flujos Operativos - ApiSistemas</title>
+    <style>
+      :root { --bg:#f4f6f8; --ink:#0f172a; --muted:#475569; --card:#ffffff; --accent:#0b3a5b; --line:#e2e8f0; --shadow: 0 14px 30px rgba(2,6,23,0.08); }
+      * { box-sizing: border-box; }
+      body { margin:0; font-family: "Manrope","Inter","Segoe UI",sans-serif; background: radial-gradient(900px 500px at 15% -10%, rgba(14,165,233,0.10), transparent 60%), radial-gradient(900px 500px at 85% -5%, rgba(15,118,110,0.08), transparent 60%), var(--bg); color: var(--ink); }
+      header { padding: 32px 40px 24px; border-bottom: 1px solid var(--line); background: #ffffff; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 10; }
+      main { padding: 28px 40px 48px; display: grid; gap: 20px; }
+      h1 { margin: 0 0 6px; font-size: 30px; letter-spacing: -0.6px; font-weight: 800; }
+      h2 { margin: 0 0 10px; font-size: 20px; font-weight: 700; }
+      p { margin: 0; color: var(--muted); }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow); }
+      .nav { display:flex; gap:12px; margin-top:10px; flex-wrap: wrap; }
+      .nav a { color: var(--accent); text-decoration: none; font-weight: 700; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: #f8fafc; }
+      .nav a:hover { background:#e2e8f0; }
+      .mermaid { background: #ffffff; border-radius: 12px; padding: 10px; border: 1px solid var(--line); }
+      .grid { display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+      .box { border:1px solid var(--line); background:#ffffff; padding:12px; border-radius:12px; }
+      .tag { display:inline-block; font-size:12px; padding:3px 10px; border-radius:999px; background:#e2e8f0; color:#1e293b; border:1px solid #cbd5e1; font-weight:700; }
+      ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); }
+      li { margin: 4px 0; }
+      .tooltip { position: relative; }
+      .tooltip:hover::after {
+        content: attr(data-tip);
+        position: absolute;
+        left: 0;
+        top: 100%;
+        margin-top: 8px;
+        padding: 8px 10px;
+        background: #0f172a;
+        color: #e2e8f0;
+        border-radius: 8px;
+        font-size: 12px;
+        max-width: 320px;
+        z-index: 5;
+        box-shadow: var(--shadow);
+      }
+      .runner { display:grid; gap:12px; }
+      .step { border:1px solid var(--line); border-radius:12px; padding:12px; background:#ffffff; }
+      .step.active { border-color: #0ea5e9; box-shadow: 0 6px 18px rgba(14,165,233,0.15); }
+      .controls { display:flex; gap:8px; flex-wrap: wrap; }
+      button { padding:8px 12px; border-radius:10px; border:1px solid var(--line); background:#fff; font-weight:700; cursor:pointer; }
+      button:hover { background:#e2e8f0; }
+      .flow-wrap { display:grid; gap:12px; grid-template-columns: 1.2fr 0.8fr; }
+      .flow-card { border:1px solid var(--line); border-radius:14px; padding:12px; background:#fff; }
+      .flow-diagram { width:100%; height:auto; }
+      .flow-node { fill:#e0e7ff; stroke:#c7d2fe; stroke-width:2; }
+      .flow-node.active { fill:#0ea5e9; stroke:#0284c7; }
+      .flow-node-label { font-size:12px; fill:#0f172a; font-weight:700; }
+      .flow-node-label.active { fill:#fff; }
+      .flow-line { stroke:#64748b; stroke-width:2; marker-end:url(#arrow); }
+      .flow-line.active { stroke:#0ea5e9; stroke-width:3; }
+      .flow-panel h3 { margin:0 0 6px; font-size:16px; }
+      .flow-panel p { margin:6px 0; color:var(--muted); }
+      .flow-panel .tag { margin-bottom:6px; }
+      @media (max-width: 980px) { .flow-wrap { grid-template-columns: 1fr; } }
+      @media (max-width: 720px) { header { padding:22px 20px; } main { padding:20px; } h1 { font-size:24px; } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Diagramas de Interacción</h1>
+      <p>Flujos formales para operación, auditoría y seguridad.</p>
+      <div class="nav">
+        <a href="/docs/portal">Inicio</a>
+        <a href="/docs">Swagger</a>
+        <a href="/docs/arquitectura">Arquitectura</a>
+      </div>
+    </header>
+    <main>
+      <section class="card">
+        <h2>Login + Refresh (+)</h2>
+        <div class="grid">
+          <div class="box tooltip" data-tip="El usuario inicia sesión y recibe tokens. El refresh se rota para minimizar riesgo.">
+            <div class="tag">Objetivo</div>
+            <p>Autenticación segura con rotación de refresh y revocación por sesión.</p>
+          </div>
+          <div class="box tooltip" data-tip="WAF + rate limit, validación Zod, auditoría y rotación de refresh.">
+            <div class="tag">Controles</div>
+            <ul>
+              <li>Rate limit + WAF</li>
+              <li>Auditoría de login</li>
+              <li>Rotación de refresh</li>
+            </ul>
+          </div>
+        </div>
+     
+        <div class="flow-wrap">
+          <div class="flow-card">
+            <svg class="flow-diagram" viewBox="0 0 900 240" role="img" aria-label="Flujo guiado Login + Refresh">
+              <defs>
+                <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                  <polygon points="0,0 8,4 0,8" fill="#64748b"></polygon>
+                </marker>
+              </defs>
+              <rect id="flow-node-fe" class="flow-node" x="30" y="30" width="120" height="48" rx="10"></rect>
+              <text id="flow-label-fe" class="flow-node-label" x="50" y="60">Frontend</text>
+
+              <rect id="flow-node-edge" class="flow-node" x="190" y="30" width="140" height="48" rx="10"></rect>
+              <text id="flow-label-edge" class="flow-node-label" x="210" y="60">API Gateway</text>
+
+              <rect id="flow-node-waf" class="flow-node" x="370" y="30" width="90" height="48" rx="10"></rect>
+              <text id="flow-label-waf" class="flow-node-label" x="395" y="60">WAF</text>
+
+              <rect id="flow-node-api" class="flow-node" x="500" y="30" width="90" height="48" rx="10"></rect>
+              <text id="flow-label-api" class="flow-node-label" x="525" y="60">API</text>
+
+              <rect id="flow-node-db" class="flow-node" x="630" y="30" width="70" height="48" rx="10"></rect>
+              <text id="flow-label-db" class="flow-node-label" x="650" y="60">DB</text>
+
+              <rect id="flow-node-aud" class="flow-node" x="740" y="30" width="100" height="48" rx="10"></rect>
+              <text id="flow-label-aud" class="flow-node-label" x="760" y="60">AuditLog</text>
+
+              <rect id="flow-node-obs" class="flow-node" x="740" y="120" width="120" height="48" rx="10"></rect>
+              <text id="flow-label-obs" class="flow-node-label" x="760" y="150">Metrics/Logs</text>
+
+              <line id="flow-line-1" class="flow-line" x1="150" y1="54" x2="190" y2="54"></line>
+              <line id="flow-line-2" class="flow-line" x1="330" y1="54" x2="370" y2="54"></line>
+              <line id="flow-line-3" class="flow-line" x1="460" y1="54" x2="500" y2="54"></line>
+              <line id="flow-line-4" class="flow-line" x1="590" y1="54" x2="630" y2="54"></line>
+              <line id="flow-line-5" class="flow-line" x1="700" y1="54" x2="740" y2="54"></line>
+              <line id="flow-line-6" class="flow-line" x1="590" y1="70" y2="140" x2="740"></line>
+            </svg>
+          </div>
+          <div class="flow-card flow-panel">
+            <div class="tag" id="flow-step-tag">Paso 1</div>
+            <h3 id="flow-title">Inicio de sesión</h3>
+            <p id="flow-what">Frontend envía credenciales a API Gateway.</p>
+            <p id="flow-why"><b>Por qué:</b> centraliza seguridad y permite inspección.</p>
+            <p id="flow-fail"><b>Puede fallar si:</b> credenciales inválidas o rate limit.</p>
+            <div class="controls">
+              <button id="flow-prev">Anterior</button>
+              <button id="flow-next">Siguiente</button>
+            </div>
+          </div>
+        </div>
+        <div class="mermaid">
+sequenceDiagram
+  participant FE as Frontend
+  participant EDGE as API Gateway
+  participant WAF as WAF
+  participant API as API
+  participant DB as DB
+  participant AUD as AuditLog
+  participant OBS as Metrics/Logs
+
+  FE->>EDGE: POST /auth/login
+  EDGE->>WAF: inspección + rate limit + CORS
+  WAF-->>EDGE: ok
+  EDGE->>API: request (email, contrasena)
+  API->>OBS: log inbound + requestId
+  API->>API: validar payload (zod)
+  API->>DB: buscar usuario por email
+  DB-->>API: usuario
+  API->>API: verificar argon2 (hash)
+  alt usuario no existe
+    API->>AUD: LOGIN_FAILED (user_not_found)
+    API->>OBS: metric auth_failed
+    API-->>FE: 401 credenciales invalidas
+  else password invalida
+    API->>AUD: LOGIN_FAILED (invalid_password)
+    API->>OBS: metric auth_failed
+    API-->>FE: 401 credenciales invalidas
+  else usuario inactivo
+    API->>AUD: LOGIN_FAILED (inactive)
+    API->>OBS: metric auth_denied
+    API-->>FE: 403 usuario inactivo
+  else OK
+    API->>DB: crear sesion (refreshHash, expiresAt, userAgent, ip)
+    API->>API: firmar JWT access (sid, tv, rol, jti)
+    API->>API: firmar refresh (sid, tv, jti)
+    API->>AUD: LOGIN_SUCCESS (actorId, ip, userAgent)
+    API->>OBS: metric auth_success
+    API-->>FE: 200 accessToken + refreshToken + sessionId + usuario
+  end
+
+  FE->>EDGE: POST /auth/refresh
+  EDGE->>WAF: inspección + rate limit
+  WAF-->>EDGE: ok
+  EDGE->>API: request (refreshToken)
+  API->>OBS: log inbound + requestId
+  API->>API: validar payload (zod)
+  API->>API: verificar refresh JWT (issuer/audience/exp)
+  API->>DB: buscar sesion + usuario
+  alt sesion no existe / revocada / expirada
+    API->>OBS: metric refresh_failed
+    API-->>FE: 401 refresh invalido
+  else tokenVersion distinto (revocación global)
+    API->>OBS: metric refresh_revoked
+    API-->>FE: 401 token revocado
+  else hash no coincide (reuse detect)
+    API->>DB: revocar todas las sesiones + incrementar tokenVersion
+    API->>AUD: LOGOUT_ALL (compromiso detectado)
+    API->>OBS: alert refresh_reuse
+    API-->>FE: 401 refresh comprometido
+  else OK
+    API->>API: rotar refresh token
+    API->>DB: actualizar refreshHash + lastUsedAt + meta
+    API->>OBS: metric refresh_success
+    API-->>FE: 200 nuevos tokens
+  end
+
+  Note over API,DB: Politicas: TTL corto, rotacion refresh, revocacion global por tokenVersion
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Resguardo (se)</h2>
+        <div class="grid">
+          <div class="box tooltip" data-tip="Asignación formal de equipo con evidencias de entrega y devolución.">
+            <div class="tag">Objetivo</div>
+            <p>Asignación formal de equipos con evidencia y cierre.</p>
+          </div>
+          <div class="box tooltip" data-tip="Auditoría por cada cambio y documentos de soporte por evento.">
+            <div class="tag">Controles</div>
+            <ul>
+              <li>Auditoría por cambio</li>
+              <li>Documentos de entrega/devolución</li>
+              <li>Estados controlados</li>
+            </ul>
+          </div>
+        </div>
+        <div class="flow-wrap">
+          <div class="flow-card">
+            <svg class="flow-diagram" viewBox="0 0 780 220" role="img" aria-label="Flujo guiado Resguardo">
+              <defs>
+                <marker id="arrow-res" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                  <polygon points="0,0 8,4 0,8" fill="#64748b"></polygon>
+                </marker>
+              </defs>
+              <rect id="res-node-fe" class="flow-node" x="30" y="30" width="120" height="48" rx="10"></rect>
+              <text id="res-label-fe" class="flow-node-label" x="55" y="60">Frontend</text>
+              <rect id="res-node-api" class="flow-node" x="200" y="30" width="90" height="48" rx="10"></rect>
+              <text id="res-label-api" class="flow-node-label" x="225" y="60">API</text>
+              <rect id="res-node-db" class="flow-node" x="330" y="30" width="70" height="48" rx="10"></rect>
+              <text id="res-label-db" class="flow-node-label" x="350" y="60">DB</text>
+              <rect id="res-node-doc" class="flow-node" x="430" y="30" width="110" height="48" rx="10"></rect>
+              <text id="res-label-doc" class="flow-node-label" x="455" y="60">Documentos</text>
+              <rect id="res-node-aud" class="flow-node" x="580" y="30" width="100" height="48" rx="10"></rect>
+              <text id="res-label-aud" class="flow-node-label" x="600" y="60">AuditLog</text>
+              <line id="res-line-1" class="flow-line" x1="150" y1="54" x2="200" y2="54" marker-end="url(#arrow-res)"></line>
+              <line id="res-line-2" class="flow-line" x1="290" y1="54" x2="330" y2="54" marker-end="url(#arrow-res)"></line>
+              <line id="res-line-3" class="flow-line" x1="400" y1="54" x2="430" y2="54" marker-end="url(#arrow-res)"></line>
+              <line id="res-line-4" class="flow-line" x1="540" y1="54" x2="580" y2="54" marker-end="url(#arrow-res)"></line>
+            </svg>
+          </div>
+          <div class="flow-card flow-panel">
+            <div class="tag" id="res-step-tag">Paso 1</div>
+            <h3 id="res-title">Alta de resguardo</h3>
+            <p id="res-what">Se crea el resguardo con empleado y fechas.</p>
+            <p id="res-why"><b>Por qué:</b> formaliza asignación y trazabilidad.</p>
+            <p id="res-fail"><b>Puede fallar si:</b> empleado inexistente o sin permiso.</p>
+            <div class="controls">
+              <button id="res-prev">Anterior</button>
+              <button id="res-next">Siguiente</button>
+            </div>
+          </div>
+        </div>
+        <div class="mermaid">
+sequenceDiagram
+  participant FE as Frontend
+  participant EDGE as API Gateway
+  participant API as API
+  participant DB as DB
+  participant AUD as AuditLog
+  participant OBS as Metrics/Logs
+
+  FE->>EDGE: POST /resguardos
+  EDGE->>API: request (empleadoId, fechaInicio)
+  API->>API: validar payload
+  API->>DB: crear Resguardo
+  API->>AUD: ENTITY_CREATE (Resguardo)
+  API->>OBS: metric resguardo_created
+  API-->>FE: 201 resguardo
+
+  FE->>EDGE: POST /resguardo-equipos
+  EDGE->>API: request (resguardoId, equipoId, fechaEntrega)
+  API->>API: validar payload
+  API->>DB: crear ResguardoEquipo
+  API->>AUD: ENTITY_CREATE (ResguardoEquipo)
+  API-->>FE: 201 detalle
+
+  FE->>EDGE: POST /documentos/upload (evento=ENTREGA)
+  EDGE->>API: multipart file
+  API->>API: validar tipo + guardar archivo
+  API->>DB: crear Documento
+  API->>AUD: ENTITY_CREATE (Documento)
+  API-->>FE: 201 documento
+
+  FE->>EDGE: PATCH /resguardo-equipos/:id (fechaDevolucion)
+  EDGE->>API: request
+  API->>DB: actualizar detalle
+  API->>AUD: ENTITY_UPDATE (ResguardoEquipo)
+  API-->>FE: 200 ok
+
+  FE->>EDGE: POST /documentos/upload (evento=DEVOLUCION)
+  EDGE->>API: multipart file
+  API->>DB: crear Documento
+  API->>AUD: ENTITY_CREATE (Documento)
+  API-->>FE: 201 documento
+
+  FE->>EDGE: PATCH /resguardos/:id (estado=FINALIZADO, fechaFin)
+  EDGE->>API: request
+  API->>DB: cerrar Resguardo
+  API->>AUD: ENTITY_UPDATE (Resguardo)
+  API->>OBS: metric resguardo_closed
+  API-->>FE: 200 ok
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Credenciales Web (se)</h2>
+        <div class="grid">
+          <div class="box tooltip" data-tip="Contraseñas cifradas y lectura de secreto con auditoría.">
+            <div class="tag">Objetivo</div>
+            <p>Guardar y consultar credenciales cifradas con trazabilidad.</p>
+          </div>
+          <div class="box tooltip" data-tip="AES‑GCM, RBAC y bitácora de lectura de secreto.">
+            <div class="tag">Controles</div>
+            <ul>
+              <li>AES‑GCM</li>
+              <li>Read secret auditado</li>
+              <li>RBAC ADMIN/GERENTE</li>
+            </ul>
+          </div>
+        </div>
+        <div class="flow-wrap">
+          <div class="flow-card">
+            <svg class="flow-diagram" viewBox="0 0 780 220" role="img" aria-label="Flujo guiado Credenciales Web">
+              <defs>
+                <marker id="arrow-cred" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                  <polygon points="0,0 8,4 0,8" fill="#64748b"></polygon>
+                </marker>
+              </defs>
+              <rect id="cred-node-fe" class="flow-node" x="30" y="30" width="120" height="48" rx="10"></rect>
+              <text id="cred-label-fe" class="flow-node-label" x="55" y="60">Frontend</text>
+              <rect id="cred-node-api" class="flow-node" x="200" y="30" width="90" height="48" rx="10"></rect>
+              <text id="cred-label-api" class="flow-node-label" x="225" y="60">API</text>
+              <rect id="cred-node-kms" class="flow-node" x="330" y="30" width="90" height="48" rx="10"></rect>
+              <text id="cred-label-kms" class="flow-node-label" x="352" y="60">KMS</text>
+              <rect id="cred-node-db" class="flow-node" x="460" y="30" width="70" height="48" rx="10"></rect>
+              <text id="cred-label-db" class="flow-node-label" x="480" y="60">DB</text>
+              <rect id="cred-node-aud" class="flow-node" x="570" y="30" width="100" height="48" rx="10"></rect>
+              <text id="cred-label-aud" class="flow-node-label" x="590" y="60">AuditLog</text>
+              <line id="cred-line-1" class="flow-line" x1="150" y1="54" x2="200" y2="54" marker-end="url(#arrow-cred)"></line>
+              <line id="cred-line-2" class="flow-line" x1="290" y1="54" x2="330" y2="54" marker-end="url(#arrow-cred)"></line>
+              <line id="cred-line-3" class="flow-line" x1="420" y1="54" x2="460" y2="54" marker-end="url(#arrow-cred)"></line>
+              <line id="cred-line-4" class="flow-line" x1="530" y1="54" x2="570" y2="54" marker-end="url(#arrow-cred)"></line>
+            </svg>
+          </div>
+          <div class="flow-card flow-panel">
+            <div class="tag" id="cred-step-tag">Paso 1</div>
+            <h3 id="cred-title">Guardar credencial</h3>
+            <p id="cred-what">API valida y cifra con AES-GCM.</p>
+            <p id="cred-why"><b>Por qué:</b> evitar exposición de secretos.</p>
+            <p id="cred-fail"><b>Puede fallar si:</b> clave no disponible o payload inválido.</p>
+            <div class="controls">
+              <button id="cred-prev">Anterior</button>
+              <button id="cred-next">Siguiente</button>
+            </div>
+          </div>
+        </div>
+        <div class="mermaid">
+sequenceDiagram
+  participant FE as Frontend
+  participant EDGE as API Gateway
+  participant API as API
+  participant KMS as KeyMgmt
+  participant DB as DB
+  participant AUD as AuditLog
+
+  FE->>EDGE: POST /credenciales
+  EDGE->>API: request (password en claro)
+  API->>API: validar payload
+  API->>KMS: obtener clave activa (version)
+  API->>API: cifrar AES-GCM
+  API->>DB: guardar passwordEnc/iv/tag
+  API->>AUD: CREDENCIAL_CREATE
+  API-->>FE: 201 credencial
+
+  FE->>EDGE: GET /credenciales/{id}/secret
+  EDGE->>API: request (ADMIN/GERENTE)
+  API->>KMS: obtener clave por version
+  API->>API: descifrar AES-GCM
+  API->>AUD: CREDENCIAL_READ_SECRET
+  API-->>FE: 200 password
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>WiFi Credenciales (se)</h2>
+        <div class="grid">
+          <div class="box tooltip" data-tip="Administración de WiFi con credenciales cifradas.">
+            <div class="tag">Objetivo</div>
+            <p>Administrar WiFi con acceso controlado y auditoría.</p>
+          </div>
+          <div class="box tooltip" data-tip="AES‑GCM, auditoría de secreto y control de vigencia.">
+            <div class="tag">Controles</div>
+            <ul>
+              <li>AES‑GCM</li>
+              <li>Read secret auditado</li>
+              <li>Vigencia</li>
+            </ul>
+          </div>
+        </div>
+        <div class="flow-wrap">
+          <div class="flow-card">
+            <svg class="flow-diagram" viewBox="0 0 780 220" role="img" aria-label="Flujo guiado WiFi Credenciales">
+              <defs>
+                <marker id="arrow-wifi" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                  <polygon points="0,0 8,4 0,8" fill="#64748b"></polygon>
+                </marker>
+              </defs>
+              <rect id="wifi-node-fe" class="flow-node" x="30" y="30" width="120" height="48" rx="10"></rect>
+              <text id="wifi-label-fe" class="flow-node-label" x="55" y="60">Frontend</text>
+              <rect id="wifi-node-api" class="flow-node" x="200" y="30" width="90" height="48" rx="10"></rect>
+              <text id="wifi-label-api" class="flow-node-label" x="225" y="60">API</text>
+              <rect id="wifi-node-kms" class="flow-node" x="330" y="30" width="90" height="48" rx="10"></rect>
+              <text id="wifi-label-kms" class="flow-node-label" x="352" y="60">KMS</text>
+              <rect id="wifi-node-db" class="flow-node" x="460" y="30" width="70" height="48" rx="10"></rect>
+              <text id="wifi-label-db" class="flow-node-label" x="480" y="60">DB</text>
+              <rect id="wifi-node-aud" class="flow-node" x="570" y="30" width="100" height="48" rx="10"></rect>
+              <text id="wifi-label-aud" class="flow-node-label" x="590" y="60">AuditLog</text>
+              <line id="wifi-line-1" class="flow-line" x1="150" y1="54" x2="200" y2="54" marker-end="url(#arrow-wifi)"></line>
+              <line id="wifi-line-2" class="flow-line" x1="290" y1="54" x2="330" y2="54" marker-end="url(#arrow-wifi)"></line>
+              <line id="wifi-line-3" class="flow-line" x1="420" y1="54" x2="460" y2="54" marker-end="url(#arrow-wifi)"></line>
+              <line id="wifi-line-4" class="flow-line" x1="530" y1="54" x2="570" y2="54" marker-end="url(#arrow-wifi)"></line>
+            </svg>
+          </div>
+          <div class="flow-card flow-panel">
+            <div class="tag" id="wifi-step-tag">Paso 1</div>
+            <h3 id="wifi-title">Guardar WiFi</h3>
+            <p id="wifi-what">API cifra y almacena SSID/usuario/password.</p>
+            <p id="wifi-why"><b>Por qué:</b> proteger credenciales corporativas.</p>
+            <p id="wifi-fail"><b>Puede fallar si:</b> llave inválida o sin permisos.</p>
+            <div class="controls">
+              <button id="wifi-prev">Anterior</button>
+              <button id="wifi-next">Siguiente</button>
+            </div>
+          </div>
+        </div>
+        <div class="mermaid">
+sequenceDiagram
+  participant FE as Frontend
+  participant EDGE as API Gateway
+  participant API as API
+  participant KMS as KeyMgmt
+  participant DB as DB
+  participant AUD as AuditLog
+
+  FE->>EDGE: POST /wifi-credenciales
+  EDGE->>API: request (password en claro)
+  API->>API: validar payload
+  API->>KMS: obtener clave activa
+  API->>API: cifrar AES-GCM
+  API->>DB: guardar passwordEnc/iv/tag
+  API->>AUD: ENTITY_CREATE (WifiCredencial)
+  API-->>FE: 201 credencial
+
+  FE->>EDGE: GET /wifi-credenciales/{id}/secret
+  EDGE->>API: request (ADMIN/GERENTE)
+  API->>KMS: obtener clave por version
+  API->>API: descifrar AES-GCM
+  API->>AUD: ENTITY_READ_SECRET (WifiCredencial)
+  API-->>FE: 200 password
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Documentos (se)</h2>
+        <p>Flujo de carga, validación, persistencia y trazabilidad de eventos.</p>
+        <div class="flow-wrap">
+          <div class="flow-card">
+            <svg class="flow-diagram" viewBox="0 0 760 220" role="img" aria-label="Flujo guiado Documentos">
+              <defs>
+                <marker id="arrow-doc" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                  <polygon points="0,0 8,4 0,8" fill="#64748b"></polygon>
+                </marker>
+              </defs>
+              <rect id="doc-node-fe" class="flow-node" x="30" y="30" width="120" height="48" rx="10"></rect>
+              <text id="doc-label-fe" class="flow-node-label" x="55" y="60">Frontend</text>
+              <rect id="doc-node-api" class="flow-node" x="200" y="30" width="90" height="48" rx="10"></rect>
+              <text id="doc-label-api" class="flow-node-label" x="225" y="60">API</text>
+              <rect id="doc-node-fs" class="flow-node" x="330" y="30" width="110" height="48" rx="10"></rect>
+              <text id="doc-label-fs" class="flow-node-label" x="355" y="60">Filesystem</text>
+              <rect id="doc-node-db" class="flow-node" x="480" y="30" width="70" height="48" rx="10"></rect>
+              <text id="doc-label-db" class="flow-node-label" x="500" y="60">DB</text>
+              <rect id="doc-node-aud" class="flow-node" x="590" y="30" width="100" height="48" rx="10"></rect>
+              <text id="doc-label-aud" class="flow-node-label" x="610" y="60">AuditLog</text>
+              <line id="doc-line-1" class="flow-line" x1="150" y1="54" x2="200" y2="54" marker-end="url(#arrow-doc)"></line>
+              <line id="doc-line-2" class="flow-line" x1="290" y1="54" x2="330" y2="54" marker-end="url(#arrow-doc)"></line>
+              <line id="doc-line-3" class="flow-line" x1="440" y1="54" x2="480" y2="54" marker-end="url(#arrow-doc)"></line>
+              <line id="doc-line-4" class="flow-line" x1="550" y1="54" x2="590" y2="54" marker-end="url(#arrow-doc)"></line>
+            </svg>
+          </div>
+          <div class="flow-card flow-panel">
+            <div class="tag" id="doc-step-tag">Paso 1</div>
+            <h3 id="doc-title">Subir archivo</h3>
+            <p id="doc-what">Validación de MIME y tamaño antes de guardar.</p>
+            <p id="doc-why"><b>Por qué:</b> evitar archivos corruptos o peligrosos.</p>
+            <p id="doc-fail"><b>Puede fallar si:</b> tipo no permitido o tamaño excedido.</p>
+            <div class="controls">
+              <button id="doc-prev">Anterior</button>
+              <button id="doc-next">Siguiente</button>
+            </div>
+          </div>
+        </div>
+        <div class="mermaid">
+sequenceDiagram
+  participant FE as Frontend
+  participant EDGE as API Gateway
+  participant API as API
+  participant FS as Filesystem
+  participant DB as DB
+  participant AUD as AuditLog
+
+  FE->>EDGE: POST /documentos/upload (multipart)
+  EDGE->>API: request
+  API->>API: validar tipo/mime/tamano
+  API->>FS: guardar archivo
+  API->>DB: crear Documento (ruta, evento, resguardoId/empleadoId)
+  API->>AUD: ENTITY_CREATE (Documento)
+  API-->>FE: 201 documento
+        </div>
+      </section>
+
+    </main>
+
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+    <script>
+      function initFlow({ prefix, steps, nodes, lines }) {
+        const els = {
+          tag: document.getElementById(`${prefix}-step-tag`),
+          title: document.getElementById(`${prefix}-title`),
+          what: document.getElementById(`${prefix}-what`),
+          why: document.getElementById(`${prefix}-why`),
+          fail: document.getElementById(`${prefix}-fail`)
+        };
+        let idx = 0;
+        function clear() {
+          nodes.forEach((n) => {
+            document.getElementById(`${prefix}-node-${n}`).classList.remove("active");
+            document.getElementById(`${prefix}-label-${n}`).classList.remove("active");
+          });
+          lines.forEach((l) => document.getElementById(`${prefix}-line-${l}`).classList.remove("active"));
+        }
+        function render() {
+          const step = steps[idx];
+          els.tag.textContent = `Paso ${idx + 1}`;
+          els.title.textContent = step.title;
+          els.what.textContent = step.what;
+          els.why.innerHTML = `<b>Por qué:</b> ${step.why}`;
+          els.fail.innerHTML = `<b>Puede fallar si:</b> ${step.fail}`;
+          clear();
+          step.nodes.forEach((n) => {
+            document.getElementById(`${prefix}-node-${n}`).classList.add("active");
+            document.getElementById(`${prefix}-label-${n}`).classList.add("active");
+          });
+          step.lines.forEach((l) => document.getElementById(`${prefix}-line-${l}`).classList.add("active"));
+        }
+        document.getElementById(`${prefix}-prev`).onclick = () => { if (idx > 0) idx--; render(); };
+        document.getElementById(`${prefix}-next`).onclick = () => { if (idx < steps.length - 1) idx++; render(); };
+        render();
+      }
+
+      initFlow({
+        prefix: "flow",
+        nodes: ["fe","edge","waf","api","db","aud","obs"],
+        lines: ["1","2","3","4","5","6"],
+        steps: [
+          { title: "Inicio de sesión", what: "Frontend envía credenciales al API Gateway.", why: "Centraliza seguridad y control de entrada.", fail: "Credenciales inválidas o rate limit.", nodes: ["fe","edge"], lines: ["1"] },
+          { title: "Inspección WAF", what: "Gateway pasa por WAF (CORS + rate limit + reglas).", why: "Bloquea tráfico malicioso antes de la API.", fail: "Bloqueo por IP o payload sospechoso.", nodes: ["edge","waf"], lines: ["2"] },
+          { title: "Procesamiento API", what: "API valida payload y prepara contexto.", why: "Evita entradas inválidas y reduce riesgos.", fail: "Payload incompleto o inválido (422).", nodes: ["api"], lines: ["3"] },
+          { title: "Consulta a DB", what: "API busca usuario por email en DB.", why: "Obtiene hash y estado del usuario.", fail: "Usuario no existe o DB inaccesible.", nodes: ["api","db"], lines: ["4"] },
+          { title: "Auditoría", what: "Se registra el evento (LOGIN_SUCCESS/FAILED).", why: "Trazabilidad y cumplimiento.", fail: "Si falla auditoría, se reporta (no bloqueante).", nodes: ["api","aud"], lines: ["5"] },
+          { title: "Observabilidad", what: "Logs y métricas de la operación.", why: "Detectar patrones de ataque o errores.", fail: "No bloquea, pero reduce visibilidad.", nodes: ["api","obs"], lines: ["6"] }
+        ]
+      });
+
+      initFlow({
+        prefix: "res",
+        nodes: ["fe","api","db","doc","aud"],
+        lines: ["1","2","3","4"],
+        steps: [
+          { title: "Alta de resguardo", what: "Se crea el resguardo con empleado y fechas.", why: "Formaliza asignación y control de activos.", fail: "Empleado inexistente o sin permiso.", nodes: ["fe","api"], lines: ["1"] },
+          { title: "Persistencia", what: "Se registra resguardo y detalle en DB.", why: "Mantener historial legal/operativo.", fail: "DB indisponible o datos duplicados.", nodes: ["api","db"], lines: ["2"] },
+          { title: "Evidencia", what: "Se sube documento de entrega/devolución.", why: "Soporte documental y auditoría.", fail: "Archivo inválido o ruta incorrecta.", nodes: ["api","doc"], lines: ["3"] },
+          { title: "Auditoría", what: "Se registra evento de alta y cambios.", why: "Trazabilidad completa por resguardo.", fail: "Falla de auditoría no bloqueante.", nodes: ["api","aud"], lines: ["4"] }
+        ]
+      });
+
+      initFlow({
+        prefix: "cred",
+        nodes: ["fe","api","kms","db","aud"],
+        lines: ["1","2","3","4"],
+        steps: [
+          { title: "Ingreso seguro", what: "API recibe datos de la credencial.", why: "Controlar permisos antes de cifrar.", fail: "Rol sin permisos o payload inválido.", nodes: ["fe","api"], lines: ["1"] },
+          { title: "Cifrado", what: "Se obtiene clave y cifra con AES-GCM.", why: "Evitar exposición en texto plano.", fail: "Clave no disponible o versión inválida.", nodes: ["api","kms"], lines: ["2"] },
+          { title: "Persistencia", what: "Se guarda secreto cifrado y metadatos.", why: "Uso futuro con control de acceso.", fail: "DB caída o constraint.", nodes: ["api","db"], lines: ["3"] },
+          { title: "Auditoría", what: "Registro de creación y acceso.", why: "Cumplimiento y seguimiento.", fail: "Falla no bloqueante.", nodes: ["api","aud"], lines: ["4"] }
+        ]
+      });
+
+      initFlow({
+        prefix: "wifi",
+        nodes: ["fe","api","kms","db","aud"],
+        lines: ["1","2","3","4"],
+        steps: [
+          { title: "Captura", what: "API recibe SSID/usuario/password.", why: "Validar antes de cifrar.", fail: "Payload incompleto o sin permisos.", nodes: ["fe","api"], lines: ["1"] },
+          { title: "Cifrado", what: "AES-GCM con clave vigente.", why: "Protección de credenciales WiFi.", fail: "Clave inválida o rota.", nodes: ["api","kms"], lines: ["2"] },
+          { title: "Persistencia", what: "Se guarda en DB con relación.", why: "Acceso posterior controlado.", fail: "DB caída o constraint.", nodes: ["api","db"], lines: ["3"] },
+          { title: "Auditoría", what: "Se registra lectura/creación.", why: "Trazabilidad de secretos.", fail: "No bloqueante si falla.", nodes: ["api","aud"], lines: ["4"] }
+        ]
+      });
+
+      initFlow({
+        prefix: "doc",
+        nodes: ["fe","api","fs","db","aud"],
+        lines: ["1","2","3","4"],
+        steps: [
+          { title: "Validación", what: "API valida MIME y tamaño.", why: "Evitar archivos maliciosos.", fail: "Tipo no permitido o tamaño excedido.", nodes: ["fe","api"], lines: ["1"] },
+          { title: "Guardar archivo", what: "Se guarda en filesystem/almacenamiento.", why: "Persistencia de evidencia.", fail: "Ruta inválida o permisos.", nodes: ["api","fs"], lines: ["2"] },
+          { title: "Registrar en DB", what: "Se crea registro Documento.", why: "Indexar y relacionar evidencias.", fail: "DB caída o FK inválida.", nodes: ["api","db"], lines: ["3"] },
+          { title: "Auditoría", what: "Registro de carga.", why: "Cumplimiento y trazabilidad.", fail: "No bloqueante si falla.", nodes: ["api","aud"], lines: ["4"] }
+        ]
+      });
+    </script>
+  </body>
+</html>
