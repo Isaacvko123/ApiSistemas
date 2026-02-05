@@ -11,6 +11,7 @@ import {
 } from "../../models/Empleado/EmpleadoModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
+import { respondList } from "../../utils/respond";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -85,7 +86,15 @@ export class EmpleadoController {
         metadata: { page, pageSize, activo, areaId, puestoId, localidadId, count: empleados.length },
       });
 
-      return res.status(200).json(empleados.map(toEmpleadoPublic));
+      return respondList(req, res, empleados.map(toEmpleadoPublic), {
+        page,
+        pageSize,
+        activo,
+        areaId,
+        puestoId,
+        localidadId,
+        count: empleados.length,
+      });
     } catch (error) {
       return handlePrismaError(res, error);
     }

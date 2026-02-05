@@ -9,6 +9,7 @@ import {
 } from "../../models/TipoEquipo/TipoEquipoModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
+import { respondList } from "../../utils/respond";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -76,7 +77,13 @@ export class TipoEquipoController {
         targetId: "list",
         metadata: { page, pageSize, nombre, activo, count: tipos.length },
       });
-      return res.status(200).json(tipos.map(toTipoEquipoPublic));
+      return respondList(req, res, tipos.map(toTipoEquipoPublic), {
+        page,
+        pageSize,
+        nombre,
+        activo,
+        count: tipos.length,
+      });
     } catch (error) {
       return handlePrismaError(res, error);
     }

@@ -26,8 +26,8 @@
       <section class="card">
         <h2>Rutas y permisos</h2>
         <table>
-          <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Auth</th><th>Roles</th></tr></thead>
-          <tbody><tr><td>POST</td><td>/wifi-credenciales</td><td>Crea credencial WiFi</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>GET</td><td>/wifi-credenciales</td><td>Lista credenciales WiFi</td><td>Sí</td><td>-</td></tr><tr><td>GET</td><td>/wifi-credenciales/{id}/secret</td><td>Revela password</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>GET</td><td>/wifi-credenciales/{id}</td><td>Obtiene wifi credenciales</td><td>Sí</td><td>-</td></tr><tr><td>PATCH</td><td>/wifi-credenciales/{id}</td><td>Actualiza wifi credenciales</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>DELETE</td><td>/wifi-credenciales/{id}</td><td>Elimina wifi credenciales</td><td>Sí</td><td>ADMIN, GERENTE</td></tr></tbody>
+          <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Query</th><th>Auth</th><th>Roles</th></tr></thead>
+          <tbody><tr><td>POST</td><td>/wifi-credenciales</td><td>Crea credencial WiFi</td><td>-</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>GET</td><td>/wifi-credenciales</td><td>Lista credenciales WiFi</td><td>page:number, pageSize:number, vigente:boolean, empleadoId:number, localidadId:number, ssid:string</td><td>Sí</td><td>-</td></tr><tr><td>GET</td><td>/wifi-credenciales/{id}/secret</td><td>Revela password</td><td>-</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>GET</td><td>/wifi-credenciales/{id}</td><td>Obtiene wifi credenciales</td><td>-</td><td>Sí</td><td>-</td></tr><tr><td>PATCH</td><td>/wifi-credenciales/{id}</td><td>Actualiza wifi credenciales</td><td>-</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>DELETE</td><td>/wifi-credenciales/{id}</td><td>Elimina wifi credenciales</td><td>-</td><td>Sí</td><td>ADMIN, GERENTE</td></tr></tbody>
         </table>
       </section>
       <section class="card">
@@ -40,7 +40,7 @@
       </section>
       <section class="card">
         <h2>Validaciones</h2>
-        <ul><li>ssid requerido</li></ul>
+        <ul><li>ssid requerido</li><li>Paginación: page, pageSize</li><li>Filtros: vigente, empleadoId, localidadId, ssid</li></ul>
       </section>
       <section class="card">
         <h2>Ejemplos</h2>

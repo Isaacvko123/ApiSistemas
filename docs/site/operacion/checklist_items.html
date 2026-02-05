@@ -26,8 +26,8 @@
       <section class="card">
         <h2>Rutas y permisos</h2>
         <table>
-          <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Auth</th><th>Roles</th></tr></thead>
-          <tbody><tr><td>POST</td><td>/checklist-items</td><td>Crea item</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>GET</td><td>/checklist-items</td><td>Lista items</td><td>Sí</td><td>-</td></tr><tr><td>GET</td><td>/checklist-items/{id}</td><td>Obtiene checklist items</td><td>Sí</td><td>-</td></tr><tr><td>PATCH</td><td>/checklist-items/{id}</td><td>Actualiza checklist items</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>DELETE</td><td>/checklist-items/{id}</td><td>Elimina checklist items</td><td>Sí</td><td>ADMIN, GERENTE</td></tr></tbody>
+          <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Query</th><th>Auth</th><th>Roles</th></tr></thead>
+          <tbody><tr><td>POST</td><td>/checklist-items</td><td>Crea item</td><td>-</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>GET</td><td>/checklist-items</td><td>Lista items</td><td>page:number, pageSize:number, checklistId:number, descripcion:string</td><td>Sí</td><td>-</td></tr><tr><td>GET</td><td>/checklist-items/{id}</td><td>Obtiene checklist items</td><td>-</td><td>Sí</td><td>-</td></tr><tr><td>PATCH</td><td>/checklist-items/{id}</td><td>Actualiza checklist items</td><td>-</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>DELETE</td><td>/checklist-items/{id}</td><td>Elimina checklist items</td><td>-</td><td>Sí</td><td>ADMIN, GERENTE</td></tr></tbody>
         </table>
       </section>
       <section class="card">
@@ -40,7 +40,7 @@
       </section>
       <section class="card">
         <h2>Validaciones</h2>
-        <ul><li>checklistId válido</li></ul>
+        <ul><li>checklistId válido</li><li>Paginación: page, pageSize</li><li>Filtros: checklistId, descripcion</li></ul>
       </section>
       <section class="card">
         <h2>Ejemplos</h2>

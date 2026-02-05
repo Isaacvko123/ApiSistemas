@@ -11,6 +11,7 @@ import {
 } from "../../models/Resguardo/ResguardoModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
+import { respondList } from "../../utils/respond";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -82,7 +83,14 @@ export class ResguardoController {
         metadata: { page, pageSize, empleadoId, localidadId, estado, count: resguardos.length },
       });
 
-      return res.status(200).json(resguardos.map(toResguardoPublic));
+      return respondList(req, res, resguardos.map(toResguardoPublic), {
+        page,
+        pageSize,
+        empleadoId,
+        localidadId,
+        estado,
+        count: resguardos.length,
+      });
     } catch (error) {
       return handlePrismaError(res, error);
     }

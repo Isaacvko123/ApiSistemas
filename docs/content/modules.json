@@ -21,6 +21,26 @@
           "roles": [
             "ADMIN",
             "GERENTE"
+          ],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 100)"
+            },
+            {
+              "name": "activo",
+              "type": "boolean"
+            },
+            {
+              "name": "rol",
+              "type": "string"
+            }
           ]
         },
         {
@@ -67,7 +87,9 @@
       "validations": [
         "email único",
         "password >= 10",
-        "rol válido"
+        "rol válido",
+        "Paginación: page, pageSize",
+        "Filtros: activo, rol"
       ],
       "errors": [
         "400 payload inválido",
@@ -187,7 +209,23 @@
           "path": "/areas",
           "desc": "Lista áreas",
           "auth": true,
-          "roles": []
+          "roles": [],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 100)"
+            },
+            {
+              "name": "nombre",
+              "type": "string"
+            }
+          ]
         },
         {
           "method": "GET",
@@ -226,10 +264,14 @@
         "nombre"
       ],
       "validations": [
-        "nombre único"
+        "nombre único",
+        "Paginación: page, pageSize",
+        "Filtros: nombre",
+        "No se puede eliminar si hay puestos/empleados/credenciales relacionados."
       ],
       "errors": [
-        "409 duplicado"
+        "409 duplicado",
+        "409 relación inválida"
       ],
       "examples": {
         "request": {
@@ -265,7 +307,27 @@
           "path": "/puestos",
           "desc": "Lista puestos",
           "auth": true,
-          "roles": []
+          "roles": [],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 100)"
+            },
+            {
+              "name": "areaId",
+              "type": "number"
+            },
+            {
+              "name": "nombre",
+              "type": "string"
+            }
+          ]
         },
         {
           "method": "GET",
@@ -305,11 +367,15 @@
         "areaId"
       ],
       "validations": [
-        "areaId existente"
+        "areaId existente",
+        "Paginación: page, pageSize",
+        "Filtros: areaId, nombre",
+        "No se puede eliminar si hay empleados/checklists/credenciales relacionados."
       ],
       "errors": [
         "404 área no encontrada",
-        "409 duplicado"
+        "409 duplicado",
+        "409 relación inválida"
       ],
       "examples": {
         "request": {
@@ -347,7 +413,27 @@
           "path": "/localidades",
           "desc": "Lista localidades",
           "auth": true,
-          "roles": []
+          "roles": [],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 100)"
+            },
+            {
+              "name": "estado",
+              "type": "string"
+            },
+            {
+              "name": "codigo",
+              "type": "string"
+            }
+          ]
         },
         {
           "method": "GET",
@@ -388,10 +474,14 @@
         "estado"
       ],
       "validations": [
-        "codigo único"
+        "codigo único",
+        "Paginación: page, pageSize",
+        "Filtros: estado, codigo",
+        "No se puede eliminar si hay empleados/equipos/resguardos/wifi relacionados."
       ],
       "errors": [
-        "409 duplicado"
+        "409 duplicado",
+        "409 relación inválida"
       ],
       "examples": {
         "request": {
@@ -428,7 +518,35 @@
           "path": "/empleados",
           "desc": "Lista empleados",
           "auth": true,
-          "roles": []
+          "roles": [],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 100)"
+            },
+            {
+              "name": "activo",
+              "type": "boolean"
+            },
+            {
+              "name": "areaId",
+              "type": "number"
+            },
+            {
+              "name": "puestoId",
+              "type": "number"
+            },
+            {
+              "name": "localidadId",
+              "type": "number"
+            }
+          ]
         },
         {
           "method": "GET",
@@ -473,11 +591,15 @@
       ],
       "validations": [
         "email único",
-        "numeroEmpleado único"
+        "numeroEmpleado único",
+        "Paginación: page, pageSize",
+        "Filtros: activo, areaId, puestoId, localidadId",
+        "No se puede desactivar si tiene resguardos ACTIVO."
       ],
       "errors": [
         "409 duplicado",
-        "404 relación inválida"
+        "404 relación inválida",
+        "409 relación inválida"
       ],
       "examples": {
         "request": {
@@ -515,7 +637,27 @@
           "path": "/tipos-equipo",
           "desc": "Lista tipos de equipo",
           "auth": true,
-          "roles": []
+          "roles": [],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 100)"
+            },
+            {
+              "name": "nombre",
+              "type": "string"
+            },
+            {
+              "name": "activo",
+              "type": "boolean"
+            }
+          ]
         },
         {
           "method": "GET",
@@ -561,12 +703,16 @@
       "validations": [
         "nombre único",
         "descripcion opcional",
-        "activo boolean"
+        "activo boolean",
+        "Paginación: page, pageSize",
+        "Filtros: nombre, activo",
+        "No se puede eliminar si hay equipos/checklist_items relacionados."
       ],
       "errors": [
         "400 payload inválido",
         "409 duplicado",
-        "404 no encontrado"
+        "404 no encontrado",
+        "409 relación inválida"
       ],
       "examples": {
         "request": {
@@ -606,7 +752,31 @@
           "path": "/equipos",
           "desc": "Lista equipos",
           "auth": true,
-          "roles": []
+          "roles": [],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 100)"
+            },
+            {
+              "name": "tipoEquipoId",
+              "type": "number"
+            },
+            {
+              "name": "estado",
+              "type": "string"
+            },
+            {
+              "name": "localidadId",
+              "type": "number"
+            }
+          ]
         },
         {
           "method": "GET",
@@ -651,7 +821,9 @@
       ],
       "validations": [
         "serie única",
-        "tipoEquipoId válido"
+        "tipoEquipoId válido",
+        "Paginación: page, pageSize",
+        "Filtros: tipoEquipoId, estado, localidadId"
       ],
       "errors": [
         "409 duplicado",
@@ -693,7 +865,31 @@
           "path": "/resguardos",
           "desc": "Lista resguardos",
           "auth": true,
-          "roles": []
+          "roles": [],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 100)"
+            },
+            {
+              "name": "empleadoId",
+              "type": "number"
+            },
+            {
+              "name": "localidadId",
+              "type": "number"
+            },
+            {
+              "name": "estado",
+              "type": "string"
+            }
+          ]
         },
         {
           "method": "GET",
@@ -735,7 +931,9 @@
         "fechaInicio"
       ],
       "validations": [
-        "empleadoId válido"
+        "empleadoId válido",
+        "Paginación: page, pageSize",
+        "Filtros: empleadoId, localidadId, estado"
       ],
       "errors": [
         "404 empleado no encontrado"
@@ -775,7 +973,27 @@
           "path": "/resguardo-equipos",
           "desc": "Lista detalles",
           "auth": true,
-          "roles": []
+          "roles": [],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 100)"
+            },
+            {
+              "name": "resguardoId",
+              "type": "number"
+            },
+            {
+              "name": "equipoId",
+              "type": "number"
+            }
+          ]
         },
         {
           "method": "GET",
@@ -817,7 +1035,9 @@
         "fechaDevolucion"
       ],
       "validations": [
-        "resguardoId y equipoId válidos"
+        "resguardoId y equipoId válidos",
+        "Paginación: page, pageSize",
+        "Filtros: resguardoId, equipoId"
       ],
       "errors": [
         "404 resguardo/equipo no encontrado"
@@ -856,7 +1076,43 @@
           "path": "/documentos",
           "desc": "Lista documentos",
           "auth": true,
-          "roles": []
+          "roles": [],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 100)"
+            },
+            {
+              "name": "equipoId",
+              "type": "number"
+            },
+            {
+              "name": "resguardoId",
+              "type": "number"
+            },
+            {
+              "name": "resguardoEquipoId",
+              "type": "number"
+            },
+            {
+              "name": "tipo",
+              "type": "string"
+            },
+            {
+              "name": "empleadoId",
+              "type": "number"
+            },
+            {
+              "name": "evento",
+              "type": "string"
+            }
+          ]
         },
         {
           "method": "GET",
@@ -909,7 +1165,9 @@
       ],
       "validations": [
         "MIME permitido",
-        "tamaño <= límite"
+        "tamaño <= límite",
+        "Paginación: page, pageSize",
+        "Filtros: equipoId, resguardoId, resguardoEquipoId, tipo, empleadoId, evento"
       ],
       "errors": [
         "400 tipo inválido",
@@ -950,7 +1208,27 @@
           "path": "/checklists",
           "desc": "Lista checklists",
           "auth": true,
-          "roles": []
+          "roles": [],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 100)"
+            },
+            {
+              "name": "puestoId",
+              "type": "number"
+            },
+            {
+              "name": "nombre",
+              "type": "string"
+            }
+          ]
         },
         {
           "method": "GET",
@@ -990,10 +1268,14 @@
         "puestoId"
       ],
       "validations": [
-        "puestoId válido"
+        "puestoId válido",
+        "Paginación: page, pageSize",
+        "Filtros: puestoId, nombre",
+        "No se puede eliminar si tiene checklist_items relacionados."
       ],
       "errors": [
-        "404 puesto no encontrado"
+        "404 puesto no encontrado",
+        "409 relación inválida"
       ],
       "examples": {
         "request": {
@@ -1029,7 +1311,27 @@
           "path": "/checklist-items",
           "desc": "Lista items",
           "auth": true,
-          "roles": []
+          "roles": [],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 100)"
+            },
+            {
+              "name": "checklistId",
+              "type": "number"
+            },
+            {
+              "name": "descripcion",
+              "type": "string"
+            }
+          ]
         },
         {
           "method": "GET",
@@ -1070,7 +1372,9 @@
         "tipoEquipoId"
       ],
       "validations": [
-        "checklistId válido"
+        "checklistId válido",
+        "Paginación: page, pageSize",
+        "Filtros: checklistId, descripcion"
       ],
       "errors": [
         "404 checklist no encontrado"
@@ -1109,7 +1413,35 @@
           "path": "/credenciales",
           "desc": "Lista credenciales",
           "auth": true,
-          "roles": []
+          "roles": [],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 100)"
+            },
+            {
+              "name": "activo",
+              "type": "boolean"
+            },
+            {
+              "name": "empleadoId",
+              "type": "number"
+            },
+            {
+              "name": "areaId",
+              "type": "number"
+            },
+            {
+              "name": "puestoId",
+              "type": "number"
+            }
+          ]
         },
         {
           "method": "GET",
@@ -1152,7 +1484,9 @@
         "passwordTag"
       ],
       "validations": [
-        "url válido"
+        "url válido",
+        "Paginación: page, pageSize",
+        "Filtros: activo, empleadoId, areaId, puestoId"
       ],
       "errors": [
         "400 payload inválido"
@@ -1193,7 +1527,35 @@
           "path": "/wifi-credenciales",
           "desc": "Lista credenciales WiFi",
           "auth": true,
-          "roles": []
+          "roles": [],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 100)"
+            },
+            {
+              "name": "vigente",
+              "type": "boolean"
+            },
+            {
+              "name": "empleadoId",
+              "type": "number"
+            },
+            {
+              "name": "localidadId",
+              "type": "number"
+            },
+            {
+              "name": "ssid",
+              "type": "string"
+            }
+          ]
         },
         {
           "method": "GET",
@@ -1247,7 +1609,9 @@
         "passwordTag"
       ],
       "validations": [
-        "ssid requerido"
+        "ssid requerido",
+        "Paginación: page, pageSize",
+        "Filtros: vigente, empleadoId, localidadId, ssid"
       ],
       "errors": [
         "404 no encontrado",
@@ -1280,6 +1644,49 @@
           "roles": [
             "ADMIN",
             "GERENTE"
+          ],
+          "query": [
+            {
+              "name": "page",
+              "type": "number",
+              "description": "Página (1..N)"
+            },
+            {
+              "name": "pageSize",
+              "type": "number",
+              "description": "Tamaño de página (máx 500)"
+            },
+            {
+              "name": "limit",
+              "type": "number",
+              "description": "Legacy: máximo de registros (max 500)"
+            },
+            {
+              "name": "action",
+              "type": "string"
+            },
+            {
+              "name": "actorId",
+              "type": "number"
+            },
+            {
+              "name": "targetType",
+              "type": "string"
+            },
+            {
+              "name": "targetId",
+              "type": "string"
+            },
+            {
+              "name": "dateFrom",
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "name": "dateTo",
+              "type": "string",
+              "format": "date-time"
+            }
           ]
         }
       ],
@@ -1294,7 +1701,9 @@
         "createdAt"
       ],
       "validations": [
-        "solo lectura"
+        "solo lectura",
+        "Paginación: page, pageSize",
+        "Filtros: action, actorId, targetType, targetId, dateFrom, dateTo"
       ],
       "errors": [
         "401 sin auth"

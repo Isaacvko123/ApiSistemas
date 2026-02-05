@@ -11,6 +11,7 @@ import {
 } from "../../models/Equipo/EquipoModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
+import { respondList } from "../../utils/respond";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -82,7 +83,14 @@ export class EquipoController {
         metadata: { page, pageSize, tipoEquipoId, estado, localidadId, count: equipos.length },
       });
 
-      return res.status(200).json(equipos.map(toEquipoPublic));
+      return respondList(req, res, equipos.map(toEquipoPublic), {
+        page,
+        pageSize,
+        tipoEquipoId,
+        estado,
+        localidadId,
+        count: equipos.length,
+      });
     } catch (error) {
       return handlePrismaError(res, error);
     }

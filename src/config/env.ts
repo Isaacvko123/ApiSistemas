@@ -13,6 +13,8 @@ const EnvSchema = z.object({
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(15 * 60 * 1000),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(100),
   BODY_LIMIT: z.string().default("1mb"),
+  HTTP_SLOW_MS: z.coerce.number().int().positive().default(1000),
+  SLOW_QUERY_MS: z.coerce.number().int().positive().default(200),
 
   JWT_ISSUER: z.string().min(1).optional(),
   JWT_AUDIENCE: z.string().min(1).optional(),
@@ -80,6 +82,8 @@ export const env = {
   rateLimitWindowMs: parsed.data.RATE_LIMIT_WINDOW_MS,
   rateLimitMax: parsed.data.RATE_LIMIT_MAX,
   bodyLimit: parsed.data.BODY_LIMIT,
+  httpSlowMs: parsed.data.HTTP_SLOW_MS,
+  slowQueryMs: parsed.data.SLOW_QUERY_MS,
 
   jwtIssuer: parsed.data.JWT_ISSUER,
   jwtAudience: parsed.data.JWT_AUDIENCE,

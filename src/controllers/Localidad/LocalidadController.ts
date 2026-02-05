@@ -9,6 +9,7 @@ import {
 } from "../../models/Localidad/LocalidadModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
+import { respondList } from "../../utils/respond";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -76,7 +77,13 @@ export class LocalidadController {
         metadata: { page, pageSize, estado, codigo, count: localidades.length },
       });
 
-      return res.status(200).json(localidades.map(toLocalidadPublic));
+      return respondList(req, res, localidades.map(toLocalidadPublic), {
+        page,
+        pageSize,
+        estado,
+        codigo,
+        count: localidades.length,
+      });
     } catch (error) {
       return handlePrismaError(res, error);
     }

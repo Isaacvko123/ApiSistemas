@@ -11,6 +11,7 @@ import {
 } from "../../models/Checklist/ChecklistModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
+import { respondList } from "../../utils/respond";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -80,7 +81,13 @@ export class ChecklistController {
         metadata: { page, pageSize, puestoId, nombre, count: checklists.length },
       });
 
-      return res.status(200).json(checklists.map(toChecklistPublic));
+      return respondList(req, res, checklists.map(toChecklistPublic), {
+        page,
+        pageSize,
+        puestoId,
+        nombre,
+        count: checklists.length,
+      });
     } catch (error) {
       return handlePrismaError(res, error);
     }

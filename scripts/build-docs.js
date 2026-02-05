@@ -12,9 +12,22 @@ const modulesData = fs.existsSync(modulesPath)
 
 function renderModule(module) {
   const routes = module.routes || [];
+  const renderQuery = (query = []) => {
+    if (!query.length) return "-";
+    return query
+      .map((q) => `${q.name}${q.type ? `:${q.type}` : ""}`)
+      .join(", ");
+  };
   const routeRows = routes.length
-    ? routes.map((r) => `<tr><td>${r.method}</td><td>${r.path}</td><td>${r.desc}</td><td>${r.auth ? "Sí" : "No"}</td><td>${(r.roles || []).join(", ") || "-"}</td></tr>`).join("")
-    : `<tr><td colspan="5">Sin rutas públicas definidas.</td></tr>`;
+    ? routes
+        .map(
+          (r) =>
+            `<tr><td>${r.method}</td><td>${r.path}</td><td>${r.desc}</td><td>${renderQuery(
+              r.query || [],
+            )}</td><td>${r.auth ? "Sí" : "No"}</td><td>${(r.roles || []).join(", ") || "-"}</td></tr>`,
+        )
+        .join("")
+    : `<tr><td colspan="6">Sin rutas públicas definidas.</td></tr>`;
 
   const list = (items) => (items && items.length ? `<ul>${items.map((i) => `<li>${i}</li>`).join("")}</ul>` : `<p>-</p>`);
   const exampleReq = module.examples?.request ? JSON.stringify(module.examples.request, null, 2) : "{}";
@@ -28,7 +41,7 @@ function renderModule(module) {
       <section class="card">
         <h2>Rutas y permisos</h2>
         <table>
-          <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Auth</th><th>Roles</th></tr></thead>
+          <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Query</th><th>Auth</th><th>Roles</th></tr></thead>
           <tbody>${routeRows}</tbody>
         </table>
       </section>

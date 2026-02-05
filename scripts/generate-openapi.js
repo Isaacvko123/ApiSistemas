@@ -71,6 +71,16 @@ function jsonSchemaFromFields(fields, optionalAll = false, exclude = []) {
   return { type: "object", properties, required };
 }
 
+function schemaFromQueryType(q) {
+  const type = q.type || "string";
+  if (type === "number") return { type: "number" };
+  if (type === "boolean") return { type: "boolean" };
+  if (type === "date" || type === "datetime") {
+    return { type: "string", format: "date-time" };
+  }
+  return { type: "string" };
+}
+
 const paths = {
   "/auth/login": {
     post: {
@@ -126,20 +136,30 @@ for (const mod of modules) {
   for (const route of mod.routes || []) {
     const method = route.method.toLowerCase();
     if (!paths[route.path]) paths[route.path] = {};
-    const params = route.path.includes("{id}")
-      ? [
-          {
-            name: "id",
-            in: "path",
-            required: true,
-            schema: { type: "number" },
-          },
-        ]
-      : undefined;
+    const params = [];
+    if (route.path.includes("{id}")) {
+      params.push({
+        name: "id",
+        in: "path",
+        required: true,
+        schema: { type: "number" },
+      });
+    }
+    if (Array.isArray(route.query)) {
+      for (const q of route.query) {
+        params.push({
+          name: q.name,
+          in: "query",
+          required: q.required === true,
+          schema: schemaFromQueryType(q),
+          description: q.description || undefined,
+        });
+      }
+    }
     paths[route.path][method] = {
       tags: [mod.title || mod.slug],
       summary: route.desc || `${route.method} ${route.path}`,
-      parameters: params,
+      parameters: params.length ? params : undefined,
       requestBody: ["post", "put", "patch"].includes(method)
         ? {
             required: true,

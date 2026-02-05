@@ -32,6 +32,26 @@ type RateEntry = {
   lastSeen: number;
 };
 
+function responseTimer() {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const start = process.hrtime.bigint();
+    const originalEnd = res.end.bind(res);
+
+    res.end = ((...args: unknown[]) => {
+      const ms = Number(process.hrtime.bigint() - start) / 1e6;
+      if (!res.headersSent) {
+        res.setHeader("X-Response-Time", `${ms.toFixed(1)}ms`);
+      }
+      if (ms >= env.httpSlowMs) {
+        console.warn(`[SLOW HTTP] ${req.method} ${req.originalUrl} ${ms.toFixed(1)}ms`);
+      }
+      return originalEnd(...(args as [any]));
+    }) as typeof res.end;
+
+    return next();
+  };
+}
+
 function rateLimiter() {
   const store = new Map<string, RateEntry>();
   const windowMs = env.rateLimitWindowMs;
@@ -102,6 +122,7 @@ export function createApp(): Express {
     }),
   );
   app.use(cors(buildCorsOptions()));
+  app.use(responseTimer());
   app.use(rateLimiter());
   app.use(express.json({ limit: env.bodyLimit }));
   app.use(express.urlencoded({ extended: true, limit: env.bodyLimit }));

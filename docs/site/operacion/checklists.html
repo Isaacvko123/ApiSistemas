@@ -26,8 +26,8 @@
       <section class="card">
         <h2>Rutas y permisos</h2>
         <table>
-          <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Auth</th><th>Roles</th></tr></thead>
-          <tbody><tr><td>POST</td><td>/checklists</td><td>Crea checklist</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>GET</td><td>/checklists</td><td>Lista checklists</td><td>Sí</td><td>-</td></tr><tr><td>GET</td><td>/checklists/{id}</td><td>Obtiene checklists</td><td>Sí</td><td>-</td></tr><tr><td>PATCH</td><td>/checklists/{id}</td><td>Actualiza checklists</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>DELETE</td><td>/checklists/{id}</td><td>Elimina checklists</td><td>Sí</td><td>ADMIN, GERENTE</td></tr></tbody>
+          <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Query</th><th>Auth</th><th>Roles</th></tr></thead>
+          <tbody><tr><td>POST</td><td>/checklists</td><td>Crea checklist</td><td>-</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>GET</td><td>/checklists</td><td>Lista checklists</td><td>page:number, pageSize:number, puestoId:number, nombre:string</td><td>Sí</td><td>-</td></tr><tr><td>GET</td><td>/checklists/{id}</td><td>Obtiene checklists</td><td>-</td><td>Sí</td><td>-</td></tr><tr><td>PATCH</td><td>/checklists/{id}</td><td>Actualiza checklists</td><td>-</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>DELETE</td><td>/checklists/{id}</td><td>Elimina checklists</td><td>-</td><td>Sí</td><td>ADMIN, GERENTE</td></tr></tbody>
         </table>
       </section>
       <section class="card">
@@ -40,7 +40,7 @@
       </section>
       <section class="card">
         <h2>Validaciones</h2>
-        <ul><li>puestoId válido</li></ul>
+        <ul><li>puestoId válido</li><li>Paginación: page, pageSize</li><li>Filtros: puestoId, nombre</li><li>No se puede eliminar si tiene checklist_items relacionados.</li></ul>
       </section>
       <section class="card">
         <h2>Ejemplos</h2>
@@ -62,7 +62,7 @@
       </section>
       <section class="card">
         <h2>Errores comunes</h2>
-        <ul><li>404 puesto no encontrado</li></ul>
+        <ul><li>404 puesto no encontrado</li><li>409 relación inválida</li></ul>
       </section>
       <section class="card">
         <h2>Checklist operativo</h2>

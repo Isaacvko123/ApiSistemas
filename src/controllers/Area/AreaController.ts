@@ -9,6 +9,7 @@ import {
 } from "../../models/Area/AreaModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
+import { respondList } from "../../utils/respond";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -75,7 +76,12 @@ export class AreaController {
         metadata: { page, pageSize, nombre, count: areas.length },
       });
 
-      return res.status(200).json(areas.map(toAreaPublic));
+      return respondList(req, res, areas.map(toAreaPublic), {
+        page,
+        pageSize,
+        nombre,
+        count: areas.length,
+      });
     } catch (error) {
       return handlePrismaError(res, error);
     }

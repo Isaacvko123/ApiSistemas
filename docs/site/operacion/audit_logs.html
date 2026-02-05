@@ -26,8 +26,8 @@
       <section class="card">
         <h2>Rutas y permisos</h2>
         <table>
-          <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Auth</th><th>Roles</th></tr></thead>
-          <tbody><tr><td>GET</td><td>/audit-logs</td><td>Lista auditoría</td><td>Sí</td><td>ADMIN, GERENTE</td></tr></tbody>
+          <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Query</th><th>Auth</th><th>Roles</th></tr></thead>
+          <tbody><tr><td>GET</td><td>/audit-logs</td><td>Lista auditoría</td><td>page:number, pageSize:number, limit:number, action:string, actorId:number, targetType:string, targetId:string, dateFrom:string, dateTo:string</td><td>Sí</td><td>ADMIN, GERENTE</td></tr></tbody>
         </table>
       </section>
       <section class="card">
@@ -40,7 +40,7 @@
       </section>
       <section class="card">
         <h2>Validaciones</h2>
-        <ul><li>solo lectura</li></ul>
+        <ul><li>solo lectura</li><li>Paginación: page, pageSize</li><li>Filtros: action, actorId, targetType, targetId, dateFrom, dateTo</li></ul>
       </section>
       <section class="card">
         <h2>Ejemplos</h2>

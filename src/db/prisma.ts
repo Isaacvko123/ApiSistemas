@@ -10,10 +10,14 @@ declare global {
   var prismaPool: Pool | undefined;
 }
 
-const log: Prisma.LogLevel[] =
+const log: Prisma.LogDefinition[] =
   env.nodeEnv === "development"
-    ? ["query", "warn", "error"]
-    : ["warn", "error"];
+    ? [
+        { emit: "event", level: "query" },
+        { emit: "stdout", level: "warn" },
+        { emit: "stdout", level: "error" },
+      ]
+    : [{ emit: "stdout", level: "warn" }, { emit: "stdout", level: "error" }];
 
 const pool =
   globalThis.prismaPool ??
@@ -32,6 +36,14 @@ const createPrismaClient = () =>
   });
 
 export const prisma = globalThis.prisma ?? createPrismaClient();
+
+if (env.nodeEnv !== "production") {
+  prisma.$on("query", (e) => {
+    if (e.duration >= env.slowQueryMs) {
+      console.warn(`[SLOW QUERY] ${e.duration}ms ${e.query}`);
+    }
+  });
+}
 
 if (env.nodeEnv !== "production") {
   globalThis.prisma = prisma;

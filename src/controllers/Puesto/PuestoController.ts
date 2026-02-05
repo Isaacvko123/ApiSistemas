@@ -11,6 +11,7 @@ import {
 } from "../../models/Puesto/PuestoModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
+import { respondList } from "../../utils/respond";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -80,7 +81,13 @@ export class PuestoController {
         metadata: { page, pageSize, areaId, nombre, count: puestos.length },
       });
 
-      return res.status(200).json(puestos.map(toPuestoPublic));
+      return respondList(req, res, puestos.map(toPuestoPublic), {
+        page,
+        pageSize,
+        areaId,
+        nombre,
+        count: puestos.length,
+      });
     } catch (error) {
       return handlePrismaError(res, error);
     }

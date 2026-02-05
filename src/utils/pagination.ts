@@ -27,9 +27,6 @@ export function parsePagination(
         ? query.pageSize
         : undefined;
 
-  const hasPagination =
-    Number.isFinite(pageRaw) || Number.isFinite(pageSizeRaw);
-
   const page =
     Number.isFinite(pageRaw) && (pageRaw as number) > 0
       ? Math.floor(pageRaw as number)
@@ -44,10 +41,6 @@ export function parsePagination(
       : defaultPageSize;
 
   const pageSize = Math.min(rawSize, maxPageSize);
-
-  if (!hasPagination) {
-    return { page, pageSize };
-  }
 
   return {
     page,
