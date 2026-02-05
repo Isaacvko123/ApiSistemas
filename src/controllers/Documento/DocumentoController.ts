@@ -12,6 +12,7 @@ import {
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { buildDocumentoRuta } from "../../middlewares/upload";
 import { parsePagination } from "../../utils/pagination";
+import { respondList } from "../../utils/respond";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -97,7 +98,17 @@ export class DocumentoController {
         },
       });
 
-      return res.status(200).json(documentos.map(toDocumentoPublic));
+      return respondList(req, res, documentos.map(toDocumentoPublic), {
+        page,
+        pageSize,
+        equipoId,
+        resguardoId,
+        resguardoEquipoId,
+        tipo,
+        empleadoId,
+        evento,
+        count: documentos.length,
+      });
     } catch (error) {
       return handlePrismaError(res, error);
     }
