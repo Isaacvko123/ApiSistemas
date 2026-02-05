@@ -55,5 +55,10 @@ export function setupDocs(app: Express) {
   }
 
   // Swagger UI SOLO en /docs para no interceptar /docs/portal, /docs/diagramas, etc.
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(spec));
+  // Usamos swaggerUrl para que siempre lea el JSON más reciente.
+  app.use(
+    "/docs",
+    swaggerUi.serve,
+    swaggerUi.setup(undefined, { swaggerUrl: "/docs/openapi.json" }),
+  );
 }

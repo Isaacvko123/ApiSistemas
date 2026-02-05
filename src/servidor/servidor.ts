@@ -243,24 +243,6 @@ export function createApp(): Express {
   app.use("/wifi-credenciales", WifiCredencialRutas);
   app.use("/audit-logs", AuditLogRutas);
 
-  // Versionado v1 (sin romper rutas actuales)
-  app.use("/v1/usuarios", UsuarioRutas);
-  app.use("/v1/auth", AuthRutas);
-  app.use("/v1/admin", AdminRutas);
-  app.use("/v1/credenciales", CredencialWebRutas);
-  app.use("/v1/areas", AreaRutas);
-  app.use("/v1/puestos", PuestoRutas);
-  app.use("/v1/localidades", LocalidadRutas);
-  app.use("/v1/empleados", EmpleadoRutas);
-  app.use("/v1/resguardos", ResguardoRutas);
-  app.use("/v1/resguardo-equipos", ResguardoEquipoRutas);
-  app.use("/v1/equipos", EquipoRutas);
-  app.use("/v1/tipos-equipo", TipoEquipoRutas);
-  app.use("/v1/documentos", DocumentoRutas);
-  app.use("/v1/checklists", ChecklistRutas);
-  app.use("/v1/checklist-items", ChecklistItemRutas);
-  app.use("/v1/wifi-credenciales", WifiCredencialRutas);
-  app.use("/v1/audit-logs", AuditLogRutas);
   return app;
 }
 
