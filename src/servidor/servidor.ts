@@ -1,6 +1,7 @@
 // src/servidor/servidor.ts
 import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import http from "http";
+import crypto from "crypto";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -26,11 +27,47 @@ import AuditLogRutas from "../routes/AuditLog/AuditLogRuta";
 import EquipoRutas from "../routes/Equipo/EquipoRuta";
 import TipoEquipoRutas from "../routes/TipoEquipo/TipoEquipoRuta";
 import { setupDocs } from "./docs";
+import { metricsHandler, metricsMiddleware } from "../observability/metrics";
 type RateEntry = {
   count: number;
   resetAt: number;
   lastSeen: number;
 };
+
+function requestId() {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const incoming = req.headers["x-request-id"];
+    const requestId = typeof incoming === "string" && incoming.length > 0
+      ? incoming
+      : crypto.randomUUID();
+    res.setHeader("X-Request-Id", requestId);
+    res.locals.requestId = requestId;
+    return next();
+  };
+}
+
+function accessLogger() {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const start = process.hrtime.bigint();
+    res.on("finish", () => {
+      const ms = Number(process.hrtime.bigint() - start) / 1e6;
+      const entry = {
+        level: "info",
+        msg: "http_request",
+        method: req.method,
+        path: req.originalUrl,
+        status: res.statusCode,
+        durationMs: Number(ms.toFixed(1)),
+        requestId: res.locals.requestId,
+        userId: res.locals.user?.sub ?? null,
+      };
+      if (env.nodeEnv === "production") {
+        console.log(JSON.stringify(entry));
+      }
+    });
+    return next();
+  };
+}
 
 function responseTimer() {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -47,6 +84,42 @@ function responseTimer() {
       }
       return originalEnd(...(args as [any]));
     }) as typeof res.end;
+
+    return next();
+  };
+}
+
+function userRateLimiter() {
+  const store = new Map<string, RateEntry>();
+  const windowMs = env.rateLimitUserWindowMs;
+  const max = env.rateLimitUserMax;
+
+  return (req: Request, res: Response, next: NextFunction) => {
+    const userId = res.locals.user?.sub;
+    if (!userId) return next();
+    const key = `user:${userId}`;
+    const now = Date.now();
+
+    let entry = store.get(key);
+    if (!entry || now > entry.resetAt) {
+      entry = { count: 0, resetAt: now + windowMs, lastSeen: now };
+    }
+
+    entry.count += 1;
+    entry.lastSeen = now;
+    store.set(key, entry);
+
+    if (entry.count > max) {
+      return res.status(429).json({ error: "Too many requests" });
+    }
+
+    if (store.size > 10000) {
+      for (const [mapKey, value] of store) {
+        if (now > value.resetAt + windowMs) {
+          store.delete(mapKey);
+        }
+      }
+    }
 
     return next();
   };
@@ -122,6 +195,11 @@ export function createApp(): Express {
     }),
   );
   app.use(cors(buildCorsOptions()));
+  app.use(requestId());
+  app.use(accessLogger());
+  if (env.metricsEnabled) {
+    app.use(metricsMiddleware);
+  }
   app.use(responseTimer());
   app.use(rateLimiter());
   app.use(express.json({ limit: env.bodyLimit }));
@@ -136,6 +214,11 @@ export function createApp(): Express {
   }
 
   app.use(authGlobal);
+  app.use(userRateLimiter());
+
+  if (env.metricsEnabled) {
+    app.get(env.metricsRoute, metricsHandler);
+  }
 
   // Health para probar levantamiento
   app.get("/health", (_req, res) => {
@@ -159,6 +242,25 @@ export function createApp(): Express {
   app.use("/checklist-items", ChecklistItemRutas);
   app.use("/wifi-credenciales", WifiCredencialRutas);
   app.use("/audit-logs", AuditLogRutas);
+
+  // Versionado v1 (sin romper rutas actuales)
+  app.use("/v1/usuarios", UsuarioRutas);
+  app.use("/v1/auth", AuthRutas);
+  app.use("/v1/admin", AdminRutas);
+  app.use("/v1/credenciales", CredencialWebRutas);
+  app.use("/v1/areas", AreaRutas);
+  app.use("/v1/puestos", PuestoRutas);
+  app.use("/v1/localidades", LocalidadRutas);
+  app.use("/v1/empleados", EmpleadoRutas);
+  app.use("/v1/resguardos", ResguardoRutas);
+  app.use("/v1/resguardo-equipos", ResguardoEquipoRutas);
+  app.use("/v1/equipos", EquipoRutas);
+  app.use("/v1/tipos-equipo", TipoEquipoRutas);
+  app.use("/v1/documentos", DocumentoRutas);
+  app.use("/v1/checklists", ChecklistRutas);
+  app.use("/v1/checklist-items", ChecklistItemRutas);
+  app.use("/v1/wifi-credenciales", WifiCredencialRutas);
+  app.use("/v1/audit-logs", AuditLogRutas);
   return app;
 }
 

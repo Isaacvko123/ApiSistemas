@@ -12,6 +12,7 @@ import {
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
 import { respondList } from "../../utils/respond";
+import { getCache, invalidatePrefix, setCache } from "../../utils/cache";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -59,6 +60,25 @@ export class PuestoController {
       const areaId = typeof req.query.areaId === "string" ? Number(req.query.areaId) : undefined;
       const nombre = typeof req.query.nombre === "string" ? req.query.nombre : undefined;
       const { page, pageSize, skip, take } = parsePagination(req.query);
+      const cacheKey = `puestos:list:${page}:${pageSize}:${areaId ?? ""}:${nombre ?? ""}`;
+      const cached = getCache<ReturnType<typeof toPuestoPublic>[]>(cacheKey);
+      if (cached) {
+        await auditEntity({
+          req,
+          res,
+          action: AuditAction.ENTITY_READ,
+          targetType: "Puesto",
+          targetId: "list",
+          metadata: { page, pageSize, areaId, nombre, count: cached.length, cached: true },
+        });
+        return respondList(req, res, cached, {
+          page,
+          pageSize,
+          areaId,
+          nombre,
+          count: cached.length,
+        });
+      }
 
       const puestos = await prisma.puesto.findMany({
         where: {
@@ -71,6 +91,8 @@ export class PuestoController {
         skip,
         take,
       });
+      const payload = puestos.map(toPuestoPublic);
+      setCache(cacheKey, payload, 30_000);
 
       await auditEntity({
         req,
@@ -78,10 +100,10 @@ export class PuestoController {
         action: AuditAction.ENTITY_READ,
         targetType: "Puesto",
         targetId: "list",
-        metadata: { page, pageSize, areaId, nombre, count: puestos.length },
+        metadata: { page, pageSize, areaId, nombre, count: puestos.length, cached: false },
       });
 
-      return respondList(req, res, puestos.map(toPuestoPublic), {
+      return respondList(req, res, payload, {
         page,
         pageSize,
         areaId,
@@ -124,6 +146,7 @@ export class PuestoController {
     try {
       const data = toPuestoCreateData(parsed.data);
       const puesto = await prisma.puesto.create({ data });
+      invalidatePrefix("puestos:list:");
       await auditEntity({
         req,
         res,
@@ -153,6 +176,7 @@ export class PuestoController {
     try {
       const data = toPuestoUpdateData(parsed.data);
       const puesto = await prisma.puesto.update({ where: { id }, data });
+      invalidatePrefix("puestos:list:");
       await auditEntity({
         req,
         res,
@@ -188,6 +212,7 @@ export class PuestoController {
       }
 
       const puesto = await prisma.puesto.delete({ where: { id } });
+      invalidatePrefix("puestos:list:");
       await auditEntity({
         req,
         res,

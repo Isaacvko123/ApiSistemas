@@ -11,6 +11,7 @@ import {
 } from "../../models/WifiCredencial/WifiCredencialModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
+import { respondList } from "../../utils/respond";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -82,7 +83,20 @@ export class WifiCredencialController {
         metadata: { page, pageSize, vigente, empleadoId, localidadId, ssid, count: rows.length },
       });
 
-      return res.status(200).json(rows.map((row) => toWifiCredencialPublic(row)));
+      return respondList(
+        req,
+        res,
+        rows.map((row) => toWifiCredencialPublic(row)),
+        {
+          page,
+          pageSize,
+          vigente,
+          empleadoId,
+          localidadId,
+          ssid,
+          count: rows.length,
+        },
+      );
     } catch (error) {
       return handlePrismaError(res, error);
     }

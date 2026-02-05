@@ -10,6 +10,7 @@ import {
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
 import { respondList } from "../../utils/respond";
+import { getCache, invalidatePrefix, setCache } from "../../utils/cache";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -58,6 +59,25 @@ export class TipoEquipoController {
       const activo =
         typeof req.query.activo === "string" ? req.query.activo === "true" : undefined;
       const { page, pageSize, skip, take } = parsePagination(req.query);
+      const cacheKey = `tipos-equipo:list:${page}:${pageSize}:${nombre ?? ""}:${activo ?? ""}`;
+      const cached = getCache<ReturnType<typeof toTipoEquipoPublic>[]>(cacheKey);
+      if (cached) {
+        await auditEntity({
+          req,
+          res,
+          action: AuditAction.ENTITY_READ,
+          targetType: "TipoEquipo",
+          targetId: "list",
+          metadata: { page, pageSize, nombre, activo, count: cached.length, cached: true },
+        });
+        return respondList(req, res, cached, {
+          page,
+          pageSize,
+          nombre,
+          activo,
+          count: cached.length,
+        });
+      }
       const tipos = await prisma.tipoEquipo.findMany({
         where: {
           ...(nombre
@@ -69,15 +89,17 @@ export class TipoEquipoController {
         skip,
         take,
       });
+      const payload = tipos.map(toTipoEquipoPublic);
+      setCache(cacheKey, payload, 30_000);
       await auditEntity({
         req,
         res,
         action: AuditAction.ENTITY_READ,
         targetType: "TipoEquipo",
         targetId: "list",
-        metadata: { page, pageSize, nombre, activo, count: tipos.length },
+        metadata: { page, pageSize, nombre, activo, count: tipos.length, cached: false },
       });
-      return respondList(req, res, tipos.map(toTipoEquipoPublic), {
+      return respondList(req, res, payload, {
         page,
         pageSize,
         nombre,
@@ -117,6 +139,7 @@ export class TipoEquipoController {
 
     try {
       const tipo = await prisma.tipoEquipo.create({ data: parsed.data });
+      invalidatePrefix("tipos-equipo:list:");
       await auditEntity({
         req,
         res,
@@ -144,6 +167,7 @@ export class TipoEquipoController {
 
     try {
       const tipo = await prisma.tipoEquipo.update({ where: { id }, data: parsed.data });
+      invalidatePrefix("tipos-equipo:list:");
       await auditEntity({
         req,
         res,
@@ -176,6 +200,7 @@ export class TipoEquipoController {
       }
 
       const tipo = await prisma.tipoEquipo.delete({ where: { id } });
+      invalidatePrefix("tipos-equipo:list:");
       await auditEntity({
         req,
         res,

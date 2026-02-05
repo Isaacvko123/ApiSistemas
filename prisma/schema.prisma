@@ -105,6 +105,7 @@ model Puesto {
   credencialWebs CredencialWeb[]
 
   @@unique([areaId, nombre])
+  @@index([nombre])
   @@index([areaId])
   @@map("puestos")
 }
@@ -132,6 +133,7 @@ model Usuario {
   auditLogs         AuditLog[]
 
   @@index([rol])
+  @@index([activo])
   @@map("usuarios")
 }
 
@@ -229,6 +231,7 @@ model Empleado {
   @@index([localidadId])
   @@index([areaId])
   @@index([puestoId])
+  @@index([activo])
   @@map("empleados")
 }
 
@@ -288,6 +291,7 @@ model Resguardo {
   @@index([empleadoId])
   @@index([localidadId])
   @@index([fechaInicio])
+  @@index([estado])
   @@map("resguardos")
 }
 
@@ -313,6 +317,7 @@ model ResguardoEquipo {
   updatedAt DateTime @updatedAt
 
   @@unique([resguardoId, equipoId])
+  @@index([resguardoId])
   @@index([equipoId])
   @@index([fechaEntrega])
   @@map("resguardo_equipos")
@@ -350,6 +355,7 @@ model Checklist {
   updatedAt DateTime @updatedAt
 
   @@unique([puestoId, nombre])
+  @@index([nombre])
   @@index([puestoId])
   @@map("checklists")
 }
@@ -367,6 +373,7 @@ model ChecklistItem {
 
   @@index([checklistId])
   @@index([tipoEquipoId])
+  @@index([descripcion])
   @@map("checklist_items")
 }
 
@@ -399,6 +406,7 @@ model CredencialWeb {
   @@index([areaId])
   @@index([puestoId])
   @@index([creadoPorId])
+  @@index([activo])
   @@map("credenciales_web")
 }
 
@@ -431,6 +439,8 @@ model Documento {
   @@index([resguardoId])
   @@index([resguardoEquipoId])
   @@index([empleadoId])
+  @@index([tipo])
+  @@index([evento])
   @@map("documentos")
 }
 
@@ -456,5 +466,6 @@ model WifiCredencial {
   @@index([ssid])
   @@index([empleadoId])
   @@index([localidadId])
+  @@index([vigente])
   @@map("wifi_credenciales")
 }

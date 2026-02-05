@@ -187,6 +187,12 @@ for (const mod of modules) {
   }
 }
 
+// Duplicar rutas en /v1 sin romper las actuales
+for (const [p, ops] of Object.entries(paths)) {
+  if (p.startsWith("/v1/")) continue;
+  paths[`/v1${p}`] = ops;
+}
+
 const doc = {
   openapi: "3.0.3",
   info: {

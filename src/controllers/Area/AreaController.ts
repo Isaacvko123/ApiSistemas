@@ -10,6 +10,7 @@ import {
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
 import { respondList } from "../../utils/respond";
+import { getCache, invalidatePrefix, setCache } from "../../utils/cache";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -56,6 +57,24 @@ export class AreaController {
     try {
       const nombre = typeof req.query.nombre === "string" ? req.query.nombre : undefined;
       const { page, pageSize, skip, take } = parsePagination(req.query);
+      const cacheKey = `areas:list:${page}:${pageSize}:${nombre ?? ""}`;
+      const cached = getCache<ReturnType<typeof toAreaPublic>[]>(cacheKey);
+      if (cached) {
+        await auditEntity({
+          req,
+          res,
+          action: AuditAction.ENTITY_READ,
+          targetType: "Area",
+          targetId: "list",
+          metadata: { page, pageSize, nombre, count: cached.length, cached: true },
+        });
+        return respondList(req, res, cached, {
+          page,
+          pageSize,
+          nombre,
+          count: cached.length,
+        });
+      }
       const areas = await prisma.area.findMany({
         where: {
           ...(nombre
@@ -66,6 +85,8 @@ export class AreaController {
         skip,
         take,
       });
+      const payload = areas.map(toAreaPublic);
+      setCache(cacheKey, payload, 30_000);
 
       await auditEntity({
         req,
@@ -73,10 +94,10 @@ export class AreaController {
         action: AuditAction.ENTITY_READ,
         targetType: "Area",
         targetId: "list",
-        metadata: { page, pageSize, nombre, count: areas.length },
+        metadata: { page, pageSize, nombre, count: areas.length, cached: false },
       });
 
-      return respondList(req, res, areas.map(toAreaPublic), {
+      return respondList(req, res, payload, {
         page,
         pageSize,
         nombre,
@@ -117,6 +138,7 @@ export class AreaController {
 
     try {
       const area = await prisma.area.create({ data: parsed.data });
+      invalidatePrefix("areas:list:");
       await auditEntity({
         req,
         res,
@@ -145,6 +167,7 @@ export class AreaController {
 
     try {
       const area = await prisma.area.update({ where: { id }, data: parsed.data });
+      invalidatePrefix("areas:list:");
       await auditEntity({
         req,
         res,
@@ -180,6 +203,7 @@ export class AreaController {
       }
 
       const area = await prisma.area.delete({ where: { id } });
+      invalidatePrefix("areas:list:");
       await auditEntity({
         req,
         res,

@@ -40,6 +40,11 @@
             {
               "name": "rol",
               "type": "string"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         },
@@ -224,6 +229,11 @@
             {
               "name": "nombre",
               "type": "string"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         },
@@ -326,6 +336,11 @@
             {
               "name": "nombre",
               "type": "string"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         },
@@ -432,6 +447,11 @@
             {
               "name": "codigo",
               "type": "string"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         },
@@ -545,6 +565,11 @@
             {
               "name": "localidadId",
               "type": "number"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         },
@@ -656,6 +681,11 @@
             {
               "name": "activo",
               "type": "boolean"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         },
@@ -775,6 +805,11 @@
             {
               "name": "localidadId",
               "type": "number"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         },
@@ -888,6 +923,11 @@
             {
               "name": "estado",
               "type": "string"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         },
@@ -992,6 +1032,11 @@
             {
               "name": "equipoId",
               "type": "number"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         },
@@ -1111,6 +1156,11 @@
             {
               "name": "evento",
               "type": "string"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         },
@@ -1227,6 +1277,11 @@
             {
               "name": "nombre",
               "type": "string"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         },
@@ -1330,6 +1385,11 @@
             {
               "name": "descripcion",
               "type": "string"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         },
@@ -1440,6 +1500,11 @@
             {
               "name": "puestoId",
               "type": "number"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         },
@@ -1554,6 +1619,11 @@
             {
               "name": "ssid",
               "type": "string"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         },
@@ -1686,6 +1756,11 @@
               "name": "dateTo",
               "type": "string",
               "format": "date-time"
+            },
+            {
+              "name": "meta",
+              "type": "boolean",
+              "description": "Devuelve {data, meta}"
             }
           ]
         }

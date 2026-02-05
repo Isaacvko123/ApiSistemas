@@ -12,6 +12,7 @@ import {
 import { writeAuditLog } from "../../seguridad/audit";
 import { SesionesService } from "../../seguridad/sesiones.service";
 import { parsePagination } from "../../utils/pagination";
+import { respondList } from "../../utils/respond";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -79,7 +80,7 @@ export class CredencialWebController {
 
       const meta = SesionesService.extraerMeta(req);
       const actorId = res.locals.user?.sub ? Number(res.locals.user.sub) : null;
-      await writeAuditLog({
+      void writeAuditLog({
         action: AuditAction.CREDENCIAL_READ,
         actorId: Number.isFinite(actorId as number) ? (actorId as number) : null,
         targetType: "CredencialWeb",
@@ -97,7 +98,20 @@ export class CredencialWebController {
         userAgent: meta.userAgent ?? null,
       });
 
-      return res.status(200).json(credenciales.map((c) => toCredencialWebPublic(c)));
+      return respondList(
+        req,
+        res,
+        credenciales.map((c) => toCredencialWebPublic(c)),
+        {
+          page,
+          pageSize,
+          activo,
+          empleadoId,
+          areaId,
+          puestoId,
+          count: credenciales.length,
+        },
+      );
     } catch (error) {
       return handlePrismaError(res, error);
     }
@@ -113,7 +127,7 @@ export class CredencialWebController {
 
       const meta = SesionesService.extraerMeta(req);
       const actorId = res.locals.user?.sub ? Number(res.locals.user.sub) : null;
-      await writeAuditLog({
+      void writeAuditLog({
         action: AuditAction.CREDENCIAL_READ,
         actorId: Number.isFinite(actorId as number) ? (actorId as number) : null,
         targetType: "CredencialWeb",
@@ -138,7 +152,7 @@ export class CredencialWebController {
 
       const meta = SesionesService.extraerMeta(req);
       const actorId = res.locals.user?.sub ? Number(res.locals.user.sub) : null;
-      await writeAuditLog({
+      void writeAuditLog({
         action: AuditAction.CREDENCIAL_READ_SECRET,
         actorId: Number.isFinite(actorId as number) ? (actorId as number) : null,
         targetType: "CredencialWeb",
@@ -173,7 +187,7 @@ export class CredencialWebController {
       });
 
       const meta = SesionesService.extraerMeta(req);
-      await writeAuditLog({
+      void writeAuditLog({
         action: AuditAction.CREDENCIAL_CREATE,
         actorId: Number.isFinite(actorId as number) ? (actorId as number) : null,
         targetType: "CredencialWeb",
@@ -207,7 +221,7 @@ export class CredencialWebController {
 
       const meta = SesionesService.extraerMeta(req);
       const actorId = res.locals.user?.sub ? Number(res.locals.user.sub) : null;
-      await writeAuditLog({
+      void writeAuditLog({
         action: AuditAction.CREDENCIAL_UPDATE,
         actorId: Number.isFinite(actorId as number) ? (actorId as number) : null,
         targetType: "CredencialWeb",
@@ -235,7 +249,7 @@ export class CredencialWebController {
 
       const meta = SesionesService.extraerMeta(req);
       const actorId = res.locals.user?.sub ? Number(res.locals.user.sub) : null;
-      await writeAuditLog({
+      void writeAuditLog({
         action: AuditAction.CREDENCIAL_DELETE,
         actorId: Number.isFinite(actorId as number) ? (actorId as number) : null,
         targetType: "CredencialWeb",

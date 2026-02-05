@@ -31,7 +31,7 @@ export class AuthController {
     });
 
     if (!usuario) {
-      await writeAuditLog({
+      void writeAuditLog({
         action: AuditAction.LOGIN_FAILED,
         targetType: "Usuario",
         targetId: parsed.data.email,
@@ -43,7 +43,7 @@ export class AuthController {
     }
 
     if (!usuario.activo) {
-      await writeAuditLog({
+      void writeAuditLog({
         action: AuditAction.LOGIN_FAILED,
         actorId: usuario.id,
         targetType: "Usuario",
@@ -57,7 +57,7 @@ export class AuthController {
 
     const ok = await verifyPassword(usuario.contrasena, parsed.data.contrasena);
     if (!ok) {
-      await writeAuditLog({
+      void writeAuditLog({
         action: AuditAction.LOGIN_FAILED,
         actorId: usuario.id,
         targetType: "Usuario",
@@ -76,7 +76,7 @@ export class AuthController {
       meta,
     });
 
-    await writeAuditLog({
+    void writeAuditLog({
       action: AuditAction.LOGIN_SUCCESS,
       actorId: usuario.id,
       targetType: "Usuario",
@@ -112,7 +112,7 @@ export class AuthController {
     if (!user) return;
 
     await SesionesService.revocarSesion(user.sid);
-    await writeAuditLog({
+    void writeAuditLog({
       action: AuditAction.LOGOUT,
       actorId: Number(user.sub),
       targetType: "Sesion",
@@ -135,7 +135,7 @@ export class AuthController {
       incrementarTokenVersion: true,
     });
 
-    await writeAuditLog({
+    void writeAuditLog({
       action: AuditAction.LOGOUT_ALL,
       actorId: usuarioId,
       targetType: "Usuario",

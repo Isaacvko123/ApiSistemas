@@ -14,6 +14,7 @@ import { writeAuditLog } from "../../seguridad/audit";
 import { SesionesService } from "../../seguridad/sesiones.service";
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
+import { respondList } from "../../utils/respond";
 
 const allowedRoles = new Set(["ADMIN", "SUPERVISOR", "GERENTE"]);
 const isSandbox = env.nodeEnv !== "production";
@@ -84,7 +85,13 @@ export class UsuarioController {
         metadata: { page, pageSize, activo, rol, count: usuarios.length },
       });
 
-      return res.status(200).json(usuarios.map(toUsuarioPublic));
+      return respondList(req, res, usuarios.map(toUsuarioPublic), {
+        page,
+        pageSize,
+        activo,
+        rol,
+        count: usuarios.length,
+      });
     } catch (error) {
       return handlePrismaError(res, error);
     }

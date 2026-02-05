@@ -8,6 +8,7 @@ import {
 } from "../../models/AuditLog/AuditLogModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
+import { respondList } from "../../utils/respond";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -108,7 +109,17 @@ export class AuditLogController {
         },
       });
 
-      return res.status(200).json(logs.map(toAuditLogPublic));
+      return respondList(req, res, logs.map(toAuditLogPublic), {
+        page,
+        pageSize,
+        action,
+        actorId,
+        targetType,
+        targetId,
+        dateFrom,
+        dateTo,
+        count: logs.length,
+      });
     } catch (error) {
       return handlePrismaError(res, error);
     }

@@ -16,14 +16,17 @@ const PUBLIC_ROUTES: PublicRoute[] = [
 
 function isPublicRoute(req: Request): boolean {
   if (req.method === "OPTIONS") return true;
+  const path = req.path;
   return PUBLIC_ROUTES.some(
-    (route) => route.method === req.method && route.path === req.path,
+    (route) =>
+      route.method === req.method &&
+      (route.path === path || `/v1${route.path}` === path),
   );
 }
 
 async function canBootstrapUsuarios(req: Request): Promise<boolean> {
   const path = req.originalUrl.split("?")[0];
-  if (req.method !== "POST" || path !== "/usuarios") return false;
+  if (req.method !== "POST" || (path !== "/usuarios" && path !== "/v1/usuarios")) return false;
   const count = await prisma.usuario.count();
   return count === 0;
 }

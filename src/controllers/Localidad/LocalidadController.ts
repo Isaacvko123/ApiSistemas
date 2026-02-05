@@ -10,6 +10,7 @@ import {
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { parsePagination } from "../../utils/pagination";
 import { respondList } from "../../utils/respond";
+import { getCache, invalidatePrefix, setCache } from "../../utils/cache";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -57,6 +58,25 @@ export class LocalidadController {
       const estado = typeof req.query.estado === "string" ? req.query.estado : undefined;
       const codigo = typeof req.query.codigo === "string" ? req.query.codigo : undefined;
       const { page, pageSize, skip, take } = parsePagination(req.query);
+      const cacheKey = `localidades:list:${page}:${pageSize}:${estado ?? ""}:${codigo ?? ""}`;
+      const cached = getCache<ReturnType<typeof toLocalidadPublic>[]>(cacheKey);
+      if (cached) {
+        await auditEntity({
+          req,
+          res,
+          action: AuditAction.ENTITY_READ,
+          targetType: "Localidad",
+          targetId: "list",
+          metadata: { page, pageSize, estado, codigo, count: cached.length, cached: true },
+        });
+        return respondList(req, res, cached, {
+          page,
+          pageSize,
+          estado,
+          codigo,
+          count: cached.length,
+        });
+      }
 
       const localidades = await prisma.localidad.findMany({
         where: {
@@ -67,6 +87,8 @@ export class LocalidadController {
         skip,
         take,
       });
+      const payload = localidades.map(toLocalidadPublic);
+      setCache(cacheKey, payload, 30_000);
 
       await auditEntity({
         req,
@@ -74,10 +96,10 @@ export class LocalidadController {
         action: AuditAction.ENTITY_READ,
         targetType: "Localidad",
         targetId: "list",
-        metadata: { page, pageSize, estado, codigo, count: localidades.length },
+        metadata: { page, pageSize, estado, codigo, count: localidades.length, cached: false },
       });
 
-      return respondList(req, res, localidades.map(toLocalidadPublic), {
+      return respondList(req, res, payload, {
         page,
         pageSize,
         estado,
@@ -119,6 +141,7 @@ export class LocalidadController {
 
     try {
       const localidad = await prisma.localidad.create({ data: parsed.data });
+      invalidatePrefix("localidades:list:");
       await auditEntity({
         req,
         res,
@@ -147,6 +170,7 @@ export class LocalidadController {
 
     try {
       const localidad = await prisma.localidad.update({ where: { id }, data: parsed.data });
+      invalidatePrefix("localidades:list:");
       await auditEntity({
         req,
         res,
@@ -184,6 +208,7 @@ export class LocalidadController {
       }
 
       const localidad = await prisma.localidad.delete({ where: { id } });
+      invalidatePrefix("localidades:list:");
       await auditEntity({
         req,
         res,

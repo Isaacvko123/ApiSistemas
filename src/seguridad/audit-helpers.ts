@@ -14,7 +14,7 @@ export async function auditEntity(params: {
   const meta = SesionesService.extraerMeta(params.req);
   const actorId = params.res.locals.user?.sub ? Number(params.res.locals.user.sub) : null;
 
-  await writeAuditLog({
+  void writeAuditLog({
     action: params.action,
     actorId: Number.isFinite(actorId as number) ? (actorId as number) : null,
     targetType: params.targetType,

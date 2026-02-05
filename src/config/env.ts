@@ -12,9 +12,13 @@ const EnvSchema = z.object({
   CORS_ORIGINS: z.string().optional(), // CSV: https://app.com,https://admin.app.com
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(15 * 60 * 1000),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(100),
+  RATE_LIMIT_USER_WINDOW_MS: z.coerce.number().int().positive().default(15 * 60 * 1000),
+  RATE_LIMIT_USER_MAX: z.coerce.number().int().positive().default(200),
   BODY_LIMIT: z.string().default("1mb"),
   HTTP_SLOW_MS: z.coerce.number().int().positive().default(1000),
   SLOW_QUERY_MS: z.coerce.number().int().positive().default(200),
+  METRICS_ENABLED: z.coerce.boolean().default(false),
+  METRICS_ROUTE: z.string().default("/metrics"),
 
   JWT_ISSUER: z.string().min(1).optional(),
   JWT_AUDIENCE: z.string().min(1).optional(),
@@ -81,9 +85,13 @@ export const env = {
   corsOrigins: parsed.data.CORS_ORIGINS,
   rateLimitWindowMs: parsed.data.RATE_LIMIT_WINDOW_MS,
   rateLimitMax: parsed.data.RATE_LIMIT_MAX,
+  rateLimitUserWindowMs: parsed.data.RATE_LIMIT_USER_WINDOW_MS,
+  rateLimitUserMax: parsed.data.RATE_LIMIT_USER_MAX,
   bodyLimit: parsed.data.BODY_LIMIT,
   httpSlowMs: parsed.data.HTTP_SLOW_MS,
   slowQueryMs: parsed.data.SLOW_QUERY_MS,
+  metricsEnabled: parsed.data.METRICS_ENABLED,
+  metricsRoute: parsed.data.METRICS_ROUTE,
 
   jwtIssuer: parsed.data.JWT_ISSUER,
   jwtAudience: parsed.data.JWT_AUDIENCE,
