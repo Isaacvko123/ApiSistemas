@@ -10,6 +10,7 @@ import {
   toEmpleadoUpdateData,
 } from "../../models/Empleado/EmpleadoModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
+import { parsePagination } from "../../utils/pagination";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -61,6 +62,7 @@ export class EmpleadoController {
         typeof req.query.puestoId === "string" ? Number(req.query.puestoId) : undefined;
       const localidadId =
         typeof req.query.localidadId === "string" ? Number(req.query.localidadId) : undefined;
+      const { page, pageSize, skip, take } = parsePagination(req.query);
 
       const empleados = await prisma.empleado.findMany({
         where: {
@@ -70,6 +72,17 @@ export class EmpleadoController {
           ...(Number.isFinite(localidadId) ? { localidadId } : {}),
         },
         orderBy: { id: "desc" },
+        skip,
+        take,
+      });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Empleado",
+        targetId: "list",
+        metadata: { page, pageSize, activo, areaId, puestoId, localidadId, count: empleados.length },
       });
 
       return res.status(200).json(empleados.map(toEmpleadoPublic));
@@ -85,6 +98,14 @@ export class EmpleadoController {
     try {
       const empleado = await prisma.empleado.findUnique({ where: { id } });
       if (!empleado) return respondError(res, "empleado_no_encontrado");
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Empleado",
+        targetId: String(id),
+      });
 
       return res.status(200).json(toEmpleadoPublic(empleado));
     } catch (error) {
@@ -149,6 +170,16 @@ export class EmpleadoController {
     if (!id) return respondError(res, "id_invalido");
 
     try {
+      const activos = await prisma.resguardo.count({
+        where: { empleadoId: id, estado: "ACTIVO" },
+      });
+
+      if (activos > 0) {
+        return respondError(res, "relacion_invalida", {
+          resguardosActivos: activos,
+        });
+      }
+
       const empleado = await prisma.empleado.update({
         where: { id },
         data: { activo: false },

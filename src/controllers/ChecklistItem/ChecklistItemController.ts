@@ -10,6 +10,7 @@ import {
   toChecklistItemUpdateData,
 } from "../../models/ChecklistItem/ChecklistItemModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
+import { parsePagination } from "../../utils/pagination";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -53,12 +54,28 @@ export class ChecklistItemController {
     try {
       const checklistId =
         typeof req.query.checklistId === "string" ? Number(req.query.checklistId) : undefined;
+      const descripcion = typeof req.query.descripcion === "string" ? req.query.descripcion : undefined;
+      const { page, pageSize, skip, take } = parsePagination(req.query);
 
       const items = await prisma.checklistItem.findMany({
         where: {
           ...(Number.isFinite(checklistId) ? { checklistId } : {}),
+          ...(descripcion
+            ? { descripcion: { contains: descripcion, mode: "insensitive" } }
+            : {}),
         },
         orderBy: { id: "desc" },
+        skip,
+        take,
+      });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "ChecklistItem",
+        targetId: "list",
+        metadata: { page, pageSize, checklistId, descripcion, count: items.length },
       });
 
       return res.status(200).json(items.map(toChecklistItemPublic));
@@ -74,6 +91,14 @@ export class ChecklistItemController {
     try {
       const item = await prisma.checklistItem.findUnique({ where: { id } });
       if (!item) return respondError(res, "item_no_encontrado");
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "ChecklistItem",
+        targetId: String(id),
+      });
 
       return res.status(200).json(toChecklistItemPublic(item));
     } catch (error) {

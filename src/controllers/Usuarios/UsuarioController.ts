@@ -12,6 +12,8 @@ import {
 import errores from "./errores.json";
 import { writeAuditLog } from "../../seguridad/audit";
 import { SesionesService } from "../../seguridad/sesiones.service";
+import { auditEntity } from "../../seguridad/audit-helpers";
+import { parsePagination } from "../../utils/pagination";
 
 const allowedRoles = new Set(["ADMIN", "SUPERVISOR", "GERENTE"]);
 const isSandbox = env.nodeEnv !== "production";
@@ -57,6 +59,7 @@ export class UsuarioController {
       const activo =
         typeof req.query.activo === "string" ? req.query.activo === "true" : undefined;
       const rol = typeof req.query.rol === "string" ? req.query.rol : undefined;
+      const { page, pageSize, skip, take } = parsePagination(req.query);
 
       if (rol && !allowedRoles.has(rol)) {
         return respondError(res, "rol_invalido", { allowed: [...allowedRoles] });
@@ -68,6 +71,17 @@ export class UsuarioController {
           ...(rol ? { rol: rol as any } : {}),
         },
         orderBy: { id: "desc" },
+        skip,
+        take,
+      });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Usuario",
+        targetId: "list",
+        metadata: { page, pageSize, activo, rol, count: usuarios.length },
       });
 
       return res.status(200).json(usuarios.map(toUsuarioPublic));
@@ -83,6 +97,14 @@ export class UsuarioController {
     try {
       const usuario = await prisma.usuario.findUnique({ where: { id } });
       if (!usuario) return respondError(res, "usuario_no_encontrado");
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Usuario",
+        targetId: String(id),
+      });
 
       return res.status(200).json(toUsuarioPublic(usuario));
     } catch (error) {

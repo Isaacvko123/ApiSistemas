@@ -10,6 +10,7 @@ import {
   toResguardoEquipoUpdateData,
 } from "../../models/ResguardoEquipo/ResguardoEquipoModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
+import { parsePagination } from "../../utils/pagination";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -57,6 +58,7 @@ export class ResguardoEquipoController {
       const resguardoId =
         typeof req.query.resguardoId === "string" ? Number(req.query.resguardoId) : undefined;
       const equipoId = typeof req.query.equipoId === "string" ? Number(req.query.equipoId) : undefined;
+      const { page, pageSize, skip, take } = parsePagination(req.query);
 
       const rows = await prisma.resguardoEquipo.findMany({
         where: {
@@ -64,6 +66,17 @@ export class ResguardoEquipoController {
           ...(Number.isFinite(equipoId) ? { equipoId } : {}),
         },
         orderBy: { id: "desc" },
+        skip,
+        take,
+      });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "ResguardoEquipo",
+        targetId: "list",
+        metadata: { page, pageSize, resguardoId, equipoId, count: rows.length },
       });
 
       return res.status(200).json(rows.map(toResguardoEquipoPublic));
@@ -79,6 +92,14 @@ export class ResguardoEquipoController {
     try {
       const row = await prisma.resguardoEquipo.findUnique({ where: { id } });
       if (!row) return respondError(res, "resguardo_equipo_no_encontrado");
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "ResguardoEquipo",
+        targetId: String(id),
+      });
 
       return res.status(200).json(toResguardoEquipoPublic(row));
     } catch (error) {

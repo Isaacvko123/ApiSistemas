@@ -8,6 +8,7 @@ import {
   toAreaPublic,
 } from "../../models/Area/AreaModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
+import { parsePagination } from "../../utils/pagination";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -50,10 +51,28 @@ function handlePrismaError(res: Response, error: unknown) {
 }
 
 export class AreaController {
-  static async listar(_req: Request, res: Response) {
+  static async listar(req: Request, res: Response) {
     try {
+      const nombre = typeof req.query.nombre === "string" ? req.query.nombre : undefined;
+      const { page, pageSize, skip, take } = parsePagination(req.query);
       const areas = await prisma.area.findMany({
+        where: {
+          ...(nombre
+            ? { nombre: { contains: nombre, mode: "insensitive" } }
+            : {}),
+        },
         orderBy: { id: "desc" },
+        skip,
+        take,
+      });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Area",
+        targetId: "list",
+        metadata: { page, pageSize, nombre, count: areas.length },
       });
 
       return res.status(200).json(areas.map(toAreaPublic));
@@ -69,6 +88,14 @@ export class AreaController {
     try {
       const area = await prisma.area.findUnique({ where: { id } });
       if (!area) return respondError(res, "area_no_encontrada");
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Area",
+        targetId: String(id),
+      });
 
       return res.status(200).json(toAreaPublic(area));
     } catch (error) {
@@ -131,6 +158,21 @@ export class AreaController {
     if (!id) return respondError(res, "id_invalido");
 
     try {
+      const related = await prisma.$transaction([
+        prisma.puesto.count({ where: { areaId: id } }),
+        prisma.empleado.count({ where: { areaId: id } }),
+        prisma.credencialWeb.count({ where: { areaId: id } }),
+      ]);
+
+      const [puestosCount, empleadosCount, credencialesCount] = related;
+      if (puestosCount > 0 || empleadosCount > 0 || credencialesCount > 0) {
+        return respondError(res, "relacion_invalida", {
+          puestos: puestosCount,
+          empleados: empleadosCount,
+          credenciales: credencialesCount,
+        });
+      }
+
       const area = await prisma.area.delete({ where: { id } });
       await auditEntity({
         req,

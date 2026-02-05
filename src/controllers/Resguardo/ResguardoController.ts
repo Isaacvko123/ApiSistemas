@@ -10,6 +10,7 @@ import {
   toResguardoUpdateData,
 } from "../../models/Resguardo/ResguardoModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
+import { parsePagination } from "../../utils/pagination";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -59,6 +60,7 @@ export class ResguardoController {
       const localidadId =
         typeof req.query.localidadId === "string" ? Number(req.query.localidadId) : undefined;
       const estado = typeof req.query.estado === "string" ? req.query.estado : undefined;
+      const { page, pageSize, skip, take } = parsePagination(req.query);
 
       const resguardos = await prisma.resguardo.findMany({
         where: {
@@ -67,6 +69,17 @@ export class ResguardoController {
           ...(estado ? { estado: estado as any } : {}),
         },
         orderBy: { id: "desc" },
+        skip,
+        take,
+      });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Resguardo",
+        targetId: "list",
+        metadata: { page, pageSize, empleadoId, localidadId, estado, count: resguardos.length },
       });
 
       return res.status(200).json(resguardos.map(toResguardoPublic));
@@ -82,6 +95,14 @@ export class ResguardoController {
     try {
       const resguardo = await prisma.resguardo.findUnique({ where: { id } });
       if (!resguardo) return respondError(res, "resguardo_no_encontrado");
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Resguardo",
+        targetId: String(id),
+      });
 
       return res.status(200).json(toResguardoPublic(resguardo));
     } catch (error) {

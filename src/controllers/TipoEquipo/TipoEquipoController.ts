@@ -8,6 +8,7 @@ import {
   toTipoEquipoPublic,
 } from "../../models/TipoEquipo/TipoEquipoModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
+import { parsePagination } from "../../utils/pagination";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -50,10 +51,30 @@ function handlePrismaError(res: Response, error: unknown) {
 }
 
 export class TipoEquipoController {
-  static async listar(_req: Request, res: Response) {
+  static async listar(req: Request, res: Response) {
     try {
+      const nombre = typeof req.query.nombre === "string" ? req.query.nombre : undefined;
+      const activo =
+        typeof req.query.activo === "string" ? req.query.activo === "true" : undefined;
+      const { page, pageSize, skip, take } = parsePagination(req.query);
       const tipos = await prisma.tipoEquipo.findMany({
+        where: {
+          ...(nombre
+            ? { nombre: { contains: nombre, mode: "insensitive" } }
+            : {}),
+          ...(typeof activo === "boolean" ? { activo } : {}),
+        },
         orderBy: { id: "desc" },
+        skip,
+        take,
+      });
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "TipoEquipo",
+        targetId: "list",
+        metadata: { page, pageSize, nombre, activo, count: tipos.length },
       });
       return res.status(200).json(tipos.map(toTipoEquipoPublic));
     } catch (error) {
@@ -68,6 +89,13 @@ export class TipoEquipoController {
     try {
       const tipo = await prisma.tipoEquipo.findUnique({ where: { id } });
       if (!tipo) return respondError(res, "tipo_no_encontrado");
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "TipoEquipo",
+        targetId: String(id),
+      });
       return res.status(200).json(toTipoEquipoPublic(tipo));
     } catch (error) {
       return handlePrismaError(res, error);
@@ -128,6 +156,18 @@ export class TipoEquipoController {
     if (!id) return respondError(res, "id_invalido");
 
     try {
+      const related = await prisma.$transaction([
+        prisma.equipo.count({ where: { tipoEquipoId: id } }),
+        prisma.checklistItem.count({ where: { tipoEquipoId: id } }),
+      ]);
+      const [equiposCount, checklistCount] = related;
+      if (equiposCount > 0 || checklistCount > 0) {
+        return respondError(res, "relacion_invalida", {
+          equipos: equiposCount,
+          checklistItems: checklistCount,
+        });
+      }
+
       const tipo = await prisma.tipoEquipo.delete({ where: { id } });
       await auditEntity({
         req,

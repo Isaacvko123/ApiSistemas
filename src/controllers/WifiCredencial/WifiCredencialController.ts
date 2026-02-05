@@ -10,6 +10,7 @@ import {
   toWifiCredencialUpdateData,
 } from "../../models/WifiCredencial/WifiCredencialModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
+import { parsePagination } from "../../utils/pagination";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -58,6 +59,7 @@ export class WifiCredencialController {
       const localidadId =
         typeof req.query.localidadId === "string" ? Number(req.query.localidadId) : undefined;
       const ssid = typeof req.query.ssid === "string" ? req.query.ssid : undefined;
+      const { page, pageSize, skip, take } = parsePagination(req.query);
 
       const rows = await prisma.wifiCredencial.findMany({
         where: {
@@ -67,6 +69,17 @@ export class WifiCredencialController {
           ...(ssid ? { ssid } : {}),
         },
         orderBy: { id: "desc" },
+        skip,
+        take,
+      });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "WifiCredencial",
+        targetId: "list",
+        metadata: { page, pageSize, vigente, empleadoId, localidadId, ssid, count: rows.length },
       });
 
       return res.status(200).json(rows.map((row) => toWifiCredencialPublic(row)));

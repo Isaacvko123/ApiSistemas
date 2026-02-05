@@ -11,6 +11,7 @@ import {
 } from "../../models/Credenciales/CredencialWebModel";
 import { writeAuditLog } from "../../seguridad/audit";
 import { SesionesService } from "../../seguridad/sesiones.service";
+import { parsePagination } from "../../utils/pagination";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -62,6 +63,7 @@ export class CredencialWebController {
         typeof req.query.areaId === "string" ? Number(req.query.areaId) : undefined;
       const puestoId =
         typeof req.query.puestoId === "string" ? Number(req.query.puestoId) : undefined;
+      const { page, pageSize, skip, take } = parsePagination(req.query);
 
       const credenciales = await prisma.credencialWeb.findMany({
         where: {
@@ -71,6 +73,28 @@ export class CredencialWebController {
           ...(Number.isFinite(puestoId) ? { puestoId } : {}),
         },
         orderBy: { id: "desc" },
+        skip,
+        take,
+      });
+
+      const meta = SesionesService.extraerMeta(req);
+      const actorId = res.locals.user?.sub ? Number(res.locals.user.sub) : null;
+      await writeAuditLog({
+        action: AuditAction.CREDENCIAL_READ,
+        actorId: Number.isFinite(actorId as number) ? (actorId as number) : null,
+        targetType: "CredencialWeb",
+        targetId: "list",
+        metadata: {
+          page,
+          pageSize,
+          activo,
+          empleadoId,
+          areaId,
+          puestoId,
+          count: credenciales.length,
+        },
+        ip: meta.ip ?? null,
+        userAgent: meta.userAgent ?? null,
       });
 
       return res.status(200).json(credenciales.map((c) => toCredencialWebPublic(c)));

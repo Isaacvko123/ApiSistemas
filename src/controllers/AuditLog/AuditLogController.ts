@@ -1,11 +1,13 @@
 import type { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
+import { Prisma, AuditAction } from "@prisma/client";
 import { prisma } from "../../db/prisma";
 import { env } from "../../config/env";
 import {
   auditLogFilterSchema,
   toAuditLogPublic,
 } from "../../models/AuditLog/AuditLogModel";
+import { auditEntity } from "../../seguridad/audit-helpers";
+import { parsePagination } from "../../utils/pagination";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -59,8 +61,13 @@ export class AuditLogController {
 
     try {
       const { action, actorId, targetType, targetId, dateFrom, dateTo } = parsed.data;
-      const takeRaw = typeof req.query.limit === "string" ? Number(req.query.limit) : undefined;
-      const take = Number.isFinite(takeRaw) ? Math.min(takeRaw as number, 500) : 200;
+      const limitRaw = typeof req.query.limit === "string" ? Number(req.query.limit) : undefined;
+      const paginationInput: Record<string, unknown> = { ...req.query };
+      paginationInput.pageSize = Number.isFinite(limitRaw) ? (limitRaw as number) : 200;
+      const { page, pageSize, skip, take } = parsePagination(paginationInput, {
+        defaultPageSize: 200,
+        maxPageSize: 500,
+      });
 
       const logs = await prisma.auditLog.findMany({
         where: {
@@ -78,7 +85,27 @@ export class AuditLogController {
             : {}),
         },
         orderBy: { createdAt: "desc" },
+        skip,
         take,
+      });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "AuditLog",
+        targetId: "list",
+        metadata: {
+          page,
+          pageSize,
+          action,
+          actorId,
+          targetType,
+          targetId,
+          dateFrom,
+          dateTo,
+          count: logs.length,
+        },
       });
 
       return res.status(200).json(logs.map(toAuditLogPublic));
@@ -94,6 +121,14 @@ export class AuditLogController {
     try {
       const log = await prisma.auditLog.findUnique({ where: { id } });
       if (!log) return respondError(res, "audit_no_encontrado");
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "AuditLog",
+        targetId: String(id),
+      });
 
       return res.status(200).json(toAuditLogPublic(log));
     } catch (error) {

@@ -10,6 +10,7 @@ import {
   toChecklistUpdateData,
 } from "../../models/Checklist/ChecklistModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
+import { parsePagination } from "../../utils/pagination";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -55,12 +56,28 @@ export class ChecklistController {
   static async listar(req: Request, res: Response) {
     try {
       const puestoId = typeof req.query.puestoId === "string" ? Number(req.query.puestoId) : undefined;
+      const nombre = typeof req.query.nombre === "string" ? req.query.nombre : undefined;
+      const { page, pageSize, skip, take } = parsePagination(req.query);
 
       const checklists = await prisma.checklist.findMany({
         where: {
           ...(Number.isFinite(puestoId) ? { puestoId } : {}),
+          ...(nombre
+            ? { nombre: { contains: nombre, mode: "insensitive" } }
+            : {}),
         },
         orderBy: { id: "desc" },
+        skip,
+        take,
+      });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Checklist",
+        targetId: "list",
+        metadata: { page, pageSize, puestoId, nombre, count: checklists.length },
       });
 
       return res.status(200).json(checklists.map(toChecklistPublic));
@@ -76,6 +93,14 @@ export class ChecklistController {
     try {
       const checklist = await prisma.checklist.findUnique({ where: { id } });
       if (!checklist) return respondError(res, "checklist_no_encontrado");
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Checklist",
+        targetId: String(id),
+      });
 
       return res.status(200).json(toChecklistPublic(checklist));
     } catch (error) {
@@ -140,6 +165,11 @@ export class ChecklistController {
     if (!id) return respondError(res, "id_invalido");
 
     try {
+      const itemsCount = await prisma.checklistItem.count({ where: { checklistId: id } });
+      if (itemsCount > 0) {
+        return respondError(res, "relacion_invalida", { items: itemsCount });
+      }
+
       const checklist = await prisma.checklist.delete({ where: { id } });
       await auditEntity({
         req,

@@ -10,6 +10,7 @@ import {
   toPuestoUpdateData,
 } from "../../models/Puesto/PuestoModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
+import { parsePagination } from "../../utils/pagination";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -55,12 +56,28 @@ export class PuestoController {
   static async listar(req: Request, res: Response) {
     try {
       const areaId = typeof req.query.areaId === "string" ? Number(req.query.areaId) : undefined;
+      const nombre = typeof req.query.nombre === "string" ? req.query.nombre : undefined;
+      const { page, pageSize, skip, take } = parsePagination(req.query);
 
       const puestos = await prisma.puesto.findMany({
         where: {
           ...(Number.isFinite(areaId) ? { areaId } : {}),
+          ...(nombre
+            ? { nombre: { contains: nombre, mode: "insensitive" } }
+            : {}),
         },
         orderBy: { id: "desc" },
+        skip,
+        take,
+      });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Puesto",
+        targetId: "list",
+        metadata: { page, pageSize, areaId, nombre, count: puestos.length },
       });
 
       return res.status(200).json(puestos.map(toPuestoPublic));
@@ -76,6 +93,14 @@ export class PuestoController {
     try {
       const puesto = await prisma.puesto.findUnique({ where: { id } });
       if (!puesto) return respondError(res, "puesto_no_encontrado");
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Puesto",
+        targetId: String(id),
+      });
 
       return res.status(200).json(toPuestoPublic(puesto));
     } catch (error) {
@@ -140,6 +165,21 @@ export class PuestoController {
     if (!id) return respondError(res, "id_invalido");
 
     try {
+      const related = await prisma.$transaction([
+        prisma.empleado.count({ where: { puestoId: id } }),
+        prisma.checklist.count({ where: { puestoId: id } }),
+        prisma.credencialWeb.count({ where: { puestoId: id } }),
+      ]);
+
+      const [empleadosCount, checklistsCount, credencialesCount] = related;
+      if (empleadosCount > 0 || checklistsCount > 0 || credencialesCount > 0) {
+        return respondError(res, "relacion_invalida", {
+          empleados: empleadosCount,
+          checklists: checklistsCount,
+          credenciales: credencialesCount,
+        });
+      }
+
       const puesto = await prisma.puesto.delete({ where: { id } });
       await auditEntity({
         req,

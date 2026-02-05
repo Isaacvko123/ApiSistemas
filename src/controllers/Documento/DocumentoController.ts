@@ -11,6 +11,7 @@ import {
 } from "../../models/Documento/DocumentoModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
 import { buildDocumentoRuta } from "../../middlewares/upload";
+import { parsePagination } from "../../utils/pagination";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -61,6 +62,7 @@ export class DocumentoController {
       const empleadoId =
         typeof req.query.empleadoId === "string" ? Number(req.query.empleadoId) : undefined;
       const evento = typeof req.query.evento === "string" ? req.query.evento : undefined;
+      const { page, pageSize, skip, take } = parsePagination(req.query);
 
       const documentos = await prisma.documento.findMany({
         where: {
@@ -72,6 +74,27 @@ export class DocumentoController {
           ...(evento ? { evento: evento as any } : {}),
         },
         orderBy: { id: "desc" },
+        skip,
+        take,
+      });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Documento",
+        targetId: "list",
+        metadata: {
+          page,
+          pageSize,
+          equipoId,
+          resguardoId,
+          resguardoEquipoId,
+          tipo,
+          empleadoId,
+          evento,
+          count: documentos.length,
+        },
       });
 
       return res.status(200).json(documentos.map(toDocumentoPublic));
@@ -87,6 +110,14 @@ export class DocumentoController {
     try {
       const doc = await prisma.documento.findUnique({ where: { id } });
       if (!doc) return respondError(res, "documento_no_encontrado");
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Documento",
+        targetId: String(id),
+      });
 
       return res.status(200).json(toDocumentoPublic(doc));
     } catch (error) {

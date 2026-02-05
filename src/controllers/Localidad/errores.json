@@ -68,6 +68,15 @@
     "solution": "Envia al menos un campo valido.",
     "updatableFields": ["codigo", "nombre", "estado", "ciudad", "direccion", "cp", "notas"]
   },
+  "relacion_invalida": {
+    "status": 409,
+    "code": "LOC-006",
+    "title": "Relacion invalida",
+    "summary": "No se puede eliminar porque hay registros relacionados.",
+    "source": "server",
+    "reason": "Restriccion de integridad referencial.",
+    "solution": "Reasigna o elimina los registros relacionados antes de borrar."
+  },
   "error_interno": {
     "status": 500,
     "code": "LOC-500",

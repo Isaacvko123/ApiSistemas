@@ -10,6 +10,7 @@ import {
   toEquipoUpdateData,
 } from "../../models/Equipo/EquipoModel";
 import { auditEntity } from "../../seguridad/audit-helpers";
+import { parsePagination } from "../../utils/pagination";
 import errores from "./errores.json";
 
 const isSandbox = env.nodeEnv !== "production";
@@ -59,6 +60,7 @@ export class EquipoController {
       const estado = typeof req.query.estado === "string" ? req.query.estado : undefined;
       const localidadId =
         typeof req.query.localidadId === "string" ? Number(req.query.localidadId) : undefined;
+      const { page, pageSize, skip, take } = parsePagination(req.query);
 
       const equipos = await prisma.equipo.findMany({
         where: {
@@ -67,6 +69,17 @@ export class EquipoController {
           ...(Number.isFinite(localidadId) ? { localidadId } : {}),
         },
         orderBy: { id: "desc" },
+        skip,
+        take,
+      });
+
+      await auditEntity({
+        req,
+        res,
+        action: AuditAction.ENTITY_READ,
+        targetType: "Equipo",
+        targetId: "list",
+        metadata: { page, pageSize, tipoEquipoId, estado, localidadId, count: equipos.length },
       });
 
       return res.status(200).json(equipos.map(toEquipoPublic));
