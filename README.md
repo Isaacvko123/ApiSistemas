@@ -94,6 +94,27 @@ npm start
 Health:
 - `GET /health`
 
+## Documentacion (portal + diagramas)
+La documentacion web se expone **solo en desarrollo** (cuando `NODE_ENV` != `production`).
+
+Requisitos en `.env` para verla:
+- `NODE_ENV=development`
+- `PORT` (ej. `8080` o `6000`)
+
+Endpoints de documentacion:
+- `GET /docs/portal` (inicio)
+- `GET /docs` (Swagger UI)
+- `GET /docs/diagramas` (diagramas interactivos)
+- `GET /docs/arquitectura` (arquitectura)
+- `GET /docs/operacion` (indice por tablas)
+
+Ejemplo (local):
+```
+http://localhost:8080/docs/portal
+```
+
+Si `NODE_ENV=production`, estos endpoints **no se exponen** por seguridad.
+
 ## Pruebas
 ```bash
 npm test
