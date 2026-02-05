@@ -7,7 +7,9 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "test": "node test/scripts/pretest.js && jest --runInBand"
+    "test": "node test/scripts/pretest.js && jest --runInBand",
+    "docs:generate": "node scripts/generate-openapi.js",
+    "docs:build": "node scripts/build-docs.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +19,8 @@
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "argon2": "^0.44.0",
+    "@asteasolutions/zod-to-openapi": "^7.3.0",
+    "zod-3": "npm:zod@3.22.4",
     "compression": "^1.8.1",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",

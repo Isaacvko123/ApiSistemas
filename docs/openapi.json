@@ -1,0 +1,1608 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ApiSistemas",
+    "version": "1.0.0",
+    "description": "API para gestión de equipos, resguardos, empleados, localidades y credenciales."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Crea sesión y tokens",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Rota refresh",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/usuarios": {
+      "post": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Crea usuario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Lista usuarios",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Revoca sesión actual",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/logout-all": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Revoca todas las sesiones",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/areas": {
+      "post": {
+        "tags": [
+          "Áreas"
+        ],
+        "summary": "Crea área",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Áreas"
+        ],
+        "summary": "Lista áreas",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/puestos": {
+      "post": {
+        "tags": [
+          "Puestos"
+        ],
+        "summary": "Crea puesto",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Puestos"
+        ],
+        "summary": "Lista puestos",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/localidades": {
+      "post": {
+        "tags": [
+          "Localidades"
+        ],
+        "summary": "Crea localidad",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Localidades"
+        ],
+        "summary": "Lista localidades",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/empleados": {
+      "post": {
+        "tags": [
+          "Empleados"
+        ],
+        "summary": "Crea empleado",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Empleados"
+        ],
+        "summary": "Lista empleados",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/equipos": {
+      "post": {
+        "tags": [
+          "Equipos"
+        ],
+        "summary": "Crea equipo",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Equipos"
+        ],
+        "summary": "Lista equipos",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/resguardos": {
+      "post": {
+        "tags": [
+          "Resguardos"
+        ],
+        "summary": "Crea resguardo",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Resguardos"
+        ],
+        "summary": "Lista resguardos",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/resguardo-equipos": {
+      "post": {
+        "tags": [
+          "Resguardo equipos"
+        ],
+        "summary": "Agrega equipo a resguardo",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Resguardo equipos"
+        ],
+        "summary": "Lista detalles",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/documentos/upload": {
+      "post": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Sube documento",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/documentos": {
+      "get": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Lista documentos",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/checklists": {
+      "post": {
+        "tags": [
+          "Checklists"
+        ],
+        "summary": "Crea checklist",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Checklists"
+        ],
+        "summary": "Lista checklists",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/checklist-items": {
+      "post": {
+        "tags": [
+          "Checklist items"
+        ],
+        "summary": "Crea item",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Checklist items"
+        ],
+        "summary": "Lista items",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/credenciales": {
+      "post": {
+        "tags": [
+          "Credenciales web"
+        ],
+        "summary": "Crea credencial web",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Credenciales web"
+        ],
+        "summary": "Lista credenciales",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/wifi-credenciales": {
+      "post": {
+        "tags": [
+          "WiFi credenciales"
+        ],
+        "summary": "Crea credencial WiFi",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "_def": {
+                  "unknownKeys": "strip",
+                  "catchall": {
+                    "_def": {
+                      "typeName": "ZodNever"
+                    }
+                  },
+                  "typeName": "ZodObject"
+                },
+                "_cached": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "WiFi credenciales"
+        ],
+        "summary": "Lista credenciales WiFi",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/wifi-credenciales/{id}/secret": {
+      "get": {
+        "tags": [
+          "WiFi credenciales"
+        ],
+        "summary": "Revela password",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/audit-logs": {
+      "get": {
+        "tags": [
+          "Audit logs"
+        ],
+        "summary": "Lista auditoría",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "_def": {
+                    "unknownKeys": "strip",
+                    "catchall": {
+                      "_def": {
+                        "typeName": "ZodNever"
+                      }
+                    },
+                    "typeName": "ZodObject"
+                  },
+                  "_cached": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "components": {
+      "schemas": {
+        "LoginRequest": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "contrasena": {
+              "type": "string",
+              "minLength": 10
+            }
+          },
+          "required": [
+            "email",
+            "contrasena"
+          ]
+        },
+        "RefreshRequest": {
+          "type": "object",
+          "properties": {
+            "refreshToken": {
+              "type": "string",
+              "minLength": 20
+            }
+          },
+          "required": [
+            "refreshToken"
+          ]
+        },
+        "UsuariosRequest": {
+          "type": "object",
+          "properties": {
+            "nombre": {
+              "nullable": true
+            },
+            "email": {
+              "nullable": true
+            },
+            "contrasena": {
+              "nullable": true
+            },
+            "rol": {
+              "nullable": true
+            }
+          }
+        },
+        "SesionesRequest": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "nullable": true
+            },
+            "contrasena": {
+              "nullable": true
+            }
+          }
+        },
+        "ÁreasRequest": {
+          "type": "object",
+          "properties": {
+            "nombre": {
+              "nullable": true
+            }
+          }
+        },
+        "PuestosRequest": {
+          "type": "object",
+          "properties": {
+            "nombre": {
+              "nullable": true
+            },
+            "areaId": {
+              "nullable": true
+            }
+          }
+        },
+        "LocalidadesRequest": {
+          "type": "object",
+          "properties": {
+            "nombre": {
+              "nullable": true
+            },
+            "codigo": {
+              "nullable": true
+            }
+          }
+        },
+        "EmpleadosRequest": {
+          "type": "object",
+          "properties": {
+            "nombre": {
+              "nullable": true
+            },
+            "email": {
+              "nullable": true
+            },
+            "numeroEmpleado": {
+              "nullable": true
+            }
+          }
+        },
+        "Tipos de equipoRequest": {
+          "type": "object",
+          "properties": {
+            "nombre": {
+              "nullable": true
+            }
+          }
+        },
+        "EquiposRequest": {
+          "type": "object",
+          "properties": {
+            "serie": {
+              "nullable": true
+            },
+            "modelo": {
+              "nullable": true
+            },
+            "tipoEquipoId": {
+              "nullable": true
+            }
+          }
+        },
+        "ResguardosRequest": {
+          "type": "object",
+          "properties": {
+            "empleadoId": {
+              "nullable": true
+            },
+            "fechaInicio": {
+              "nullable": true
+            }
+          }
+        },
+        "Resguardo equiposRequest": {
+          "type": "object",
+          "properties": {
+            "resguardoId": {
+              "nullable": true
+            },
+            "equipoId": {
+              "nullable": true
+            }
+          }
+        },
+        "DocumentosRequest": {
+          "type": "object",
+          "properties": {
+            "file": {
+              "nullable": true
+            },
+            "tipo": {
+              "nullable": true
+            }
+          }
+        },
+        "ChecklistsRequest": {
+          "type": "object",
+          "properties": {
+            "nombre": {
+              "nullable": true
+            }
+          }
+        },
+        "Checklist itemsRequest": {
+          "type": "object",
+          "properties": {
+            "nombre": {
+              "nullable": true
+            },
+            "checklistId": {
+              "nullable": true
+            }
+          }
+        },
+        "Credenciales webRequest": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "nullable": true
+            },
+            "usuario": {
+              "nullable": true
+            },
+            "password": {
+              "nullable": true
+            }
+          }
+        },
+        "WiFi credencialesRequest": {
+          "type": "object",
+          "properties": {
+            "ssid": {
+              "nullable": true
+            },
+            "usuario": {
+              "nullable": true
+            }
+          }
+        },
+        "Audit logsRequest": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "parameters": {}
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -78,7 +78,15 @@ for (const page of data.pages) {
   const mainPath = path.join(contentRoot, page.file);
   let mainHtml = fs.existsSync(mainPath) ? fs.readFileSync(mainPath, "utf8") : "";
   const isOperacion = page.file.startsWith("operacion/");
-  if (isOperacion && modulesData.length) {
+  if (page.file === "operacion/index.html" && modulesData.length) {
+    const cards = modulesData
+      .map((m) => {
+        const href = `/docs/operacion/${m.slug}.html`;
+        return `<div class=\"box\"><div class=\"tag\">${m.title}</div><p>${m.subtitle || m.description || ""}</p><p><a href=\"${href}\">Ver detalle</a></p></div>`;
+      })
+      .join("\n");
+    mainHtml = `<section class=\"card\"><h2>Operación técnica</h2><p>Consulta por tabla para ver endpoints, validaciones, errores y checklist operativo.</p></section><section class=\"card\"><div class=\"grid\">${cards}</div></section>`;
+  } else if (isOperacion && modulesData.length) {
     const slug = path.basename(page.file, ".html");
     const mod = modulesData.find((m) => m.slug === slug);
     if (mod) {

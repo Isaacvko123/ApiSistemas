@@ -1,0 +1,40 @@
+<script>
+  (function loadSwagger() {
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'https://unpkg.com/swagger-ui-dist@5/swagger-ui.css';
+    document.head.appendChild(css);
+
+    const style = document.createElement('style');
+    style.textContent = `
+      .swagger-ui { font-family: "Manrope","Inter","Segoe UI",sans-serif; }
+      .swagger-ui .topbar { background: #0b3a5b; box-shadow: none; }
+      .swagger-ui .topbar a, .swagger-ui .topbar span { color: #fff; }
+      .swagger-ui .info .title { color: #0b3a5b; font-weight: 800; }
+      .swagger-ui .info .description { color: #475569; }
+      .swagger-ui .scheme-container { background: #f8fafc; border:1px solid #e2e8f0; box-shadow: none; }
+      .swagger-ui .opblock { border-radius: 12px; border:1px solid #e2e8f0; }
+      .swagger-ui .opblock-tag { border-bottom: 1px solid #e2e8f0; font-weight: 700; color:#0f172a; }
+      .swagger-ui .btn.authorize { border-color: #0b3a5b; color: #0b3a5b; }
+      .swagger-ui .btn.authorize svg { fill: #0b3a5b; }
+      .swagger-ui .opblock .opblock-summary-method { border-radius: 8px; }
+      .swagger-ui .opblock-description-wrapper p { color:#475569; }
+    `;
+    document.head.appendChild(style);
+
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js';
+    script.onload = () => {
+      window.ui = SwaggerUIBundle({
+        dom_id: '#swagger-ui',
+        url: '/docs/openapi.json',
+        deepLinking: true,
+        defaultModelsExpandDepth: -1,
+        displayRequestDuration: true,
+        docExpansion: 'list',
+        filter: true,
+      });
+    };
+    document.body.appendChild(script);
+  })();
+</script>

@@ -51,6 +51,27 @@
       "script": ""
     },
     {
+      "file": "referencia_api.html",
+      "title": "Referencia API - ApiSistemas",
+      "headerTitle": "Referencia API",
+      "headerSubtitle": "Swagger UI dentro del portal",
+      "nav": [
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs/diagramas",
+          "label": "Diagramas"
+        },
+        {
+          "href": "/docs/arquitectura",
+          "label": "Arquitectura"
+        }
+      ],
+      "script": "referencia_api.html.scripts.html"
+    },
+    {
       "file": "operacion/_template.html",
       "title": "TABLA - Operación Técnica",
       "headerTitle": "TABLA",

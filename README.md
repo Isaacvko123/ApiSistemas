@@ -104,9 +104,11 @@ Requisitos en `.env` para verla:
 Endpoints de documentacion:
 - `GET /docs/portal` (inicio)
 - `GET /docs` (Swagger UI)
+- `GET /docs/referencia` (Swagger embebido en el portal)
 - `GET /docs/diagramas` (diagramas interactivos)
 - `GET /docs/arquitectura` (arquitectura)
 - `GET /docs/operacion` (indice por tablas)
+ - `GET /docs/openapi.json` (spec generado)
 
 Ejemplo (local):
 ```
@@ -125,6 +127,11 @@ Flujo recomendado:
 
 ```bash
 node scripts/build-docs.js
+```
+
+Para generar el OpenAPI automaticamente con zod-to-openapi:
+```bash
+npm run docs:generate
 ```
 
 Si necesitas regenerar el contenido base desde el HTML actual:

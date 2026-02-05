@@ -6,15 +6,21 @@ import path from "path";
 import YAML from "yaml";
 
 export function setupDocs(app: Express) {
-  const specPath = path.join(process.cwd(), "docs", "openapi.yaml");
+  const specJsonPath = path.join(process.cwd(), "docs", "openapi.json");
+  const specYamlPath = path.join(process.cwd(), "docs", "openapi.yaml");
   const portalPath = path.join(process.cwd(), "docs", "site");
-  if (!fs.existsSync(specPath)) {
-    console.warn("[DOCS] No se encontró docs/openapi.yaml");
+  if (!fs.existsSync(specJsonPath) && !fs.existsSync(specYamlPath)) {
+    console.warn("[DOCS] No se encontró docs/openapi.json ni docs/openapi.yaml");
     return;
   }
 
-  const raw = fs.readFileSync(specPath, "utf8");
-  const spec = YAML.parse(raw);
+  let spec: unknown;
+  if (fs.existsSync(specJsonPath)) {
+    spec = JSON.parse(fs.readFileSync(specJsonPath, "utf8"));
+  } else {
+    const raw = fs.readFileSync(specYamlPath, "utf8");
+    spec = YAML.parse(raw);
+  }
 
   if (fs.existsSync(portalPath)) {
     app.get("/docs/portal", (_req, res) => {
@@ -25,6 +31,9 @@ export function setupDocs(app: Express) {
     });
     app.get("/docs/arquitectura", (_req, res) => {
       res.sendFile(path.join(portalPath, "arquitectura.html"));
+    });
+    app.get("/docs/referencia", (_req, res) => {
+      res.sendFile(path.join(portalPath, "referencia_api.html"));
     });
     const assetsPath = path.join(portalPath, "assets");
     if (fs.existsSync(assetsPath)) {
@@ -39,6 +48,11 @@ export function setupDocs(app: Express) {
   app.get("/docs.json", (_req, res) => {
     res.status(200).json(spec);
   });
+  if (fs.existsSync(specJsonPath)) {
+    app.get("/docs/openapi.json", (_req, res) => {
+      res.sendFile(specJsonPath);
+    });
+  }
 
   // Swagger UI SOLO en /docs para no interceptar /docs/portal, /docs/diagramas, etc.
   app.use("/docs", swaggerUi.serve, swaggerUi.setup(spec));
