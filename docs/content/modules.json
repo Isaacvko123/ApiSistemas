@@ -109,13 +109,19 @@
       "title": "Tipos de equipo",
       "subtitle": "Catálogo de dispositivos",
       "description": "Catálogo maestro usado por equipos y checklist_items.",
-      "routes": [],
-      "controller": [],
+      "routes": [
+        { "method": "POST", "path": "/tipos-equipo", "desc": "Crea tipo de equipo", "auth": true, "roles": ["ADMIN","GERENTE"] },
+        { "method": "GET", "path": "/tipos-equipo", "desc": "Lista tipos de equipo", "auth": true, "roles": [] },
+        { "method": "GET", "path": "/tipos-equipo/{id}", "desc": "Obtiene un tipo de equipo", "auth": true, "roles": [] },
+        { "method": "PATCH", "path": "/tipos-equipo/{id}", "desc": "Actualiza tipo de equipo", "auth": true, "roles": ["ADMIN","GERENTE"] },
+        { "method": "DELETE", "path": "/tipos-equipo/{id}", "desc": "Elimina tipo de equipo", "auth": true, "roles": ["ADMIN","GERENTE"] }
+      ],
+      "controller": ["list", "get", "create", "update", "delete"],
       "model": ["id", "nombre", "descripcion", "activo"],
-      "validations": ["nombre único"],
-      "errors": ["409 duplicado"],
-      "examples": { "request": { "nombre": "Laptop" }, "response": { "id": 1, "nombre": "Laptop" } },
-      "checklist": ["Definir endpoints si se expone"]
+      "validations": ["nombre único", "descripcion opcional", "activo boolean"],
+      "errors": ["400 payload inválido", "409 duplicado", "404 no encontrado"],
+      "examples": { "request": { "nombre": "Laptop", "descripcion": "Equipo portátil", "activo": true }, "response": { "id": 1, "nombre": "Laptop", "activo": true } },
+      "checklist": ["Auditoría de cambios", "No borrar si hay equipos ligados"]
     },
     {
       "slug": "equipos",

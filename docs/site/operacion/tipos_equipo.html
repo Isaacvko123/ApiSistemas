@@ -27,12 +27,12 @@
         <h2>Rutas y permisos</h2>
         <table>
           <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Auth</th><th>Roles</th></tr></thead>
-          <tbody><tr><td colspan="5">Sin rutas públicas definidas.</td></tr></tbody>
+          <tbody><tr><td>POST</td><td>/tipos-equipo</td><td>Crea tipo de equipo</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>GET</td><td>/tipos-equipo</td><td>Lista tipos de equipo</td><td>Sí</td><td>-</td></tr><tr><td>GET</td><td>/tipos-equipo/{id}</td><td>Obtiene un tipo de equipo</td><td>Sí</td><td>-</td></tr><tr><td>PATCH</td><td>/tipos-equipo/{id}</td><td>Actualiza tipo de equipo</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>DELETE</td><td>/tipos-equipo/{id}</td><td>Elimina tipo de equipo</td><td>Sí</td><td>ADMIN, GERENTE</td></tr></tbody>
         </table>
       </section>
       <section class="card">
         <h2>Controller (métodos)</h2>
-        <p>-</p>
+        <ul><li>list</li><li>get</li><li>create</li><li>update</li><li>delete</li></ul>
       </section>
       <section class="card">
         <h2>Modelo (campos clave)</h2>
@@ -40,7 +40,7 @@
       </section>
       <section class="card">
         <h2>Validaciones</h2>
-        <ul><li>nombre único</li></ul>
+        <ul><li>nombre único</li><li>descripcion opcional</li><li>activo boolean</li></ul>
       </section>
       <section class="card">
         <h2>Ejemplos</h2>
@@ -48,25 +48,28 @@
           <div class="box">
             <div class="tag">Request</div>
             <pre>{
-  "nombre": "Laptop"
+  "nombre": "Laptop",
+  "descripcion": "Equipo portátil",
+  "activo": true
 }</pre>
           </div>
           <div class="box">
             <div class="tag">Response</div>
             <pre>{
   "id": 1,
-  "nombre": "Laptop"
+  "nombre": "Laptop",
+  "activo": true
 }</pre>
           </div>
         </div>
       </section>
       <section class="card">
         <h2>Errores comunes</h2>
-        <ul><li>409 duplicado</li></ul>
+        <ul><li>400 payload inválido</li><li>409 duplicado</li><li>404 no encontrado</li></ul>
       </section>
       <section class="card">
         <h2>Checklist operativo</h2>
-        <ul><li>Definir endpoints si se expone</li></ul>
+        <ul><li>Auditoría de cambios</li><li>No borrar si hay equipos ligados</li></ul>
       </section>
   
     </main>

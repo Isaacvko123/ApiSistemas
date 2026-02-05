@@ -24,6 +24,7 @@ import ChecklistItemRutas from "../routes/ChecklistItem/ChecklistItemRuta";
 import WifiCredencialRutas from "../routes/WifiCredencial/WifiCredencialRuta";
 import AuditLogRutas from "../routes/AuditLog/AuditLogRuta";
 import EquipoRutas from "../routes/Equipo/EquipoRuta";
+import TipoEquipoRutas from "../routes/TipoEquipo/TipoEquipoRuta";
 import { setupDocs } from "./docs";
 type RateEntry = {
   count: number;
@@ -131,6 +132,7 @@ export function createApp(): Express {
   app.use("/resguardos", ResguardoRutas);
   app.use("/resguardo-equipos", ResguardoEquipoRutas);
   app.use("/equipos", EquipoRutas);
+  app.use("/tipos-equipo", TipoEquipoRutas);
   app.use("/documentos", DocumentoRutas);
   app.use("/checklists", ChecklistRutas);
   app.use("/checklist-items", ChecklistItemRutas);

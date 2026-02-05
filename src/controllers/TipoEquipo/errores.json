@@ -1,0 +1,82 @@
+{
+  "payload_invalido": {
+    "status": 400,
+    "code": "TPE-001",
+    "title": "Payload invalido",
+    "summary": "El body no cumple con el esquema requerido.",
+    "source": "body",
+    "reason": "Faltan campos obligatorios o el tipo/longitud es incorrecto.",
+    "solution": "Envia los campos obligatorios con los tipos correctos.",
+    "requiredFields": ["nombre"],
+    "optionalFields": ["descripcion", "activo"],
+    "constraints": {
+      "nombre": "string 2-150",
+      "descripcion": "string 2-500",
+      "activo": "boolean"
+    },
+    "example": {
+      "nombre": "Laptop",
+      "descripcion": "Equipo portatil",
+      "activo": true
+    }
+  },
+  "id_invalido": {
+    "status": 400,
+    "code": "TPE-002",
+    "title": "ID invalido",
+    "summary": "El parametro de ruta no es valido.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no es numerico.",
+    "solution": "Envia un id numerico en la ruta.",
+    "expected": "number"
+  },
+  "tipo_no_encontrado": {
+    "status": 404,
+    "code": "TPE-003",
+    "title": "Tipo de equipo no encontrado",
+    "summary": "No existe un tipo con ese id.",
+    "source": "path",
+    "param": "id",
+    "reason": "El id no existe en base de datos.",
+    "solution": "Verifica el id antes de consultar."
+  },
+  "duplicado": {
+    "status": 409,
+    "code": "TPE-004",
+    "title": "Registro duplicado",
+    "summary": "Ya existe un tipo con el mismo nombre.",
+    "source": "body",
+    "reason": "Violacion de indice unico.",
+    "solution": "Usa un nombre diferente.",
+    "uniqueFields": ["nombre"]
+  },
+  "sin_cambios": {
+    "status": 400,
+    "code": "TPE-005",
+    "title": "Sin cambios",
+    "summary": "No se enviaron campos para actualizar.",
+    "source": "body",
+    "reason": "El body esta vacio o solo contiene campos invalidos.",
+    "solution": "Envia al menos un campo valido.",
+    "updatableFields": ["nombre", "descripcion", "activo"]
+  },
+  "relacion_invalida": {
+    "status": 409,
+    "code": "TPE-006",
+    "title": "Relacion invalida",
+    "summary": "No se puede eliminar porque hay registros relacionados.",
+    "source": "server",
+    "reason": "Restriccion de llave foranea.",
+    "solution": "Elimina o reasigna los registros relacionados antes de borrar."
+  },
+  "error_interno": {
+    "status": 500,
+    "code": "TPE-500",
+    "title": "Error interno",
+    "summary": "Ocurrio un error inesperado en el servidor.",
+    "source": "server",
+    "reason": "Excepcion no controlada.",
+    "solution": "Intenta mas tarde o revisa los logs del servidor."
+  }
+}
