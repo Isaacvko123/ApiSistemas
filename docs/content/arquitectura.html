@@ -1,0 +1,322 @@
+<section class="card">
+        <h2>Mapa visual de módulos (¿qué existe y para qué?)</h2>
+        <div class="grid">
+          <div class="box">
+            <div class="icon a">AU</div>
+            <h3>Auth & Sesiones</h3>
+            <p class="kpi">Login, refresh, revocación, tokens.</p>
+          </div>
+          <div class="box">
+            <div class="icon b">HR</div>
+            <h3>Áreas / Puestos / Empleados / Localidades</h3>
+            <p class="kpi">Estructura organizacional y personal.</p>
+          </div>
+          <div class="box">
+            <div class="icon c">EQ</div>
+            <h3>Equipos / Resguardos / Respaldo</h3>
+            <p class="kpi">Inventario, asignación, devoluciones, respaldos.</p>
+          </div>
+          <div class="box">
+            <div class="icon a">DOC</div>
+            <h3>Documentos</h3>
+            <p class="kpi">Cargas PDF/imagen ligadas a resguardos.</p>
+          </div>
+          <div class="box">
+            <div class="icon b">CR</div>
+            <h3>Credenciales Web/WiFi</h3>
+            <p class="kpi">Cifrado AES‑GCM y acceso controlado.</p>
+          </div>
+          <div class="box">
+            <div class="icon c">AUD</div>
+            <h3>Auditoría</h3>
+            <p class="kpi">Registro de acciones críticas y lectura de secretos.</p>
+          </div>
+        </div>
+        <div class="legend">
+          <span class="pill">Visual</span>
+          <span class="pill">Resumen ejecutivo</span>
+          <span class="pill">Capacitación rápida</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Flujo principal (resguardo) — paso a paso</h2>
+        <div class="stepper">
+          <div class="step"><div class="dot">1</div><div><b>Alta de empleado</b><br><span class="kpi">Se registra el empleado y su puesto.</span></div></div>
+          <div class="rail">
+            <div class="step"><div class="dot">2</div><div><b>Alta de equipo</b><br><span class="kpi">Se registra el equipo y su tipo.</span></div></div>
+          </div>
+          <div class="rail">
+            <div class="step"><div class="dot">3</div><div><b>Creación de resguardo</b><br><span class="kpi">Se asigna equipo al empleado (fecha, responsable).</span></div></div>
+          </div>
+          <div class="rail">
+            <div class="step"><div class="dot">4</div><div><b>Documento de entrega</b><br><span class="kpi">Se sube PDF/imagen con evidencia.</span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Swimlane (quién hace qué)</h2>
+        <div class="swimlane">
+          <div class="lane-title">Usuario</div>
+          <div class="lane">
+            <div class="box">Inicia sesión</div>
+            <div class="box">Crea empleado</div>
+            <div class="box">Asigna equipo</div>
+            <div class="box">Sube documento</div>
+          </div>
+          <div class="lane-title">API</div>
+          <div class="lane">
+            <div class="box">Valida token + rol</div>
+            <div class="box">Guarda empleado</div>
+            <div class="box">Crea resguardo</div>
+            <div class="box">Registra auditoría</div>
+          </div>
+          <div class="lane-title">DB</div>
+          <div class="lane">
+            <div class="box">Usuarios / Sesiones</div>
+            <div class="box">Empleados</div>
+            <div class="box">Resguardos</div>
+            <div class="box">Documentos</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Arquitectura visual (bloques)</h2>
+        <svg viewBox="0 0 900 420" role="img" aria-label="Arquitectura visual">
+          <rect x="20" y="20" width="250" height="90" rx="14" fill="#0d5b7c"/>
+          <text x="45" y="60" fill="#fff" font-size="16">Frontend (Web/Admin)</text>
+          <text x="45" y="82" fill="#d7edf7" font-size="12">Usuarios y operaciones</text>
+
+          <rect x="330" y="20" width="250" height="90" rx="14" fill="#0f7a5c"/>
+          <text x="355" y="60" fill="#fff" font-size="16">API Express</text>
+          <text x="355" y="82" fill="#d7f7ea" font-size="12">RBAC, JWT, auditoría</text>
+
+          <rect x="640" y="20" width="240" height="90" rx="14" fill="#b25b1a"/>
+          <text x="665" y="60" fill="#fff" font-size="16">Servicios de Soporte</text>
+          <text x="665" y="82" fill="#fde7d2" font-size="12">Logs, métricas, backups</text>
+
+          <rect x="120" y="160" width="300" height="90" rx="14" fill="#f4efe6" stroke="#e0d2bd"/>
+          <text x="150" y="200" fill="#2c2c2c" font-size="16">PostgreSQL</text>
+          <text x="150" y="222" fill="#6b6b6b" font-size="12">Tablas de negocio</text>
+
+          <rect x="480" y="160" width="300" height="90" rx="14" fill="#f4efe6" stroke="#e0d2bd"/>
+          <text x="510" y="200" fill="#2c2c2c" font-size="16">Storage / Uploads</text>
+          <text x="510" y="222" fill="#6b6b6b" font-size="12">PDFs, imágenes</text>
+
+          <path d="M270 65 L330 65" stroke="#2f2f2f" stroke-width="2"/>
+          <path d="M580 65 L640 65" stroke="#2f2f2f" stroke-width="2"/>
+          <path d="M455 110 L270 160" stroke="#2f2f2f" stroke-width="2"/>
+          <path d="M455 110 L630 160" stroke="#2f2f2f" stroke-width="2"/>
+        </svg>
+      </section>
+
+      <section class="card">
+        <h2>Diagrama de relaciones (con guía)</h2>
+        <p class="kpi">Lee las flechas como “A tiene muchos B” y observa qué entidades son “dueñas” (izquierda) y cuáles son “dependientes” (derecha).</p>
+        <div class="legend">
+          <span class="pill">|| = uno</span>
+          <span class="pill">o{ = muchos</span>
+          <span class="pill">: etiqueta = relación</span>
+        </div>
+        <div class="mermaid">
+erDiagram
+  USUARIO ||--o{ SESION : "inicia"
+  USUARIO ||--o{ RESGUARDO : "crea"
+  EMPLEADO ||--o{ RESGUARDO : "recibe"
+  EQUIPO ||--o{ RESGUARDO_EQUIPO : "asignado"
+  RESGUARDO ||--o{ DOCUMENTO : "soporta"
+  LOCALIDAD ||--o{ EQUIPO : "ubica"
+  AREA ||--o{ EMPLEADO : "organiza"
+  PUESTO ||--o{ EMPLEADO : "define"
+  TIPO_EQUIPO ||--o{ EQUIPO : "clasifica"
+        </div>
+        <div class="grid">
+          <div class="box">
+            <div class="tag">Ejemplo</div>
+            <p>Un <b>Empleado</b> puede tener muchos <b>Resguardos</b>, pero cada resguardo pertenece a un solo empleado.</p>
+          </div>
+          <div class="box">
+            <div class="tag">Uso</div>
+            <p>Si falta un empleado, no se puede crear un resguardo: el flujo se detiene.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Checklist visual (para capacitación)</h2>
+        <div class="grid">
+          <div class="box">
+            <div class="tag">Antes</div>
+            <ul>
+              <li>Crear área y puesto.</li>
+              <li>Registrar empleado.</li>
+              <li>Registrar equipo y tipo.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">Durante</div>
+            <ul>
+              <li>Crear resguardo.</li>
+              <li>Asignar equipo al resguardo.</li>
+              <li>Subir documento de entrega.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">Después</div>
+            <ul>
+              <li>Actualizar estado del equipo.</li>
+              <li>Registrar respaldo si aplica.</li>
+              <li>Auditoría automática.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Resumen clave (lo que se evalúa)</h2>
+        <div class="grid">
+          <div class="box">
+            <div class="tag">Auth + Roles</div>
+            <ul>
+              <li>El módulo <b>Auth + Sesiones</b> gestiona login, refresh y revocación.</li>
+              <li>Roles con escritura: <b>ADMIN</b> y <b>GERENTE</b>.</li>
+              <li><b>SUPERVISOR</b> solo consulta rutas críticas.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">Resguardo</div>
+            <ul>
+              <li>Para crear un resguardo debe existir <b>Empleado</b> y <b>Equipo</b>.</li>
+              <li>El detalle de equipos se guarda en <b>resguardo_equipos</b>.</li>
+              <li>El responsable crea y el empleado recibe el resguardo.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">Documentos</div>
+            <ul>
+              <li>Los archivos físicos se guardan en <b>Uploads</b>.</li>
+              <li>La referencia queda en la tabla <b>documentos</b>.</li>
+              <li>Documentos soportan entrega o devolución del equipo.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">Equipos</div>
+            <ul>
+              <li><b>TipoEquipo</b> clasifica equipos.</li>
+              <li>Equipo puede tener <b>IMEI1/IMEI2</b> y serie.</li>
+              <li>Localidad ubica físicamente al equipo.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">Auditoría</div>
+            <ul>
+              <li><b>AuditLog</b> registra acciones críticas.</li>
+              <li>Lectura de secretos debe quedar auditada.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Guía por roles (qué puede hacer cada uno)</h2>
+        <div class="grid">
+          <div class="box">
+            <div class="tag">ADMIN</div>
+            <ul>
+              <li>Crear, editar y eliminar recursos críticos.</li>
+              <li>Gestionar usuarios, roles y auditoría.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">GERENTE</div>
+            <ul>
+              <li>Crear y editar operaciones clave (resguardos, equipos).</li>
+              <li>Acceso a reportes y supervisión operativa.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="tag">SUPERVISOR</div>
+            <ul>
+              <li>Solo lectura en rutas críticas.</li>
+              <li>Consulta de inventario y resguardos.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Casos de uso reales (para entrenamiento)</h2>
+        <div class="grid">
+          <div class="case">
+            <h3>Caso 1: Alta de resguardo</h3>
+            <ul>
+              <li>Crear empleado y equipo.</li>
+              <li>Generar resguardo y asociar equipo.</li>
+              <li>Subir documento de entrega.</li>
+            </ul>
+          </div>
+          <div class="case">
+            <h3>Caso 2: Devolución de equipo</h3>
+            <ul>
+              <li>Registrar devolución en resguardo.</li>
+              <li>Subir evidencia de devolución.</li>
+              <li>Actualizar estado de equipo.</li>
+            </ul>
+          </div>
+          <div class="case">
+            <h3>Caso 3: Auditoría de credenciales</h3>
+            <ul>
+              <li>Acceso controlado a secreto.</li>
+              <li>Registro automático en AuditLog.</li>
+              <li>Revisión por administrador.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Micro‑examen (10 preguntas aleatorias)</h2>
+        <p class="kpi">Selecciona módulo. Para aprobar necesitas mínimo <b>8/10</b>. Cada intento elige 10 preguntas al azar.</p>
+        <div class="tabs">
+          <button class="tab active" data-module="general">General</button>
+          <button class="tab" data-module="auth">Auth + Roles</button>
+          <button class="tab" data-module="resguardo">Resguardo</button>
+          <button class="tab" data-module="documentos">Documentos</button>
+          <button class="tab" data-module="equipos">Equipos</button>
+          <button class="tab" data-module="auditoria">Auditoría</button>
+        </div>
+        <div id="quiz" class="quiz"></div>
+        <div style="display:flex; gap:10px;">
+          <button id="btn-check">Calificar</button>
+          <button id="btn-new">Nuevo intento</button>
+        </div>
+        <div id="quiz-result" class="result" style="display:none;"></div>
+      </section>
+
+      <section class="card">
+        <h2>Checklist interactivo (progreso)</h2>
+        <div class="progress"><span id="progress-bar"></span></div>
+        <p class="kpi" id="progress-text">0% completado</p>
+        <div class="grid">
+          <label class="box"><input type="checkbox" class="ck"> Crear área y puesto</label>
+          <label class="box"><input type="checkbox" class="ck"> Registrar empleado</label>
+          <label class="box"><input type="checkbox" class="ck"> Registrar equipo y tipo</label>
+          <label class="box"><input type="checkbox" class="ck"> Crear resguardo</label>
+          <label class="box"><input type="checkbox" class="ck"> Subir documento</label>
+          <label class="box"><input type="checkbox" class="ck"> Verificar auditoría</label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Glosario rápido</h2>
+        <div class="grid">
+          <div class="box"><b>Resguardo:</b> asignación formal de un equipo a un empleado.</div>
+          <div class="box"><b>ResguardoEquipo:</b> detalle de equipos dentro del resguardo.</div>
+          <div class="box"><b>Documento:</b> evidencia de entrega/devolución.</div>
+          <div class="box"><b>TipoEquipo:</b> catálogo de clases de equipos.</div>
+          <div class="box"><b>AuditLog:</b> bitácora de acciones críticas.</div>
+          <div class="box"><b>Uploads:</b> carpeta física de archivos.</div>
+        </div>
+      </section>

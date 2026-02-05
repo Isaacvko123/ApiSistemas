@@ -1,0 +1,185 @@
+<script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({ startOnLoad: true });
+
+      const banks = {
+        general: [
+          { q: "¿Qué módulo gestiona login y refresh?", a: 0, o: ["Auth + Sesiones", "Documentos", "Resguardos", "Auditoría"], e: "Revisa la sección Auth + Roles." },
+          { q: "¿Qué tabla guarda la evidencia en PDF/imagen?", a: 1, o: ["resguardos", "documentos", "equipos", "areas"], e: "Se indica en la sección Documentos." },
+          { q: "¿Qué entidad conecta empleado con equipo?", a: 2, o: ["sesiones", "areas", "resguardo_equipos", "wifi_credenciales"], e: "El detalle de equipos está en resguardo_equipos." },
+          { q: "¿Qué se crea primero para un resguardo válido?", a: 0, o: ["Empleado", "Resguardo", "Documento", "Auditoría"], e: "Sin empleado no hay resguardo." },
+          { q: "¿Qué rol no puede editar recursos críticos?", a: 3, o: ["ADMIN", "GERENTE", "SUPERADMIN", "SUPERVISOR"], e: "El resumen de roles lo indica." },
+          { q: "¿Dónde se guardan los archivos físicos?", a: 1, o: ["PostgreSQL", "Uploads", "Sesiones", "Cache"], e: "Uploads es almacenamiento físico." },
+          { q: "¿Qué registro muestra quién hizo acciones críticas?", a: 0, o: ["AuditLog", "Checklist", "Puesto", "Localidad"], e: "AuditLog registra acciones críticas." },
+          { q: "¿Qué relación indica ‘uno a muchos’?", a: 1, o: ["o|", "||--o{", "--", "{--}"], e: "En la guía de ER se explica." },
+          { q: "¿Qué entidad clasifica equipos?", a: 0, o: ["TipoEquipo", "Checklist", "Respaldo", "Resguardo"], e: "TipoEquipo clasifica equipos." },
+          { q: "¿Qué módulo gestiona documentos?", a: 1, o: ["HR", "Documentos", "Auth", "Auditoría"], e: "Revisa la sección Documentos." },
+        ],
+        auth: [
+          { q: "¿Qué módulo gestiona login y refresh?", a: 0, o: ["Auth + Sesiones", "Documentos", "Resguardos", "Auditoría"], e: "Auth + Sesiones." },
+          { q: "¿Qué servicio maneja sesiones?", a: 1, o: ["AuditHelpers", "SesionesService", "Upload", "Cron"], e: "SesionesService." },
+          { q: "¿Qué rol puede escribir recursos?", a: 2, o: ["SUPERVISOR", "INVITADO", "ADMIN", "LECTOR"], e: "ADMIN y GERENTE escriben." },
+          { q: "¿Qué rol NO puede editar?", a: 3, o: ["ADMIN", "GERENTE", "SUPERADMIN", "SUPERVISOR"], e: "SUPERVISOR solo consulta." },
+          { q: "¿Qué componente verifica permisos por rol?", a: 3, o: ["Upload", "Zod", "Prisma", "RBAC"], e: "RBAC valida roles." },
+          { q: "¿Qué se revoca al cerrar sesión?", a: 1, o: ["JWT access", "Token refresh", "Auditoría", "Documento"], e: "Se revoca el refresh." },
+          { q: "¿Qué se renueva con refresh?", a: 0, o: ["Access token", "Archivo", "Checklist", "Equipo"], e: "Se renueva el access token." },
+          { q: "¿Qué tabla guarda sesiones?", a: 2, o: ["usuarios", "credenciales", "sesiones", "equipos"], e: "Tabla sesiones." },
+          { q: "¿Qué módulo registra quién hizo acciones críticas?", a: 3, o: ["Uploads", "Checklist", "Auth", "AuditLog"], e: "AuditLog." },
+          { q: "¿Qué middleware protege rutas?", a: 1, o: ["upload", "authGlobal", "helmet", "cors"], e: "authGlobal." },
+        ],
+        resguardo: [
+          { q: "¿Qué se crea primero para un resguardo válido?", a: 0, o: ["Empleado", "Resguardo", "Documento", "Auditoría"], e: "Empleado primero." },
+          { q: "¿Qué entidad conecta empleado con equipo?", a: 2, o: ["sesiones", "areas", "resguardo_equipos", "wifi_credenciales"], e: "resguardo_equipos." },
+          { q: "¿Quién recibe un resguardo?", a: 1, o: ["Usuario", "Empleado", "Localidad", "Puesto"], e: "Lo recibe el empleado." },
+          { q: "¿Qué indica un resguardo?", a: 3, o: ["Un login", "Un backup", "Un área", "Asignación de equipo"], e: "Asignación de equipo." },
+          { q: "¿Qué tabla contiene el detalle de equipos?", a: 2, o: ["resguardos", "equipos", "resguardo_equipos", "documentos"], e: "resguardo_equipos." },
+          { q: "¿Qué sucede si falta Empleado?", a: 3, o: ["Se crea igual", "Se guarda en cola", "Se borra", "Falla la creación"], e: "Falla la creación." },
+          { q: "¿Qué tabla guarda la evidencia en PDF/imagen?", a: 1, o: ["resguardos", "documentos", "equipos", "areas"], e: "documentos." },
+          { q: "¿Qué entidad organiza empleados?", a: 3, o: ["Resguardo", "Documento", "Equipo", "Área"], e: "Área organiza empleados." },
+          { q: "¿Qué entidad clasifica equipos?", a: 0, o: ["TipoEquipo", "Checklist", "Respaldo", "Resguardo"], e: "TipoEquipo." },
+          { q: "¿Qué entidad ubica físicamente el equipo?", a: 1, o: ["areaId", "localidadId", "puestoId", "usuarioId"], e: "localidadId." },
+        ],
+        documentos: [
+          { q: "¿Dónde se guardan los archivos físicos?", a: 1, o: ["PostgreSQL", "Uploads", "Sesiones", "Cache"], e: "Uploads." },
+          { q: "¿Dónde queda la referencia del archivo subido?", a: 1, o: ["uploads", "documentos", "resguardos", "areas"], e: "documentos." },
+          { q: "¿Qué tabla guarda la evidencia en PDF/imagen?", a: 1, o: ["resguardos", "documentos", "equipos", "areas"], e: "documentos." },
+          { q: "¿Qué se usa para evidencias de entrega?", a: 2, o: ["Respaldo", "WiFi", "Documento", "TipoEquipo"], e: "Documento." },
+          { q: "¿Qué módulo gestiona documentos?", a: 1, o: ["HR", "Documentos", "Auth", "Auditoría"], e: "Documentos." },
+          { q: "¿Qué entidad soporta documentos ligados a resguardo?", a: 3, o: ["area", "puesto", "equipo", "resguardo"], e: "resguardo." },
+          { q: "¿Qué servicio maneja uploads?", a: 2, o: ["RBAC", "Zod", "Upload Middleware", "Prisma"], e: "Upload Middleware." },
+          { q: "¿Qué entidad recibe el documento?", a: 2, o: ["Sesión", "Usuario", "Resguardo", "Checklist"], e: "Resguardo." },
+          { q: "¿Qué registra el documento además de la ruta?", a: 0, o: ["Evento (entrega/devolución)", "Rol", "Token", "IMEI"], e: "Evento de entrega/devolución." },
+          { q: "¿Qué tipo de archivo se usa?", a: 1, o: ["Solo TXT", "PDF/imagen", "Solo video", "Solo zip"], e: "PDF/imagen." },
+        ],
+        equipos: [
+          { q: "¿Qué entidad clasifica equipos?", a: 0, o: ["TipoEquipo", "Checklist", "Respaldo", "Resguardo"], e: "TipoEquipo." },
+          { q: "¿Qué entidad puede tener IMEI?", a: 1, o: ["Empleado", "Equipo", "Puesto", "Área"], e: "Equipo." },
+          { q: "¿Qué campo ubica el equipo físicamente?", a: 1, o: ["areaId", "localidadId", "puestoId", "usuarioId"], e: "localidadId." },
+          { q: "¿Qué entidad conecta empleado con equipo?", a: 2, o: ["sesiones", "areas", "resguardo_equipos", "wifi_credenciales"], e: "resguardo_equipos." },
+          { q: "¿Qué indica un resguardo?", a: 3, o: ["Un login", "Un backup", "Un área", "Asignación de equipo"], e: "Asignación de equipo." },
+          { q: "¿Qué módulo es de Activos?", a: 0, o: ["Equipos/Resguardos", "Auth", "Credenciales", "Auditoría"], e: "Activos = Equipos/Resguardos." },
+          { q: "¿Qué entidad organiza empleados?", a: 3, o: ["Resguardo", "Documento", "Equipo", "Área"], e: "Área." },
+          { q: "¿Qué tabla contiene detalle de equipos en resguardo?", a: 2, o: ["resguardos", "equipos", "resguardo_equipos", "documentos"], e: "resguardo_equipos." },
+          { q: "¿Qué tabla guarda evidencia de entrega?", a: 1, o: ["resguardos", "documentos", "equipos", "areas"], e: "documentos." },
+          { q: "¿Qué entidad relaciona equipo con documentos?", a: 1, o: ["documentos", "usuarios", "areas", "sesiones"], e: "documentos." },
+        ],
+        auditoria: [
+          { q: "¿Qué registro muestra quién hizo acciones críticas?", a: 0, o: ["AuditLog", "Checklist", "Puesto", "Localidad"], e: "AuditLog." },
+          { q: "¿Qué módulo soporta auditoría?", a: 0, o: ["Audit Helpers", "Uploads", "Checklist", "Localidad"], e: "Audit Helpers." },
+          { q: "¿Qué acción debe quedar auditada?", a: 2, o: ["Health check", "Listar catálogo", "Leer secreto", "Ver inicio"], e: "Leer secretos." },
+          { q: "¿Qué entidad tiene relación con auditoría?", a: 1, o: ["Equipo", "Usuario", "Localidad", "Documento"], e: "Usuario." },
+          { q: "¿Qué rol puede generar cambios críticos?", a: 0, o: ["ADMIN", "SUPERVISOR", "LECTOR", "INVITADO"], e: "ADMIN." },
+          { q: "¿Qué capa registra auditoría automática?", a: 1, o: ["Router", "Audit Helpers", "Uploads", "Docs"], e: "Audit Helpers." },
+          { q: "¿Qué tabla guarda auditoría?", a: 2, o: ["usuarios", "sesiones", "audit_logs", "documentos"], e: "audit_logs." },
+          { q: "¿Qué módulo cifra credenciales?", a: 2, o: ["Auditoría", "Documentos", "Credenciales", "Resguardos"], e: "Credenciales." },
+          { q: "¿Qué pasa si un secreto es leído?", a: 1, o: ["Se ignora", "Se registra en auditoría", "Se elimina", "Se publica"], e: "Se registra." },
+          { q: "¿Qué entidad crea el usuario?", a: 3, o: ["Checklist", "Documento", "Equipo", "Auditoría"], e: "Auditoría." },
+        ],
+      };
+
+      function initQuiz() {
+        const quizEl = document.getElementById("quiz");
+        const resultEl = document.getElementById("quiz-result");
+        const btnCheck = document.getElementById("btn-check");
+        const btnNew = document.getElementById("btn-new");
+        const tabs = Array.from(document.querySelectorAll(".tab"));
+
+        if (!quizEl || !resultEl || !btnCheck || !btnNew) {
+          return;
+        }
+
+        let activeModule = "general";
+
+        function pickQuestions() {
+          const source = banks[activeModule] ?? banks.general;
+          const shuffled = [...source].sort(() => Math.random() - 0.5);
+          return shuffled.slice(0, 10);
+        }
+
+        let current = [];
+
+        function renderQuiz() {
+          current = pickQuestions();
+          quizEl.innerHTML = "";
+          resultEl.style.display = "none";
+          current.forEach((item, idx) => {
+            const q = document.createElement("div");
+            q.className = "q";
+            q.innerHTML = `<h4>${idx + 1}. ${item.q}</h4>`;
+            const opts = document.createElement("div");
+            opts.className = "opts";
+            item.o.forEach((opt, oi) => {
+              const id = `q${idx}_o${oi}`;
+              const label = document.createElement("label");
+              label.innerHTML = `<input type="radio" name="q${idx}" id="${id}" value="${oi}"> <span>${opt}</span>`;
+              opts.appendChild(label);
+            });
+            q.appendChild(opts);
+            quizEl.appendChild(q);
+          });
+        }
+
+        btnCheck.addEventListener("click", () => {
+          let correct = 0;
+          current.forEach((item, idx) => {
+            const picked = document.querySelector(`input[name="q${idx}"]:checked`);
+            if (picked && Number(picked.value) === item.a) correct += 1;
+            const qNode = quizEl.children[idx];
+            const existing = qNode.querySelector(".explain");
+            if (existing) existing.remove();
+            if (!picked || Number(picked.value) !== item.a) {
+              const exp = document.createElement("div");
+              exp.className = "explain";
+              exp.textContent = item.e || "Revisa el resumen clave en esta página.";
+              qNode.appendChild(exp);
+            }
+          });
+          const pass = correct >= 8;
+          resultEl.className = `result ${pass ? "" : "fail"}`;
+          resultEl.textContent = pass
+            ? `Aprobado: ${correct}/10. Excelente trabajo.`
+            : `No aprobado: ${correct}/10. Necesitas mínimo 8.`;
+          resultEl.style.display = "block";
+          btnCheck.disabled = true;
+          const inputs = quizEl.querySelectorAll("input");
+          inputs.forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        btnNew.addEventListener("click", () => {
+          btnCheck.disabled = false;
+          renderQuiz();
+        });
+
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            tabs.forEach((t) => t.classList.remove("active"));
+            tab.classList.add("active");
+            activeModule = tab.getAttribute("data-module") || "general";
+            renderQuiz();
+          });
+        });
+
+        renderQuiz();
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initQuiz);
+      } else {
+        initQuiz();
+      }
+
+      const cks = Array.from(document.querySelectorAll(".ck"));
+      const bar = document.getElementById("progress-bar");
+      const text = document.getElementById("progress-text");
+      function updateProgress() {
+        const done = cks.filter((c) => c.checked).length;
+        const total = cks.length || 1;
+        const pct = Math.round((done / total) * 100);
+        if (bar) bar.style.width = `${pct}%`;
+        if (text) text.textContent = `${pct}% completado`;
+      }
+      cks.forEach((c) => c.addEventListener("change", updateProgress));
+      updateProgress();
+    </script>

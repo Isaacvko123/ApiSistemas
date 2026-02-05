@@ -4,46 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>tipos_equipo - Operación Técnica</title>
-    <style>
-      :root { --bg:#f4f6f8; --ink:#0f172a; --muted:#475569; --card:#ffffff; --accent:#0b3a5b; --line:#e2e8f0; --shadow: 0 14px 30px rgba(2,6,23,0.08); }
-      * { box-sizing: border-box; }
-      body { margin:0; font-family:"Manrope","Inter","Segoe UI",sans-serif; background: radial-gradient(900px 500px at 15% -10%, rgba(14,165,233,0.10), transparent 60%), radial-gradient(900px 500px at 85% -5%, rgba(15,118,110,0.08), transparent 60%), var(--bg); color: var(--ink); }
-      header { padding: 32px 40px 24px; border-bottom: 1px solid var(--line); background:#fff; box-shadow: var(--shadow); position: sticky; top:0; z-index:10; }
-      h1 { margin:0 0 6px; font-size:30px; letter-spacing:-0.6px; font-weight:800; }
-      h2 { margin:0 0 10px; font-size:20px; font-weight:700; }
-      h3 { margin:0 0 8px; font-size:18px; font-weight:700; }
-      p { margin:0; color: var(--muted); }
-      main { padding: 28px 40px 48px; display:grid; gap:16px; }
-      .card { background: var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; box-shadow: var(--shadow); }
-      .nav { display:flex; gap:12px; margin-top:10px; flex-wrap:wrap; }
-      .nav a { color: var(--accent); text-decoration:none; font-weight:700; padding:8px 14px; border-radius:999px; border:1px solid var(--line); background:#f8fafc; }
-      .nav a:hover { background:#e2e8f0; }
-      .grid { display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-      .box { border:1px solid var(--line); background:#fff; padding:12px; border-radius:12px; }
-      ul { margin:8px 0 0; padding-left:18px; color: var(--muted); }
-      li { margin:4px 0; }
-      code { background:#f1f5f9; padding:2px 6px; border-radius:6px; }
-      pre { background:#0f172a; color:#e2e8f0; padding:12px; border-radius:12px; overflow:auto; }
-      table { width:100%; border-collapse: collapse; }
-      th, td { text-align:left; padding:8px; border-bottom:1px solid var(--line); }
-      th { color:#1e293b; font-weight:800; }
-      .tag { display:inline-block; font-size:12px; padding:3px 10px; border-radius:999px; background:#e2e8f0; color:#1e293b; border:1px solid #cbd5e1; font-weight:700; }
-      .role { font-weight:800; }
-      .tooltip { position: relative; }
-      .tooltip-layer { position: fixed; pointer-events: none; opacity: 0; transform: translateY(6px); transition: opacity 120ms ease, transform 120ms ease; background: #0f172a; color: #e2e8f0; font-size: 12px; padding: 8px 10px; border-radius: 8px; box-shadow: var(--shadow); max-width: 320px; z-index: 50; }
-      .runner { display:grid; gap:12px; }
-      .step { border:1px solid var(--line); border-radius:12px; padding:12px; background:#ffffff; }
-      .step.active { border-color:#0ea5e9; box-shadow: 0 6px 18px rgba(14,165,233,0.15); }
-      .controls { display:flex; gap:8px; flex-wrap: wrap; }
-      button { padding:8px 12px; border-radius:10px; border:1px solid var(--line); background:#fff; font-weight:700; cursor:pointer; }
-      button:hover { background:#e2e8f0; }
-      @media (max-width: 720px) { header { padding:22px 20px; } main { padding:20px; } h1 { font-size:24px; } }
-</style>
+    <link rel="stylesheet" href="/docs/assets/docs.css" />
   </head>
   <body>
     <header>
-      <h1>tipos_equipo</h1>
-      <p>Catálogo de tipos de equipo.</p>
+      <h1>Tipos de equipo</h1>
+      <p>Catálogo de dispositivos</p>
+      
       <div class="nav">
         <a href="/docs/operacion">Índice</a>
         <a href="/docs/portal">Inicio</a>
@@ -51,157 +18,58 @@
       </div>
     </header>
     <main>
+
       <section class="card">
         <h2>Descripción</h2>
-        <p>Catálogo usado por equipos y checklist_items. Actualmente no tiene endpoints públicos definidos.</p>
-      </section>
-      <section class="card">
-        <h2>Diagrama de interacción (uso típico)</h2>
-        <div class="tooltip">
-          <svg viewBox="0 0 920 260" role="img" aria-label="Interacción tipos de equipo">
-            <g class="hotspot" data-tip="Roles autorizados a crear equipo y checklist.">
-              <rect x="30" y="30" width="180" height="70" rx="12" fill="#0b3a5b"/>
-              <text x="55" y="70" fill="#fff" font-size="14">ADMIN/GERENTE</text>
-            </g>
-
-            <g class="hotspot" data-tip="Creación de equipo. Debe incluir un tipoEquipoId válido.">
-              <rect x="270" y="20" width="220" height="80" rx="12" fill="#0ea5e9"/>
-              <text x="295" y="60" fill="#fff" font-size="14">POST /equipos</text>
-              <text x="295" y="80" fill="#e6f4ff" font-size="12">tipoEquipoId</text>
-            </g>
-
-            <g class="hotspot" data-tip="Checklist item puede quedar ligado a un tipo de equipo (opcional).">
-              <rect x="270" y="140" width="220" height="80" rx="12" fill="#0f766e"/>
-              <text x="295" y="180" fill="#fff" font-size="14">POST /checklist-items</text>
-              <text x="295" y="200" fill="#e6f4ff" font-size="12">tipoEquipoId (opcional)</text>
-            </g>
-
-            <g class="hotspot" data-tip="Catálogo maestro. Define tipos reutilizables para equipos y checklists.">
-              <rect x="560" y="60" width="190" height="90" rx="12" fill="#0b3a5b"/>
-              <text x="590" y="110" fill="#fff" font-size="14">TIPOS_EQUIPO (DB)</text>
-            </g>
-
-            <g class="hotspot" data-tip="Entidad de inventario. Referencia tipoEquipoId.">
-              <rect x="790" y="20" width="110" height="80" rx="10" fill="#0ea5e9"/>
-              <text x="805" y="60" fill="#fff" font-size="12">Equipo</text>
-            </g>
-
-            <g class="hotspot" data-tip="Requisito operativo. Puede limitarse por tipoEquipoId.">
-              <rect x="790" y="140" width="110" height="80" rx="10" fill="#0f766e"/>
-              <text x="800" y="180" fill="#fff" font-size="12">ChecklistItem</text>
-            </g>
-
-            <path d="M210 65 L270 60" stroke="#0f172a" stroke-width="2"/>
-            <path d="M210 65 L270 180" stroke="#0f172a" stroke-width="2"/>
-            <path d="M490 60 L560 90" stroke="#0f172a" stroke-width="2"/>
-            <path d="M490 180 L560 120" stroke="#0f172a" stroke-width="2"/>
-            <path d="M750 90 L790 60" stroke="#0f172a" stroke-width="2"/>
-            <path d="M750 120 L790 180" stroke="#0f172a" stroke-width="2"/>
-          </svg>
-        </div>
-        <ul>
-          <li>El catálogo <b>tipos_equipo</b> se usa al crear equipos.</li>
-          <li>Opcionalmente se usa al crear items de checklist para restringir por tipo.</li>
-        </ul>
-      </section>
-      <section class="card">
-        <h2>Relación visual rápida</h2>
-        <svg viewBox="0 0 700 200" role="img" aria-label="Relaciones tipos de equipo"><rect x="30" y="60" width="180" height="90" rx="14" fill="#0b3a5b"/><text x="55" y="110" fill="#fff" font-size="16">TIPO_EQUIPO</text><rect x="300" y="20" width="160" height="70" rx="12" fill="#0ea5e9"/><text x="340" y="60" fill="#fff" font-size="14">EQUIPO</text><rect x="300" y="110" width="160" height="70" rx="12" fill="#0f766e"/><text x="305" y="150" fill="#fff" font-size="14">CHECKLIST_ITEM</text><path d="M210 105 L300 55" stroke="#0f172a" stroke-width="2"/><path d="M210 105 L300 145" stroke="#0f172a" stroke-width="2"/></svg>
-      </section>
-      <section class="card">
-        <h2>Campos clave</h2>
-        <div class="grid"><div class="box"><div class="tag">Obligatorios</div><ul><li><code>nombre</code> (único)</li></ul></div><div class="box"><div class="tag">Opcionales</div><ul><li><code>descripcion</code></li><li><code>activo</code></li></ul></div></div>
+        <p>Catálogo maestro usado por equipos y checklist_items.</p>
       </section>
       <section class="card">
         <h2>Rutas y permisos</h2>
-        <p>No hay rutas dedicadas aún. Se administra vía base de datos o endpoint futuro.</p>
+        <table>
+          <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Auth</th><th>Roles</th></tr></thead>
+          <tbody><tr><td colspan="5">Sin rutas públicas definidas.</td></tr></tbody>
+        </table>
       </section>
       <section class="card">
         <h2>Controller (métodos)</h2>
-        <div class="grid"><div class="box"><div class="tag">Estado</div><ul><li>Pendiente de controller y rutas.</li></ul></div></div>
+        <p>-</p>
       </section>
       <section class="card">
-        <h2>Modelo / Validaciones</h2>
-        <ul><li>Modelo definido en Prisma: id, nombre único, descripcion, activo.</li></ul>
+        <h2>Modelo (campos clave)</h2>
+        <ul><li>id</li><li>nombre</li><li>descripcion</li><li>activo</li></ul>
       </section>
       <section class="card">
-        <h2>Ejemplos (requests / responses)</h2>
-        <div class="grid"><div class="box"><div class="tag">Ejemplo</div><pre>{
-  "nombre": "Laptop",
-  "descripcion": "Equipo portátil"
-}</pre></div></div>
+        <h2>Validaciones</h2>
+        <ul><li>nombre único</li></ul>
+      </section>
+      <section class="card">
+        <h2>Ejemplos</h2>
+        <div class="grid">
+          <div class="box">
+            <div class="tag">Request</div>
+            <pre>{
+  "nombre": "Laptop"
+}</pre>
+          </div>
+          <div class="box">
+            <div class="tag">Response</div>
+            <pre>{
+  "id": 1,
+  "nombre": "Laptop"
+}</pre>
+          </div>
+        </div>
       </section>
       <section class="card">
         <h2>Errores comunes</h2>
-        <table><thead><tr><th>HTTP</th><th>Causa</th><th>Solución</th></tr></thead><tbody><tr><td>409</td><td>Nombre duplicado</td><td>Usar nombre único.</td></tr></tbody></table>
+        <ul><li>409 duplicado</li></ul>
       </section>
       <section class="card">
         <h2>Checklist operativo</h2>
-        <ul><li>Definir endpoint si se expone API.</li></ul>
+        <ul><li>Definir endpoints si se expone</li></ul>
       </section>
-      <section class="card">
-        <h2>Runbook (flujo inicio → fin)</h2>
-        <p>Simulación de un alta de equipo dependiente de <code>tipos_equipo</code>, con errores típicos.</p>
-        <div class="runner" id="runbook">
-          <div class="step active" data-title="1) Preparar catálogo" data-errors="409 Nombre duplicado · 422 payload incompleto">
-            <div class="tag">Paso 1</div>
-            <p>Registrar tipo (ej. Laptop) en el catálogo interno.</p>
-          </div>
-          <div class="step" data-title="2) Crear equipo" data-errors="404 tipoEquipoId inexistente · 403 rol sin permisos">
-            <div class="tag">Paso 2</div>
-            <p>Crear equipo con <code>tipoEquipoId</code> válido.</p>
-          </div>
-          <div class="step" data-title="3) Checklist item" data-errors="400 tipoEquipoId inválido · 409 duplicado">
-            <div class="tag">Paso 3</div>
-            <p>Opcional: crear checklist item ligado al tipo de equipo.</p>
-          </div>
-          <div class="step" data-title="4) Auditoría" data-errors="500 fallo de auditoría · 401 token expirado">
-            <div class="tag">Paso 4</div>
-            <p>Se registra auditoría por cada operación de creación.</p>
-          </div>
-        </div>
-        <div class="controls">
-          <button type="button" id="runPrev">Anterior</button>
-          <button type="button" id="runNext">Siguiente</button>
-          <button type="button" id="runReset">Reiniciar</button>
-        </div>
-        <div class="box" style="margin-top:10px;">
-          <div class="tag">Errores típicos</div>
-          <p id="runErrors">409 Nombre duplicado · 422 payload incompleto</p>
-        </div>
-      </section>
+  
     </main>
-    <div class="tooltip-layer" id="svgTip"></div>
-    <script>
-      const tip = document.getElementById("svgTip");
-      const hotspots = document.querySelectorAll(".hotspot");
-      hotspots.forEach((node) => {
-        node.addEventListener("mousemove", (e) => {
-          const msg = node.getAttribute("data-tip");
-          if (!msg) return;
-          tip.textContent = msg;
-          tip.style.left = `${e.clientX + 12}px`;
-          tip.style.top = `${e.clientY + 12}px`;
-          tip.style.opacity = "1";
-          tip.style.transform = "translateY(0)";
-        });
-        node.addEventListener("mouseleave", () => {
-          tip.style.opacity = "0";
-          tip.style.transform = "translateY(6px)";
-        });
-      });
 
-      const steps = Array.from(document.querySelectorAll("#runbook .step"));
-      const errorsEl = document.getElementById("runErrors");
-      let idx = 0;
-      function render() {
-        steps.forEach((s, i) => s.classList.toggle("active", i === idx));
-        errorsEl.textContent = steps[idx].getAttribute("data-errors") || "";
-      }
-      document.getElementById("runPrev").addEventListener("click", () => { idx = Math.max(0, idx - 1); render(); });
-      document.getElementById("runNext").addEventListener("click", () => { idx = Math.min(steps.length - 1, idx + 1); render(); });
-      document.getElementById("runReset").addEventListener("click", () => { idx = 0; render(); });
-      render();
-    </script>
   </body>
 </html>

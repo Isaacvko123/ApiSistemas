@@ -1,0 +1,102 @@
+<script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+    <script>
+      function initFlow({ prefix, steps, nodes, lines }) {
+        const els = {
+          tag: document.getElementById(`${prefix}-step-tag`),
+          title: document.getElementById(`${prefix}-title`),
+          what: document.getElementById(`${prefix}-what`),
+          why: document.getElementById(`${prefix}-why`),
+          fail: document.getElementById(`${prefix}-fail`)
+        };
+        let idx = 0;
+        function clear() {
+          nodes.forEach((n) => {
+            document.getElementById(`${prefix}-node-${n}`).classList.remove("active");
+            document.getElementById(`${prefix}-label-${n}`).classList.remove("active");
+          });
+          lines.forEach((l) => document.getElementById(`${prefix}-line-${l}`).classList.remove("active"));
+        }
+        function render() {
+          const step = steps[idx];
+          els.tag.textContent = `Paso ${idx + 1}`;
+          els.title.textContent = step.title;
+          els.what.textContent = step.what;
+          els.why.innerHTML = `<b>Por qué:</b> ${step.why}`;
+          els.fail.innerHTML = `<b>Puede fallar si:</b> ${step.fail}`;
+          clear();
+          step.nodes.forEach((n) => {
+            document.getElementById(`${prefix}-node-${n}`).classList.add("active");
+            document.getElementById(`${prefix}-label-${n}`).classList.add("active");
+          });
+          step.lines.forEach((l) => document.getElementById(`${prefix}-line-${l}`).classList.add("active"));
+        }
+        document.getElementById(`${prefix}-prev`).onclick = () => { if (idx > 0) idx--; render(); };
+        document.getElementById(`${prefix}-next`).onclick = () => { if (idx < steps.length - 1) idx++; render(); };
+        render();
+      }
+
+      initFlow({
+        prefix: "flow",
+        nodes: ["fe","edge","waf","api","db","aud","obs"],
+        lines: ["1","2","3","4","5","6"],
+        steps: [
+          { title: "Inicio de sesión", what: "Frontend envía credenciales al API Gateway.", why: "Centraliza seguridad y control de entrada.", fail: "Credenciales inválidas o rate limit.", nodes: ["fe","edge"], lines: ["1"] },
+          { title: "Inspección WAF", what: "Gateway pasa por WAF (CORS + rate limit + reglas).", why: "Bloquea tráfico malicioso antes de la API.", fail: "Bloqueo por IP o payload sospechoso.", nodes: ["edge","waf"], lines: ["2"] },
+          { title: "Procesamiento API", what: "API valida payload y prepara contexto.", why: "Evita entradas inválidas y reduce riesgos.", fail: "Payload incompleto o inválido (422).", nodes: ["api"], lines: ["3"] },
+          { title: "Consulta a DB", what: "API busca usuario por email en DB.", why: "Obtiene hash y estado del usuario.", fail: "Usuario no existe o DB inaccesible.", nodes: ["api","db"], lines: ["4"] },
+          { title: "Auditoría", what: "Se registra el evento (LOGIN_SUCCESS/FAILED).", why: "Trazabilidad y cumplimiento.", fail: "Si falla auditoría, se reporta (no bloqueante).", nodes: ["api","aud"], lines: ["5"] },
+          { title: "Observabilidad", what: "Logs y métricas de la operación.", why: "Detectar patrones de ataque o errores.", fail: "No bloquea, pero reduce visibilidad.", nodes: ["api","obs"], lines: ["6"] }
+        ]
+      });
+
+      initFlow({
+        prefix: "res",
+        nodes: ["fe","api","db","doc","aud"],
+        lines: ["1","2","3","4"],
+        steps: [
+          { title: "Alta de resguardo", what: "Se crea el resguardo con empleado y fechas.", why: "Formaliza asignación y control de activos.", fail: "Empleado inexistente o sin permiso.", nodes: ["fe","api"], lines: ["1"] },
+          { title: "Persistencia", what: "Se registra resguardo y detalle en DB.", why: "Mantener historial legal/operativo.", fail: "DB indisponible o datos duplicados.", nodes: ["api","db"], lines: ["2"] },
+          { title: "Evidencia", what: "Se sube documento de entrega/devolución.", why: "Soporte documental y auditoría.", fail: "Archivo inválido o ruta incorrecta.", nodes: ["api","doc"], lines: ["3"] },
+          { title: "Auditoría", what: "Se registra evento de alta y cambios.", why: "Trazabilidad completa por resguardo.", fail: "Falla de auditoría no bloqueante.", nodes: ["api","aud"], lines: ["4"] }
+        ]
+      });
+
+      initFlow({
+        prefix: "cred",
+        nodes: ["fe","api","kms","db","aud"],
+        lines: ["1","2","3","4"],
+        steps: [
+          { title: "Ingreso seguro", what: "API recibe datos de la credencial.", why: "Controlar permisos antes de cifrar.", fail: "Rol sin permisos o payload inválido.", nodes: ["fe","api"], lines: ["1"] },
+          { title: "Cifrado", what: "Se obtiene clave y cifra con AES-GCM.", why: "Evitar exposición en texto plano.", fail: "Clave no disponible o versión inválida.", nodes: ["api","kms"], lines: ["2"] },
+          { title: "Persistencia", what: "Se guarda secreto cifrado y metadatos.", why: "Uso futuro con control de acceso.", fail: "DB caída o constraint.", nodes: ["api","db"], lines: ["3"] },
+          { title: "Auditoría", what: "Registro de creación y acceso.", why: "Cumplimiento y seguimiento.", fail: "Falla no bloqueante.", nodes: ["api","aud"], lines: ["4"] }
+        ]
+      });
+
+      initFlow({
+        prefix: "wifi",
+        nodes: ["fe","api","kms","db","aud"],
+        lines: ["1","2","3","4"],
+        steps: [
+          { title: "Captura", what: "API recibe SSID/usuario/password.", why: "Validar antes de cifrar.", fail: "Payload incompleto o sin permisos.", nodes: ["fe","api"], lines: ["1"] },
+          { title: "Cifrado", what: "AES-GCM con clave vigente.", why: "Protección de credenciales WiFi.", fail: "Clave inválida o rota.", nodes: ["api","kms"], lines: ["2"] },
+          { title: "Persistencia", what: "Se guarda en DB con relación.", why: "Acceso posterior controlado.", fail: "DB caída o constraint.", nodes: ["api","db"], lines: ["3"] },
+          { title: "Auditoría", what: "Se registra lectura/creación.", why: "Trazabilidad de secretos.", fail: "No bloqueante si falla.", nodes: ["api","aud"], lines: ["4"] }
+        ]
+      });
+
+      initFlow({
+        prefix: "doc",
+        nodes: ["fe","api","fs","db","aud"],
+        lines: ["1","2","3","4"],
+        steps: [
+          { title: "Validación", what: "API valida MIME y tamaño.", why: "Evitar archivos maliciosos.", fail: "Tipo no permitido o tamaño excedido.", nodes: ["fe","api"], lines: ["1"] },
+          { title: "Guardar archivo", what: "Se guarda en filesystem/almacenamiento.", why: "Persistencia de evidencia.", fail: "Ruta inválida o permisos.", nodes: ["api","fs"], lines: ["2"] },
+          { title: "Registrar en DB", what: "Se crea registro Documento.", why: "Indexar y relacionar evidencias.", fail: "DB caída o FK inválida.", nodes: ["api","db"], lines: ["3"] },
+          { title: "Auditoría", what: "Registro de carga.", why: "Cumplimiento y trazabilidad.", fail: "No bloqueante si falla.", nodes: ["api","aud"], lines: ["4"] }
+        ]
+      });
+    </script>

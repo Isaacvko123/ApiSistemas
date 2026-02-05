@@ -4,66 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>sesiones - Operación Técnica</title>
-    <style>
-      :root {
-        --bg:#f4f6f8;
-        --ink:#0f172a;
-        --muted:#475569;
-        --card:#ffffff;
-        --accent:#0b3a5b;
-        --line:#e2e8f0;
-        --shadow: 0 14px 30px rgba(2,6,23,0.08);
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin:0;
-        font-family: "Manrope", "Inter", "Segoe UI", sans-serif;
-        background:
-          radial-gradient(900px 500px at 15% -10%, rgba(14,165,233,0.10), transparent 60%),
-          radial-gradient(900px 500px at 85% -5%, rgba(15,118,110,0.08), transparent 60%),
-          var(--bg);
-        color: var(--ink);
-      }
-      header {
-        padding: 32px 40px 24px;
-        border-bottom: 1px solid var(--line);
-        background: #ffffff;
-        box-shadow: var(--shadow);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-      }
-      h1 { margin: 0 0 6px; font-size: 30px; letter-spacing: -0.6px; font-weight: 800; }
-      h2 { margin: 0 0 10px; font-size: 20px; font-weight: 700; }
-      h3 { margin: 0 0 8px; font-size: 18px; font-weight: 700; }
-      p { margin: 0; color: var(--muted); }
-      main { padding: 28px 40px 48px; display: grid; gap: 16px; }
-      .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow); }
-      .nav { display:flex; gap:12px; margin-top:10px; flex-wrap: wrap; }
-      .nav a { color: var(--accent); text-decoration: none; font-weight: 700; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: #f8fafc; }
-      .nav a:hover { background:#e2e8f0; }
-      .grid { display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-      .box { border:1px solid var(--line); background:#ffffff; padding:12px; border-radius:12px; }
-      ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); }
-      li { margin: 4px 0; }
-      code { background:#f1f5f9; padding:2px 6px; border-radius:6px; }
-      pre { background:#0f172a; color:#e2e8f0; padding:12px; border-radius:12px; overflow:auto; }
-      table { width:100%; border-collapse: collapse; }
-      th, td { text-align:left; padding:8px; border-bottom:1px solid var(--line); }
-      th { color:#1e293b; font-weight:800; }
-      .tag { display: inline-block; font-size: 12px; padding: 3px 10px; border-radius: 999px; background: #e2e8f0; color: #1e293b; border:1px solid #cbd5e1; font-weight: 700; }
-      .role { font-weight:800; }
-      @media (max-width: 720px) {
-        header { padding: 22px 20px; }
-        main { padding: 20px; }
-        h1 { font-size: 24px; }
-      }
-    </style>
+    <link rel="stylesheet" href="/docs/assets/docs.css" />
   </head>
   <body>
     <header>
-      <h1>sesiones</h1>
-      <p>Sesiones, refresh tokens y revocación.</p>
+      <h1>Sesiones</h1>
+      <p>Control de refresh tokens</p>
+      
       <div class="nav">
         <a href="/docs/operacion">Índice</a>
         <a href="/docs/portal">Inicio</a>
@@ -71,133 +18,59 @@
       </div>
     </header>
     <main>
+
       <section class="card">
         <h2>Descripción</h2>
-        <p>Tabla de sesiones activas. Se controla la vigencia del refresh token y el uso de cada sesión.</p>
+        <p>Registra sesiones por usuario y permite revocación por sesión o global.</p>
       </section>
-
       <section class="card">
-        <h2>Relación visual rápida</h2>
-        <svg viewBox="0 0 700 200" role="img" aria-label="Relaciones sesiones">
-          <rect x="30" y="60" width="160" height="90" rx="14" fill="#0b3a5b"/>
-          <text x="60" y="110" fill="#fff" font-size="16">USUARIO</text>
-
-          <rect x="300" y="60" width="160" height="90" rx="14" fill="#0ea5e9"/>
-          <text x="330" y="110" fill="#fff" font-size="16">SESION</text>
-
-          <path d="M190 105 L300 105" stroke="#0f172a" stroke-width="2"/>
-          <text x="220" y="92" fill="#475569" font-size="12">1..*</text>
-        </svg>
-      </section>
-
-      <section class="card">
-        <h2>Campos clave</h2>
-        <div class="grid">
-          <div class="box">
-            <div class="tag">Obligatorios</div>
-            <ul>
-              <li><code>id</code> (UUID)</li>
-              <li><code>usuarioId</code> (FK)</li>
-              <li><code>refreshHash</code></li>
-              <li><code>expiresAt</code></li>
-            </ul>
-          </div>
-          <div class="box">
-            <div class="tag">Control</div>
-            <ul>
-              <li><code>lastUsedAt</code></li>
-              <li><code>createdAt</code></li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2>Rutas relacionadas (Auth)</h2>
+        <h2>Rutas y permisos</h2>
         <table>
-          <thead>
-            <tr><th>Ruta</th><th>Rol</th><th>Notas</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>POST /auth/login</code></td><td class="role">Público</td><td>Crea sesión y tokens.</td></tr>
-            <tr><td><code>POST /auth/refresh</code></td><td class="role">Público</td><td>Valida refresh y rota tokens.</td></tr>
-            <tr><td><code>POST /auth/logout</code></td><td class="role">Autenticado</td><td>Revoca sesión actual.</td></tr>
-            <tr><td><code>POST /auth/logout-all</code></td><td class="role">Autenticado</td><td>Revoca todas las sesiones.</td></tr>
-          </tbody>
+          <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Auth</th><th>Roles</th></tr></thead>
+          <tbody><tr><td>POST</td><td>/auth/login</td><td>Crea sesión y tokens</td><td>No</td><td>-</td></tr><tr><td>POST</td><td>/auth/refresh</td><td>Rota refresh</td><td>No</td><td>-</td></tr><tr><td>POST</td><td>/auth/logout</td><td>Revoca sesión actual</td><td>Sí</td><td>-</td></tr><tr><td>POST</td><td>/auth/logout-all</td><td>Revoca todas las sesiones</td><td>Sí</td><td>-</td></tr></tbody>
         </table>
       </section>
-
       <section class="card">
-        <h2>Flujo principal</h2>
-        <ul>
-          <li><b>login</b> → crea sesión (refreshHash, expiración).</li>
-          <li><b>refresh</b> → rota refreshHash y actualiza lastUsedAt.</li>
-          <li><b>logout</b> → elimina sesión actual.</li>
-          <li><b>logout-all</b> → elimina sesiones del usuario.</li>
-        </ul>
+        <h2>Controller (métodos)</h2>
+        <ul><li>login</li><li>refresh</li><li>logout</li><li>logoutAll</li></ul>
       </section>
-
       <section class="card">
-        <h2>Ejemplos (requests / responses)</h2>
+        <h2>Modelo (campos clave)</h2>
+        <ul><li>id</li><li>usuarioId</li><li>refreshHash</li><li>expiresAt</li><li>lastUsedAt</li></ul>
+      </section>
+      <section class="card">
+        <h2>Validaciones</h2>
+        <ul><li>JWT válido</li><li>refreshHash coincide</li></ul>
+      </section>
+      <section class="card">
+        <h2>Ejemplos</h2>
         <div class="grid">
           <div class="box">
-            <div class="tag">POST /auth/login</div>
+            <div class="tag">Request</div>
             <pre>{
   "email": "ana@empresa.com",
-  "contrasena": "MiPasswordSegura123"
+  "contrasena": "PasswordSegura123"
 }</pre>
           </div>
           <div class="box">
-            <div class="tag">200 OK</div>
+            <div class="tag">Response</div>
             <pre>{
   "accessToken": "...",
-  "refreshToken": "...",
-  "usuario": {
-    "id": 1,
-    "email": "ana@empresa.com",
-    "rol": "SUPERVISOR"
-  }
-}</pre>
-          </div>
-          <div class="box">
-            <div class="tag">POST /auth/refresh</div>
-            <pre>{
   "refreshToken": "..."
 }</pre>
           </div>
-          <div class="box">
-            <div class="tag">200 OK</div>
-            <pre>{
-  "accessToken": "nuevo...",
-  "refreshToken": "rotado..."
-}</pre>
-          </div>
         </div>
       </section>
-
       <section class="card">
         <h2>Errores comunes</h2>
-        <table>
-          <thead>
-            <tr><th>HTTP</th><th>Causa</th><th>Solución</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>401</td><td>Credenciales inválidas</td><td>Revisar email/contraseña.</td></tr>
-            <tr><td>401</td><td>Refresh inválido o expirado</td><td>Iniciar sesión de nuevo.</td></tr>
-            <tr><td>403</td><td>Token sin permisos</td><td>Requiere token válido.</td></tr>
-          </tbody>
-        </table>
+        <ul><li>401 token inválido</li><li>401 refresh revocado</li></ul>
       </section>
-
       <section class="card">
         <h2>Checklist operativo</h2>
-        <ul>
-          <li>Validar existencia del usuario.</li>
-          <li>Comparar hash con Argon2.</li>
-          <li>Actualizar <code>lastUsedAt</code> en refresh.</li>
-          <li>Registrar auditoría en login/logout.</li>
-        </ul>
+        <ul><li>Rotación refresh</li><li>Revocación global</li><li>Audit logs de login</li></ul>
       </section>
+  
     </main>
+
   </body>
 </html>

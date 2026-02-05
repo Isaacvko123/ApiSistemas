@@ -4,61 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Operación Técnica - Índice por Tablas</title>
-    <style>
-      :root {
-        --bg:#f4f6f8;
-        --ink:#0f172a;
-        --muted:#475569;
-        --card:#ffffff;
-        --accent:#0b3a5b;
-        --line:#e2e8f0;
-        --shadow: 0 14px 30px rgba(2,6,23,0.08);
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin:0;
-        font-family: "Manrope", "Inter", "Segoe UI", sans-serif;
-        background:
-          radial-gradient(900px 500px at 15% -10%, rgba(14,165,233,0.10), transparent 60%),
-          radial-gradient(900px 500px at 85% -5%, rgba(15,118,110,0.08), transparent 60%),
-          var(--bg);
-        color: var(--ink);
-      }
-      header {
-        padding: 32px 40px 24px;
-        border-bottom: 1px solid var(--line);
-        background: #ffffff;
-        box-shadow: var(--shadow);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-      }
-      h1 { margin: 0 0 6px; font-size: 30px; letter-spacing: -0.6px; font-weight: 800; }
-      p { margin: 0; color: var(--muted); }
-      .nav { display:flex; gap:12px; margin-top:10px; flex-wrap: wrap; }
-      .nav a { color: var(--accent); text-decoration: none; font-weight: 700; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: #f8fafc; }
-      .nav a:hover { background:#e2e8f0; }
-      main { padding: 28px 40px 48px; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-      .card {
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        padding: 16px;
-        box-shadow: var(--shadow);
-      }
-      .card a { color: var(--accent); text-decoration: none; font-weight: 800; }
-      .card span { color: var(--muted); }
-      @media (max-width: 720px) {
-        header { padding: 22px 20px; }
-        main { padding: 20px; }
-        h1 { font-size: 24px; }
-      }
-    </style>
+    <link rel="stylesheet" href="/docs/assets/docs.css" />
   </head>
   <body>
     <header>
       <h1>Operación Técnica · Índice por Tablas</h1>
       <p>Selecciona una tabla para ver controlador, modelo, validaciones, DB y respuestas.</p>
+      
       <div class="nav">
         <a href="/docs/portal">Inicio</a>
         <a href="/docs">Swagger</a>
@@ -67,22 +19,8 @@
       </div>
     </header>
     <main>
-      <section class="card"><a href="/docs/operacion/usuarios.html">usuarios</a><span>Usuarios y roles.</span></section>
-      <section class="card"><a href="/docs/operacion/sesiones.html">sesiones</a><span>Sesiones y refresh tokens.</span></section>
-      <section class="card"><a href="/docs/operacion/areas.html">areas</a><span>Áreas organizacionales.</span></section>
-      <section class="card"><a href="/docs/operacion/puestos.html">puestos</a><span>Puestos y dependencias.</span></section>
-      <section class="card"><a href="/docs/operacion/empleados.html">empleados</a><span>Empleados y asignaciones.</span></section>
-      <section class="card"><a href="/docs/operacion/localidades.html">localidades</a><span>Ubicaciones físicas.</span></section>
-      <section class="card"><a href="/docs/operacion/equipos.html">equipos</a><span>Inventario tecnológico.</span></section>
-      <section class="card"><a href="/docs/operacion/tipos_equipo.html">tipos_equipo</a><span>Catálogo de tipos.</span></section>
-      <section class="card"><a href="/docs/operacion/resguardos.html">resguardos</a><span>Asignaciones formales.</span></section>
-      <section class="card"><a href="/docs/operacion/resguardo_equipos.html">resguardo_equipos</a><span>Detalle por equipo.</span></section>
-      <section class="card"><a href="/docs/operacion/documentos.html">documentos</a><span>PDF/imagen y eventos.</span></section>
-      <section class="card"><a href="/docs/operacion/checklists.html">checklists</a><span>Checklist por puesto.</span></section>
-      <section class="card"><a href="/docs/operacion/checklist_items.html">checklist_items</a><span>Ítems del checklist.</span></section>
-      <section class="card"><a href="/docs/operacion/credenciales_web.html">credenciales_web</a><span>Credenciales cifradas.</span></section>
-      <section class="card"><a href="/docs/operacion/wifi_credenciales.html">wifi_credenciales</a><span>WiFi cifrado.</span></section>
-      <section class="card"><a href="/docs/operacion/audit_logs.html">audit_logs</a><span>Bitácora de auditoría.</span></section>
+
     </main>
+
   </body>
 </html>

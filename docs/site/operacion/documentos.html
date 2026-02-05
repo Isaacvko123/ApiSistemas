@@ -4,38 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>documentos - Operación Técnica</title>
-    <style>
-      :root { --bg:#f4f6f8; --ink:#0f172a; --muted:#475569; --card:#ffffff; --accent:#0b3a5b; --line:#e2e8f0; --shadow: 0 14px 30px rgba(2,6,23,0.08); }
-      * { box-sizing: border-box; }
-      body { margin:0; font-family:"Manrope","Inter","Segoe UI",sans-serif; background: radial-gradient(900px 500px at 15% -10%, rgba(14,165,233,0.10), transparent 60%), radial-gradient(900px 500px at 85% -5%, rgba(15,118,110,0.08), transparent 60%), var(--bg); color: var(--ink); }
-      header { padding: 32px 40px 24px; border-bottom: 1px solid var(--line); background:#fff; box-shadow: var(--shadow); position: sticky; top:0; z-index:10; }
-      h1 { margin:0 0 6px; font-size:30px; letter-spacing:-0.6px; font-weight:800; }
-      h2 { margin:0 0 10px; font-size:20px; font-weight:700; }
-      h3 { margin:0 0 8px; font-size:18px; font-weight:700; }
-      p { margin:0; color: var(--muted); }
-      main { padding: 28px 40px 48px; display:grid; gap:16px; }
-      .card { background: var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; box-shadow: var(--shadow); }
-      .nav { display:flex; gap:12px; margin-top:10px; flex-wrap:wrap; }
-      .nav a { color: var(--accent); text-decoration:none; font-weight:700; padding:8px 14px; border-radius:999px; border:1px solid var(--line); background:#f8fafc; }
-      .nav a:hover { background:#e2e8f0; }
-      .grid { display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-      .box { border:1px solid var(--line); background:#fff; padding:12px; border-radius:12px; }
-      ul { margin:8px 0 0; padding-left:18px; color: var(--muted); }
-      li { margin:4px 0; }
-      code { background:#f1f5f9; padding:2px 6px; border-radius:6px; }
-      pre { background:#0f172a; color:#e2e8f0; padding:12px; border-radius:12px; overflow:auto; }
-      table { width:100%; border-collapse: collapse; }
-      th, td { text-align:left; padding:8px; border-bottom:1px solid var(--line); }
-      th { color:#1e293b; font-weight:800; }
-      .tag { display:inline-block; font-size:12px; padding:3px 10px; border-radius:999px; background:#e2e8f0; color:#1e293b; border:1px solid #cbd5e1; font-weight:700; }
-      .role { font-weight:800; }
-      @media (max-width: 720px) { header { padding:22px 20px; } main { padding:20px; } h1 { font-size:24px; } }
-</style>
+    <link rel="stylesheet" href="/docs/assets/docs.css" />
   </head>
   <body>
     <header>
-      <h1>documentos</h1>
-      <p>Evidencias en PDF/imagen y enlaces a resguardos/equipos.</p>
+      <h1>Documentos</h1>
+      <p>Evidencias</p>
+      
       <div class="nav">
         <a href="/docs/operacion">Índice</a>
         <a href="/docs/portal">Inicio</a>
@@ -43,50 +18,59 @@
       </div>
     </header>
     <main>
+
       <section class="card">
         <h2>Descripción</h2>
-        <p>Documentos asociados a equipo, resguardo o resguardo_equipo. Incluye ruta y metadatos del archivo.</p>
-      </section>
-      <section class="card">
-        <h2>Relación visual rápida</h2>
-        <svg viewBox="0 0 880 220" role="img" aria-label="Relaciones documentos"><rect x="30" y="60" width="180" height="90" rx="14" fill="#0b3a5b"/><text x="70" y="110" fill="#fff" font-size="16">DOCUMENTO</text><rect x="260" y="20" width="160" height="70" rx="12" fill="#0ea5e9"/><text x="300" y="60" fill="#fff" font-size="14">EQUIPO</text><rect x="260" y="110" width="160" height="70" rx="12" fill="#0f766e"/><text x="290" y="150" fill="#fff" font-size="14">RESGUARDO</text><rect x="500" y="60" width="200" height="90" rx="14" fill="#0ea5e9"/><text x="520" y="110" fill="#fff" font-size="14">RESGUARDO_EQUIPO</text><path d="M210 105 L260 55" stroke="#0f172a" stroke-width="2"/><path d="M210 105 L260 145" stroke="#0f172a" stroke-width="2"/><path d="M420 105 L500 105" stroke="#0f172a" stroke-width="2"/></svg>
-      </section>
-      <section class="card">
-        <h2>Campos clave</h2>
-        <div class="grid"><div class="box"><div class="tag">Obligatorios</div><ul><li><code>tipo</code></li><li><code>ruta</code></li><li>Asociación a equipo/resguardo/resguardoEquipo</li></ul></div><div class="box"><div class="tag">Opcionales</div><ul><li><code>evento</code></li><li><code>mime</code></li><li><code>sizeBytes</code></li><li><code>checksum</code></li><li><code>empleadoId</code></li></ul></div></div>
+        <p>Carga y registro de PDF/imagen relacionados a resguardos.</p>
       </section>
       <section class="card">
         <h2>Rutas y permisos</h2>
-        <table><thead><tr><th>Ruta</th><th>Rol</th><th>Notas</th></tr></thead><tbody><tr><td><code>GET /documentos</code></td><td class="role">Autenticado</td><td>Filtros: equipoId, resguardoId, resguardoEquipoId, tipo, empleadoId, evento.</td></tr><tr><td><code>GET /documentos/:id</code></td><td class="role">Autenticado</td><td>Por id.</td></tr><tr><td><code>POST /documentos</code></td><td class="role">ADMIN / GERENTE</td><td>Crea sin archivo (ruta manual).</td></tr><tr><td><code>POST /documentos/upload</code></td><td class="role">ADMIN / GERENTE</td><td>Sube archivo y crea documento.</td></tr><tr><td><code>PATCH /documentos/:id</code></td><td class="role">ADMIN / GERENTE</td><td>Actualiza metadatos o relaciones.</td></tr><tr><td><code>DELETE /documentos/:id</code></td><td class="role">ADMIN / GERENTE</td><td>Elimina registro.</td></tr></tbody></table>
+        <table>
+          <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th><th>Auth</th><th>Roles</th></tr></thead>
+          <tbody><tr><td>POST</td><td>/documentos/upload</td><td>Sube documento</td><td>Sí</td><td>ADMIN, GERENTE</td></tr><tr><td>GET</td><td>/documentos</td><td>Lista documentos</td><td>Sí</td><td>-</td></tr></tbody>
+        </table>
       </section>
       <section class="card">
         <h2>Controller (métodos)</h2>
-        <div class="grid"><div class="box"><div class="tag">listar</div><ul><li>Filtros múltiples.</li><li>Orden id DESC.</li></ul></div><div class="box"><div class="tag">crear/subir</div><ul><li>Valida con Zod.</li><li>Requiere relación a equipo/resguardo/resguardoEquipo.</li><li>Audit ENTITY_CREATE.</li></ul></div><div class="box"><div class="tag">actualizar</div><ul><li>Zod update.</li><li>Audit ENTITY_UPDATE.</li></ul></div></div>
+        <ul><li>list</li><li>upload</li></ul>
       </section>
       <section class="card">
-        <h2>Modelo / Validaciones</h2>
-        <ul><li><code>documentoCreateSchema</code>: requiere relación (equipo/resguardo/resguardoEquipo).</li><li><code>documentoUpdateSchema</code>: permite null para desconectar.</li></ul>
+        <h2>Modelo (campos clave)</h2>
+        <ul><li>id</li><li>ruta</li><li>tipo</li><li>resguardoId</li><li>empleadoId</li></ul>
       </section>
       <section class="card">
-        <h2>Ejemplos (requests / responses)</h2>
-        <div class="grid"><div class="box"><div class="tag">POST /documentos</div><pre>{
-  "tipo": "PDF",
-  "ruta": "uploads/documentos/file.pdf",
-  "resguardoId": 5
-}</pre></div><div class="box"><div class="tag">201 OK</div><pre>{
-  "id": 12,
-  "tipo": "PDF",
-  "resguardoId": 5
-}</pre></div></div>
+        <h2>Validaciones</h2>
+        <ul><li>MIME permitido</li><li>tamaño <= límite</li></ul>
+      </section>
+      <section class="card">
+        <h2>Ejemplos</h2>
+        <div class="grid">
+          <div class="box">
+            <div class="tag">Request</div>
+            <pre>{
+  "file": "archivo.pdf",
+  "tipo": "RESGUARDO"
+}</pre>
+          </div>
+          <div class="box">
+            <div class="tag">Response</div>
+            <pre>{
+  "id": 1,
+  "ruta": "uploads/..."
+}</pre>
+          </div>
+        </div>
       </section>
       <section class="card">
         <h2>Errores comunes</h2>
-        <table><thead><tr><th>HTTP</th><th>Causa</th><th>Solución</th></tr></thead><tbody><tr><td>400</td><td>Payload inválido</td><td>Asociar a equipo/resguardo/resguardoEquipo.</td></tr><tr><td>404</td><td>Documento no encontrado</td><td>Validar id.</td></tr><tr><td>409</td><td>Relación inválida</td><td>IDs inexistentes.</td></tr></tbody></table>
+        <ul><li>400 tipo inválido</li><li>413 tamaño excedido</li></ul>
       </section>
       <section class="card">
         <h2>Checklist operativo</h2>
-        <ul><li>Verificar archivo.</li><li>Revisar relación requerida.</li><li>Auditar creación.</li></ul>
+        <ul><li>Guardar ruta en DB</li></ul>
       </section>
+  
     </main>
+
   </body>
 </html>

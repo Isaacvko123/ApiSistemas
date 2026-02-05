@@ -26,6 +26,10 @@ export function setupDocs(app: Express) {
     app.get("/docs/arquitectura", (_req, res) => {
       res.sendFile(path.join(portalPath, "arquitectura.html"));
     });
+    const assetsPath = path.join(portalPath, "assets");
+    if (fs.existsSync(assetsPath)) {
+      app.use("/docs/assets", express.static(assetsPath));
+    }
     const operacionPath = path.join(portalPath, "operacion");
     if (fs.existsSync(operacionPath)) {
       app.use("/docs/operacion", express.static(operacionPath));

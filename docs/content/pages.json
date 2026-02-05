@@ -1,0 +1,436 @@
+{
+  "pages": [
+    {
+      "file": "arquitectura.html",
+      "title": "Arquitectura Visual - ApiSistemas",
+      "headerTitle": "Arquitectura Visual para Capacitación",
+      "headerSubtitle": "Enfoque didáctico para aprendizaje visual y kinestésico.",
+      "nav": [
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        },
+        {
+          "href": "/docs/diagramas",
+          "label": "Diagramas"
+        }
+      ],
+      "script": "arquitectura.html.scripts.html"
+    },
+    {
+      "file": "diagramas.html",
+      "title": "Diagramas de Interacción y Flujos Operativos - ApiSistemas",
+      "headerTitle": "Diagramas de Interacción",
+      "headerSubtitle": "Flujos formales para operación, auditoría y seguridad.",
+      "nav": [
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        },
+        {
+          "href": "/docs/arquitectura",
+          "label": "Arquitectura"
+        }
+      ],
+      "script": "diagramas.html.scripts.html"
+    },
+    {
+      "file": "index.html",
+      "title": "Centro de Documentación Operativa - ApiSistemas",
+      "headerTitle": "Centro de Documentación Operativa",
+      "headerSubtitle": "ApiSistemas · Especificación, flujos, arquitectura y referencia técnica",
+      "nav": [],
+      "script": ""
+    },
+    {
+      "file": "operacion/_template.html",
+      "title": "TABLA - Operación Técnica",
+      "headerTitle": "TABLA",
+      "headerSubtitle": "Controller, modelo, validaciones, DB y respuestas.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/areas.html",
+      "title": "areas - Operación Técnica",
+      "headerTitle": "areas",
+      "headerSubtitle": "Catálogo organizacional base para puestos y empleados.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/audit_logs.html",
+      "title": "audit_logs - Operación Técnica",
+      "headerTitle": "audit_logs",
+      "headerSubtitle": "Bitácora de acciones críticas.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/checklist_items.html",
+      "title": "checklist_items - Operación Técnica",
+      "headerTitle": "checklist_items",
+      "headerSubtitle": "Ítems de checklist.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/checklists.html",
+      "title": "checklists - Operación Técnica",
+      "headerTitle": "checklists",
+      "headerSubtitle": "Checklist por puesto.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/credenciales_web.html",
+      "title": "credenciales_web - Operación Técnica",
+      "headerTitle": "credenciales_web",
+      "headerSubtitle": "Credenciales web cifradas (AES‑GCM).",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/documentos.html",
+      "title": "documentos - Operación Técnica",
+      "headerTitle": "documentos",
+      "headerSubtitle": "Evidencias en PDF/imagen y enlaces a resguardos/equipos.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/empleados.html",
+      "title": "empleados - Operación Técnica",
+      "headerTitle": "empleados",
+      "headerSubtitle": "Registro de empleados y sus relaciones con área, puesto y localidad.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/equipos.html",
+      "title": "equipos - Operación Técnica",
+      "headerTitle": "equipos",
+      "headerSubtitle": "Inventario tecnológico con tipo, estado y localidad.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/index.html",
+      "title": "Operación Técnica - Índice por Tablas",
+      "headerTitle": "Operación Técnica · Índice por Tablas",
+      "headerSubtitle": "Selecciona una tabla para ver controlador, modelo, validaciones, DB y respuestas.",
+      "nav": [
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        },
+        {
+          "href": "/docs/arquitectura",
+          "label": "Arquitectura"
+        },
+        {
+          "href": "/docs/diagramas",
+          "label": "Diagramas"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/localidades.html",
+      "title": "localidades - Operación Técnica",
+      "headerTitle": "localidades",
+      "headerSubtitle": "Ubicación física de equipos y empleados.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/puestos.html",
+      "title": "puestos - Operación Técnica",
+      "headerTitle": "puestos",
+      "headerSubtitle": "Puestos vinculados a áreas y checklists.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/resguardo_equipos.html",
+      "title": "resguardo_equipos - Operación Técnica",
+      "headerTitle": "resguardo_equipos",
+      "headerSubtitle": "Detalle de equipos dentro del resguardo.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/resguardos.html",
+      "title": "resguardos - Operación Técnica",
+      "headerTitle": "resguardos",
+      "headerSubtitle": "Asignaciones formales de equipos a empleados.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/sesiones.html",
+      "title": "sesiones - Operación Técnica",
+      "headerTitle": "sesiones",
+      "headerSubtitle": "Sesiones, refresh tokens y revocación.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/tipos_equipo.html",
+      "title": "tipos_equipo - Operación Técnica",
+      "headerTitle": "tipos_equipo",
+      "headerSubtitle": "Catálogo de tipos de equipo.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": "operacion/tipos_equipo.html.scripts.html"
+    },
+    {
+      "file": "operacion/usuarios.html",
+      "title": "usuarios - Operación Técnica",
+      "headerTitle": "usuarios",
+      "headerSubtitle": "Controller, modelo, validaciones, DB y respuestas.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    },
+    {
+      "file": "operacion/wifi_credenciales.html",
+      "title": "wifi_credenciales - Operación Técnica",
+      "headerTitle": "wifi_credenciales",
+      "headerSubtitle": "Credenciales WiFi cifradas.",
+      "nav": [
+        {
+          "href": "/docs/operacion",
+          "label": "Índice"
+        },
+        {
+          "href": "/docs/portal",
+          "label": "Inicio"
+        },
+        {
+          "href": "/docs",
+          "label": "Swagger"
+        }
+      ],
+      "script": ""
+    }
+  ]
+}

@@ -115,6 +115,23 @@ http://localhost:8080/docs/portal
 
 Si `NODE_ENV=production`, estos endpoints **no se exponen** por seguridad.
 
+### Mantenibilidad y fuente unica
+Para que la documentacion sea escalable, el **contenido fuente** vive en `docs/content/` y se genera a `docs/site/`.
+
+Flujo recomendado:
+1. Edita contenido en `docs/content/` (no en `docs/site/`).
+2. Cambia el codigo.
+3. Genera el sitio:
+
+```bash
+node scripts/build-docs.js
+```
+
+Si necesitas regenerar el contenido base desde el HTML actual:
+```bash
+node scripts/extract-docs.js
+```
+
 ## Pruebas
 ```bash
 npm test

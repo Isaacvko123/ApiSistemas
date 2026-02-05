@@ -4,106 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Arquitectura Visual - ApiSistemas</title>
-    <style>
-      :root {
-        --bg:#f4f6f8;
-        --ink:#0f172a;
-        --muted:#475569;
-        --card:#ffffff;
-        --accent:#0b3a5b;
-        --accent-2:#0ea5e9;
-        --accent-3:#0f766e;
-        --line:#e2e8f0;
-        --shadow: 0 14px 30px rgba(2,6,23,0.08);
-        --shadow-lg: 0 24px 60px rgba(2,6,23,0.14);
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin:0;
-        font-family: "Manrope", "Inter", "Segoe UI", sans-serif;
-        background:
-          radial-gradient(900px 500px at 15% -10%, rgba(14,165,233,0.10), transparent 60%),
-          radial-gradient(900px 500px at 85% -5%, rgba(15,118,110,0.08), transparent 60%),
-          var(--bg);
-        color: var(--ink);
-      }
-      header {
-        padding: 32px 40px 24px;
-        border-bottom: 1px solid var(--line);
-        background: #ffffff;
-        box-shadow: var(--shadow);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-      }
-      main { padding: 28px 32px 48px; display: grid; gap: 24px; }
-      h1 { margin: 0 0 6px; font-size: 32px; letter-spacing: -0.6px; font-weight: 800; }
-      h2 { margin: 0 0 10px; font-size: 20px; letter-spacing: -0.3px; font-weight: 700; }
-      h3 { margin: 0 0 8px; font-size: 18px; font-weight: 700; }
-      p { margin: 0; color: var(--muted); }
-      .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); }
-      .nav { display:flex; gap:12px; margin-top:10px; flex-wrap: wrap; }
-      .nav a {
-        color: var(--accent);
-        text-decoration: none;
-        font-weight: 700;
-        padding: 8px 14px;
-        border-radius: 999px;
-        border: 1px solid var(--line);
-        background: #f8fafc;
-      }
-      .nav a:hover { background:#e2e8f0; }
-      .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-      .tag { display: inline-block; font-size: 12px; padding: 3px 10px; border-radius: 999px; background: #e2e8f0; color: #1e293b; border:1px solid #cbd5e1; font-weight: 700; }
-      .legend { display:flex; gap:12px; flex-wrap: wrap; color: var(--muted); font-size: 12px; }
-      .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; background:#f6efe5; border:1px solid var(--line); }
-      .kpi { font-size: 13px; color: var(--muted); }
-      .stepper { display:grid; gap:10px; }
-      .step { display:flex; gap:10px; align-items:flex-start; }
-      .dot { width:22px; height:22px; border-radius:50%; background: var(--accent); color:#ffffff; font-size:12px; display:flex; align-items:center; justify-content:center; flex:0 0 22px; font-weight:700; }
-      .rail { border-left:2px dashed #d7c8b1; margin-left:10px; padding-left:18px; }
-      .swimlane { display:grid; grid-template-columns: 120px 1fr; gap:10px; }
-      .lane-title { font-weight:700; color:#2f2f2f; }
-      .lane { border:1px dashed #e1d5c6; padding:10px; border-radius:12px; background:#fffdf7; }
-      .box { border:1px solid var(--line); background:#ffffff; padding:12px; border-radius:12px; margin-bottom:8px; }
-      .icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; }
-      .icon.a { background: var(--accent); color:#ffffff; }
-      .icon.b { background: var(--accent-2); color:#ffffff; }
-      .icon.c { background: var(--accent-3); color:#ffffff; }
-      svg { width:100%; height:auto; }
-      .mermaid { background:#ffffff; border-radius:12px; padding:10px; border:1px solid var(--line); }
-      ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); }
-      li { margin: 4px 0; }
-      .quiz { display:grid; gap:12px; }
-      .q { border:1px solid var(--line); border-radius:12px; padding:12px; background:#f8fafc; }
-      .q h4 { margin:0 0 6px; font-size:16px; }
-      .opts { display:grid; gap:6px; }
-      .opts label { display:flex; gap:8px; align-items:flex-start; cursor:pointer; }
-      .result { padding:10px 12px; border-radius:10px; background:#ecfdf3; border:1px solid #bbf7d0; color:#065f46; font-weight:700; }
-      .fail { background:#fef2f2; border-color:#fecaca; color:#991b1b; }
-      button { padding:10px 14px; border-radius:12px; border:1px solid var(--line); background:#ffffff; cursor:pointer; font-weight:700; color:var(--ink); box-shadow: var(--shadow); }
-      button:hover { background:#f1f5f9; }
-      .tabs { display:flex; flex-wrap:wrap; gap:8px; }
-      .tab { padding:8px 12px; border-radius:999px; border:1px solid var(--line); background:#ffffff; cursor:pointer; font-weight:700; color:var(--ink); }
-      .tab.active { background:var(--accent); border-color:var(--accent); color:#ffffff; }
-      .explain { margin-top:8px; padding:8px 10px; border-radius:8px; background:#f1f5f9; border:1px dashed var(--line); color:#475569; font-size:13px; }
-      .progress { height:10px; border-radius:999px; background:#e2e8f0; overflow:hidden; border:1px solid var(--line); }
-      .progress > span { display:block; height:100%; background:linear-gradient(90deg, var(--accent-2), var(--accent-3)); width:0%; transition: width .3s ease; }
-      .case { background:#f8fafc; border:1px solid var(--line); border-radius:12px; padding:12px; }
-
-      @media (max-width: 720px) {
-        header { padding: 22px 20px; }
-        main { padding: 20px; }
-        h1 { font-size: 26px; }
-        .grid { grid-template-columns: 1fr; }
-        .nav { gap: 8px; }
-      }
-    </style>
+    <link rel="stylesheet" href="/docs/assets/docs.css" />
   </head>
   <body>
     <header>
       <h1>Arquitectura Visual para Capacitación</h1>
       <p>Enfoque didáctico para aprendizaje visual y kinestésico.</p>
+      
       <div class="nav">
         <a href="/docs/portal">Inicio</a>
         <a href="/docs">Swagger</a>
@@ -111,7 +18,7 @@
       </div>
     </header>
     <main>
-      <section class="card">
+<section class="card">
         <h2>Mapa visual de módulos (¿qué existe y para qué?)</h2>
         <div class="grid">
           <div class="box">
@@ -433,9 +340,10 @@ erDiagram
           <div class="box"><b>Uploads:</b> carpeta física de archivos.</div>
         </div>
       </section>
+
     </main>
 
-    <script type="module">
+<script type="module">
       import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
       mermaid.initialize({ startOnLoad: true });
 
@@ -620,5 +528,7 @@ erDiagram
       cks.forEach((c) => c.addEventListener("change", updateProgress));
       updateProgress();
     </script>
+
+
   </body>
 </html>
